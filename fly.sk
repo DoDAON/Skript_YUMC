@@ -1,0 +1,170 @@
+options:
+    #> 스크립트 이름
+    ID: "FLY MODE"
+    #> 10분 당 페가 가치
+    PEGA_VALUE: 50
+
+on tab complete of "/f":
+    set tab completions for position 1 to "on", "off" and "buy"
+
+on join:
+    if {flytime::%uuid of player%} is not set:
+        set {flytime::%uuid of player%} to 0
+
+on load:
+    if {flytime::%uuid of player%} is not set:
+        set {flytime::%uuid of player%} to 0
+
+function flyDescription(p: player):
+    message "&b===================================" to {_p}
+    message "&b&l[ %{@ID}% ] &r&b&l남은 플라이 시간 : &r&b%{flytime::%uuid of {_p}%}% 초" to {_p}
+    message "&b&l[ %{@ID}% ] &r&f플라이 관련 명령어는 다음과 같습니다." to {_p}
+    message "  &f&l/f on : &r&7플라이 모드를 켭니다." to {_p}
+    message "  &f&l/f off : &r&7플라이 모드를 끕니다." to {_p}
+    message "  &f&l/f buy 시간(분) : &r&710분당 {@PEGA_VALUE}페가&7를 지불하고 플라이를 충전합니다." to {_p}
+    message "  &b플라이는 자신 및 파티원의 토지에서만 가능합니다." to {_p}
+    message "&b===================================" to {_p}
+
+
+#> true : 내 땅 아님
+function isFlyPartyChunkIn(p: player) :: boolean:
+    set {_test} to false
+    set {_chunk} to chunk at {_p}
+    set {_owner} to {owned_chunk::%{_chunk}%}
+    loop {partylist::%{_owner}%::*}:
+        if {_test} is true:
+            exit loop
+        else:
+            loop {party::%loop-value-1%::members::*}:
+                if uuid of {_p} is loop-value-2:
+                    set {_test} to true
+                    exit loop
+                else:
+                    set {_test} to false
+    if {_test} is false:
+        if {_owner} is set:
+            if {_owner} is not uuid of {_p}:
+                return true
+            else:
+                return false
+        else:
+            return false
+    else:
+        return false
+    return false
+
+
+command /f [<text>] [<integer>]:
+    description: fly mode command
+    trigger:
+        if {flytime::%uuid of player%} is not set:
+            set {flytime::%uuid of player%} to 0
+        if arg 1 is not set:
+            flyDescription(player)
+        else:
+            if arg 1 is "on":
+                if {flymode::%uuid of player%} is set:
+                    message "&b&l[ %{@ID}% ] &r&c이미 플라이 모드가 활성화되어 있습니다"
+                else if {flytime::%uuid of player%} < 1:
+                    message "&b&l[ %{@ID}% ] &r&c 플라이 충전이 필요합니다 &7(/f buy <구매할 시간, 단위 : 분>)" to player
+                else:
+                    set {flymode::%uuid of player%} to true
+                    set {flydamage::%uuid of player%} to true
+                    message "&b&l[ %{@ID}% ] &r&b플라이 모드를 시작합니다" to player
+            else if arg 1 is "off":
+                if {flymode::%uuid of player%} is not set:
+                    message "&b&l[ %{@ID}% ] &r&c현재 플라이 모드가 아닙니다" to player
+                else:
+                    wait 2 tick
+                    delete {flymode::%uuid of player%}
+                    message "&b&l[ %{@ID}% ] &r&b플라이 모드를 종료합니다" to player
+                    set flight mode of player to false
+                    wait 3 seconds
+                    delete {flydamage::%uuid of player%}
+            else if arg 1 is "buy":
+                if arg 2 is not set:
+                    message "&b&l[ %{@ID}% ] &r&f사용 방법 : /f buy <구매할 시간, 단위 : 분>" to player
+                else if mod(arg 2, 10) is not 0:
+                    message "&b&l[ %{@ID}% ] &r&c10분 단위로만 입력할 수 있습니다" to player
+                else:
+                    set {_ft} to arg 2 * {@PEGA_VALUE} / 10
+                    #> 부동소수점 -> 정수
+                    set {_flyPega} to "%{_ft}%" parsed as integer
+                    if {pega::%uuid of player%} < {_flyPega}:
+                        message "&b&l[ %{@ID}% ] &r&c페가가 부족합니다!" to player
+                    else:
+                        subtract {_flyPega} from {pega::%uuid of player%}
+                        set {pegaName::%uuid of player%} to "%{nick::%uuid of player%}%//%{pega::%uuid of player%}%"
+                        set {_flytime} to arg 2 * 60
+                        add {_flytime} to {flytime::%uuid of player%}
+                        message "&b&l[ %{@ID}% ] &r&b%arg 2%&b분&3(%{_flytime}%&3초)&b의 시간을 추가하였습니다" to player
+                        message "  &l&b남은 플라이 시간 : &r&b%{flytime::%uuid of player%}% &b초" to player
+            else:
+                flyDescription(player)
+
+
+every 1 second:
+    loop all players:
+        if loop-player's gamemode is creative:
+            set flight mode of loop-player to true
+        else if {flymode::%uuid of loop-player%} is not set:
+            loop-player's gamemode is survival
+            set flight mode of loop-player to false
+        else if {flymode::%uuid of loop-player%} is set:
+            wait 1 tick
+            if loop-player's gamemode is survival:
+                remove 1 from {flytime::%uuid of loop-player%}
+                send action bar "&b&l플라이 모드 ON - %{flytime::%uuid of loop-player%}%초 남음" to loop-player
+                set {_myLand} to isFlyPartyChunkIn(loop-player)
+                wait 1 tick
+                if {_myLand} is true:
+                    set flight mode of loop-player to false
+                else if {owned_chunk::%chunk at loop-player%} is not set:
+                    set flight mode of loop-player to false
+                else:
+                    if {flytime::%uuid of loop-player%} <= 0:
+                        set flight mode of loop-player to false
+                        delete {flymode::%uuid of loop-player%}
+                        message "&b&l[ %{@ID}% ] &r&b플라이 모드를 종료합니다." to loop-player
+                        wait 3 seconds
+                        delete {flydamage::%uuid of loop-player%}
+                    else:
+                        set {_myLand} to isFlyPartyChunkIn(loop-player)
+                        wait 1 tick
+                        if {_myLand} is true:
+                            set flight mode of loop-player to false
+                        else if {owned_chunk::%chunk at loop-player%} is not set:
+                            set flight mode of loop-player to false
+                        else:
+                            set flight mode of loop-player to true
+                            {flydamage::%uuid of loop-player%} is not true
+                            set {flydamage::%uuid of loop-player%} to true
+
+
+
+
+
+command /testflymodecheck <player>:
+    permission: op
+    trigger:
+        message "%{flymode::%uuid of arg 1%}%" to player
+        message "%{flydamage::%uuid of arg 1%}%" to player
+        message "%{flytime::%uuid of arg 1%}%" to player
+
+
+on damage:
+    victim is a player
+    damage cause is fall
+    {flydamage::%uuid of victim%} is set
+    cancel event
+    wait 3 seconds
+    delete {flydamage::%uuid of victim%}
+
+
+
+
+#every 1 second:
+    #set {_p} to "DoDAON" parsed as player
+    #loop all players:
+        #set {_value} to "%{_value}% %loop-value%"
+    #message "%{_value}%" to {_p}

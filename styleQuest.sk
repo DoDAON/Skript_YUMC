@@ -1,0 +1,927 @@
+options:
+	DO_STYLE: true
+	MAX_STYLE: 108
+
+command /loadstylelist:
+	permission: op
+	trigger:
+		set {style.name::1} to "무자비한"
+		set {style.lore::1} to "몬스터 처치 3000회"
+		set {style.name::2} to "많이 아픈"
+		set {style.lore::2} to "몬스터에게 피격당함 100회시"
+		set {style.name::3} to "화염속의"
+		set {style.lore::3} to "블레이즈 200마리 처치"
+		set {style.name::4} to "독한 놈"
+		set {style.lore::4} to "독 데미지 입기 50회"
+		set {style.name::5} to "bee폭력주의자"
+		set {style.lore::5} to "벌 100마리 처치"
+		set {style.name::6} to "김장하는"
+		set {style.lore::6} to "좀비 100마리 처치"
+		set {style.name::7} to "스파이더맨"
+		set {style.lore::7} to "거미 100마리 처치"
+		set {style.name::8} to "아이컨택"
+		set {style.lore::8} to "엔더맨 50마리 처치"
+		set {style.name::9} to "골다공증"
+		set {style.lore::9} to "스켈레톤 150마리 처치"
+		set {style.name::10} to "웨어울프"
+		set {style.lore::10} to "늑대 100마리 처치"
+		set {style.name::11} to "코카콜라 도둑"
+		set {style.lore::11} to "북극곰 100마리 처치"
+		set {style.name::12} to "물보라를 일으키는"
+		set {style.lore::12} to "돌고래 50마리 처치"
+		set {style.name::13} to "피바다"
+		set {style.lore::13} to "드라운드 50마리 처치"
+		set {style.name::14} to "도살자"
+		set {style.lore::14} to "돼지 200마리 처치"
+		set {style.name::15} to "치킨이닭!"
+		set {style.lore::15} to "닭 200마리 처치"
+		set {style.name::16} to "간 빼먹는"
+		set {style.lore::16} to "획득 조건 비공개"
+		set {style.name::17} to "요망한"
+		set {style.lore::17} to "획득 조건 비공개"
+		set {style.name::18} to "오징어게임"
+		set {style.lore::18} to "오징어 200마리 처치"
+		set {style.name::19} to "세스코에서 파견된"
+		set {style.lore::19} to "좀벌레 50마리 처치"
+		set {style.name::20} to "끈적끈적한"
+		set {style.lore::20} to "슬라임 100마리 처치"
+		set {style.name::21} to "마녀사냥"
+		set {style.lore::21} to "마녀 1회 처치"
+		set {style.name::22} to "주먹이 우는"
+		set {style.lore::22} to "유저 pvp에서 10회 승리"
+		set {style.name::23} to "영남대 피주먹"
+		set {style.lore::23} to "유저 pvp에서 30회 승리"
+		set {style.name::24} to "눈티밤티"
+		set {style.lore::24} to "유저 pvp에서 10회 패배"
+		set {style.name::25} to "기름진"
+		set {style.lore::25} to "구운 돼지고기 100회 먹기"
+		set {style.name::26} to "입이 고급진"
+		set {style.lore::26} to "구운 소고기(스테이크) 100회 먹기"
+		set {style.name::27} to "양꼬치엔 칭따오"
+		set {style.lore::27} to "구운 양고기 100회 먹기"
+		set {style.name::28} to "스윗한"
+		set {style.lore::28} to "달콤한 열매 100회 먹기"
+		set {style.name::29} to "날것 그대로의"
+		set {style.lore::29} to "날고기 100회 먹기"
+		set {style.name::30} to "채식주의자"
+		set {style.lore::30} to "당근 100회 먹기"
+		set {style.name::31} to "세계관 최강자"
+		set {style.lore::31} to "황금사과 30회 먹기"
+		set {style.name::32} to "강철위장"
+		set {style.lore::32} to "독이 있는 감자 30회 먹기"
+		set {style.name::33} to "약장수"
+		set {style.lore::33} to "포션 30회 먹기"
+		set {style.name::34} to "목에 가시가 걸린"
+		set {style.lore::34} to "구운 연어 100회 먹기"
+		set {style.name::35} to "하얀 속살"
+		set {style.lore::35} to "구운 대구 100회 먹기"
+		set {style.name::36} to "열받는"
+		set {style.lore::36} to "열대어 100회 먹기"
+		set {style.name::37} to "빵빵한"
+		set {style.lore::37} to "빵 100회 먹기"
+		set {style.name::38} to "봄감자가 맛있는"
+		set {style.lore::38} to "구운 감자 100회 먹기"
+		set {style.name::39} to "기미상궁"
+		set {style.lore::39} to "썩은 고기 50회 먹기"
+		set {style.name::40} to "주마등을 스치는"
+		set {style.lore::40} to "복어먹고 독에 중독되기"
+		set {style.name::41} to "닭은 늘 옳다"
+		set {style.lore::41} to "구운 닭고기 100회 먹기"
+		set {style.name::42} to "미식가"
+		set {style.lore::42} to "호박 파이 50회 먹기"
+		set {style.name::43} to "유혹하는"
+		set {style.lore::43} to "수박 조각 50회 먹기"
+		set {style.name::44} to "쿠키몬스터"
+		set {style.lore::44} to "쿠키 10회 먹기"
+		set {style.name::45} to "쿠킹 마스터"
+		set {style.lore::45} to "케이크 제작 20회"
+		set {style.name::46} to "가위손"
+		set {style.lore::46} to "가위 1회 제작"
+		set {style.name::47} to "콜럼버스"
+		set {style.lore::47} to "나침반 1회 제작"
+		set {style.name::48} to "최초의 불"
+		set {style.lore::48} to "횃불 64회 제작"
+		set {style.name::49} to "최고의 불"
+		set {style.lore::49} to "랜턴 64회 제작"
+		set {style.name::50} to "캠핑을 위한"
+		set {style.lore::50} to "모닥불 3회 제작"
+		set {style.name::51} to "시위하는"
+		set {style.lore::51} to "초 20회 제작"
+		set {style.name::52} to "최초의 도구"
+		set {style.lore::52} to "부싯돌과 부시 1회 제작"
+		set {style.name::53} to "소드 마스터"
+		set {style.lore::53} to "네더라이트 검 1회 제작"
+		set {style.name::54} to "뇌쇄적인"
+		set {style.lore::54} to "획득 조건 비공개"
+		set {style.name::55} to "에로스"
+		set {style.lore::55} to "획득 조건 비공개"
+		set {style.name::56} to "책벌레"
+		set {style.lore::56} to "책장 10회 제작"
+		set {style.name::57} to "독서광"
+		set {style.lore::57} to "독서대 10회 제작"
+		set {style.name::58} to "모태솔로"
+		set {style.lore::58} to "획득 조건 비공개"
+		set {style.name::59} to "배달의 민족"
+		set {style.lore::59} to "광산수레 10회 제작"
+		set {style.name::60} to "판도라의 상자"
+		set {style.lore::60} to "상자 100회 제작"
+		set {style.name::61} to "몰?루"
+		set {style.lore::61} to "모루 1회 제작"
+		set {style.name::62} to "숫기 없는"
+		set {style.lore::62} to "숫돌 1회 제작"
+		set {style.name::63} to "베드신"
+		set {style.lore::63} to "획득 조건 비공개"
+		set {style.name::64} to "흥부"
+		set {style.lore::64} to "주크박스 1회 제작"
+		set {style.name::65} to "보트피플"
+		set {style.lore::65} to "보트 5회 제작"
+		set {style.name::66} to "철컹철컹"
+		set {style.lore::66} to "철창 64회 제작"
+		set {style.name::67} to "속보이는"
+		set {style.lore::67} to "유리 블록 64회 제작"
+		set {style.name::68} to "정도를 모르는"
+		set {style.lore::68} to "도구 파괴 300회"
+		set {style.name::69} to "마이너스의 손"
+		set {style.lore::69} to "도구 파괴 50회"
+		set {style.name::70} to "쓸데없는"
+		set {style.lore::70} to "금곡괭이 파괴"
+		set {style.name::71} to "머리 터진"
+		set {style.lore::71} to "투구 파괴 3회"
+		set {style.name::72} to "너덜너덜한"
+		set {style.lore::72} to "갑옷 파괴 3회"
+		set {style.name::73} to "바지가 터진"
+		set {style.lore::73} to "레깅스 파괴 3회"
+		set {style.name::74} to "맨발의"
+		set {style.lore::74} to "부츠 파괴 3회"
+		set {style.name::75} to "전투광"
+		set {style.lore::75} to "검 파괴 10회"
+		set {style.name::76} to "살육의 전쟁광"
+		set {style.lore::76} to "검 파괴 100회"
+		set {style.name::77} to "고양이 확대범"
+		set {style.lore::77} to "고양이 5마리 길들이기"
+		set {style.name::78} to "파파고 애용자"
+		set {style.lore::78} to "앵무새 5마리 길들일 시"
+		set {style.name::79} to "말 달리자"
+		set {style.lore::79} to "말 길들일 시"
+		set {style.name::80} to "침흘리는"
+		set {style.lore::80} to "라마에게 10번 침맞기"
+		set {style.name::81} to "날으는 돼지"
+		set {style.lore::81} to "돼지에게 안장 입히고 플레이어가 그 위에 타고 이동"
+		set {style.name::82} to "갓 짠"
+		set {style.lore::82} to "소에게 양동이로 우클릭하여 우유 얻을 시"
+		set {style.name::83} to "언덕을 넘은"
+		set {style.lore::83} to "점프 300회"
+		set {style.name::84} to "농구선수"
+		set {style.lore::84} to "점프 1000회"
+		set {style.name::85} to "점프킹"
+		set {style.lore::85} to "점프 2000회"
+		set {style.name::86} to "철이 없는"
+		set {style.lore::86} to "철 500개 채굴"
+		set {style.name::87} to "눈좀 던져본"
+		set {style.lore::87} to "눈덩이 100회 던지기"
+		set {style.name::88} to "아슬아슬한"
+		set {style.lore::88} to "체력 0.5칸이 되기"
+		set {style.name::89} to "봄바람 휘날리는"
+		set {style.lore::89} to "꽃 100회 심기"
+		set {style.name::90} to "별이 빛나는"
+		set {style.lore::90} to "획득 조건 비공개"
+		set {style.name::91} to "포세이돈"
+		set {style.lore::91} to "삼지창 1회 획득"
+		set {style.name::92} to "디스패치"
+		set {style.lore::92} to "망원경 1회 제작"
+		set {style.name::93} to "눈사람 만드는"
+		set {style.lore::93} to "눈 블록 64회 제작"
+		set {style.name::94} to "지옥을 다녀온"
+		set {style.lore::94} to "지옥 1회 갔다오기"
+		set {style.name::95} to "돌을 아십니까"
+		set {style.lore::95} to "돌 채굴 1000회"
+		set {style.name::96} to "삼엽충이 된"
+		set {style.lore::96} to "고대 잔해 200개 채굴"
+		set {style.name::97} to "이제 좀 살만한"
+		set {style.lore::97} to "다이아 100개 채굴"
+		set {style.name::98} to "금메달리스트"
+		set {style.lore::98} to "금 100개 채굴"
+		set {style.name::99} to "속이 시꺼먼"
+		set {style.lore::99} to "석탄 100개 채굴"
+		set {style.name::100} to "환경파괴범"
+		set {style.lore::100} to "원목 100개 벌목"
+		set {style.name::101} to "로맨티스트"
+		set {style.lore::101} to "꽃 캐기 100회"
+		set {style.name::102} to "에너자이저"
+		set {style.lore::102} to "레드스톤 100개 채굴"
+		set {style.name::103} to "뒤가 구린"
+		set {style.lore::103} to "구리원석 100개 채굴"
+		set {style.name::104} to "주민을 등쳐먹은"
+		set {style.lore::104} to "에메랄드 100개 채굴"
+		set {style.name::105} to "피글린의 원수"
+		set {style.lore::105} to "네더 금광석 100개 채굴"
+		set {style.name::106} to "철좀 든"
+		set {style.lore::106} to "철 100개 채굴"
+		set {style.name::107} to "푸르른"
+		set {style.lore::107} to "청금석 100개 채굴"
+		set {style.name::108} to "서경이"
+		set {style.lore::108} to "네더 석영 광석 100개 채굴"
+
+		#> 특수
+		set {style.name::5001} to "버그리포터"
+		set {style.lore::5001} to "버그를 찾아 제보"
+		set {style.name::5002} to "오싹한"
+		set {style.lore::5002} to "&62024 할로윈 칭호"
+		set {style.name::5003} to "탐욕적인"
+		set {style.lore::5003} to "&62024 할로윈 칭호"
+		set {style.name::5004} to "근원의"
+		set {style.lore::5004} to "&62024 할로윈 칭호"
+		set {style.name::5005} to "=^._.^="
+		set {style.lore::5005} to "&62024 할로윈 칭호"
+		set {style.name::5006} to "북치고 장구치고"
+		set {style.lore::5006} to "&62024 할로윈 칭호"
+		set {style.name::5007} to "난가..?"
+		set {style.lore::5007} to "&62024 할로윈 칭호"
+
+
+function checkAllStyleGetting(p: player) :: boolean:
+	loop {@MAX_STYLE} times:
+		if {styleDate.%uuid of {_p}%::%loop-num%} is not set:
+			return false
+	return true
+
+command /testchingoget <player> <integer>:
+	permission: op
+	trigger:
+		message "%{styleDate.%uuid of arg 1%::%arg 2%}%" to player
+
+on load:
+	if {styleNameAllClearIndex} is not set:
+		set {styleNameAllClearIndex} to 1
+
+function setAllStyleGetting(p: player):
+	set {styleNameAllClear::%{styleNameAllClearIndex}%} to {nick::%uuid of {_p}%}
+	add 1 to {styleNameAllClearIndex}
+	broadcast "&7===================================%nl% %nl%&b&l[ STYLE ] &r&e%{nick::%uuid of {_p}%}%(이)가 모든 칭호를 획독하였습니다!%nl% %nl%&7==================================="
+	log "%now% :: %{nick::%uuid of {_p}%}% 칭호를 %{styleNameAllClearIndex}%번째로 전부 획득" to "styleName.log"
+
+function getch(p: player, num: integer):
+	if {styleDate.%uuid of {_p}%::%{_num}%} is not set:
+		set {styleDate.%uuid of {_p}%::%{_num}%} to "%now%"
+		onOptionalPlaySoundEvent("item.goat_horn.sound.1", {_p}, 1, 2)
+		message " " to {_p}
+		message "&a&l[ STYLE ] &r&a칭호 '%{style.name::%{_num}%}%'을(를) 획득했습니다!" to {_p}
+		message "&7/ch, /칭호 명령어를 입력하거나 메뉴->칭호를 클릭하여 장착하세요" to {_p}
+		wait 3 seconds
+		if checkAllStyleGetting({_p}) is true:
+			setAllStyleGetting({_p})
+
+
+
+on consume of cooked porkchop:
+	{@DO_STYLE} is true
+	add 1 to {styleCount::%uuid of player%::25}
+	if {styleCount::%uuid of player%::25} >= 100:
+		getch(player, 25)
+
+on consume of steak:
+	{@DO_STYLE} is true
+	add 1 to {styleCount::%uuid of player%::26}
+	if {styleCount::%uuid of player%::26} >= 100:
+		getch(player, 26)
+
+on consume of cooked mutton:
+	{@DO_STYLE} is true
+	add 1 to {styleCount::%uuid of player%::27}
+	if {styleCount::%uuid of player%::27} >= 100:
+		getch(player, 27)
+
+on consume of sweet berries:
+	{@DO_STYLE} is true
+	add 1 to {styleCount::%uuid of player%::28}
+	if {styleCount::%uuid of player%::28} >= 100:
+		getch(player, 28)	
+
+on consume of raw porkchop:
+	{@DO_STYLE} is true
+	add 1 to {styleCount::%uuid of player%::29}
+	if {styleCount::%uuid of player%::29} >= 100:
+		getch(player, 29)
+
+on consume of raw beef:
+	{@DO_STYLE} is true
+	add 1 to {styleCount::%uuid of player%::29}
+	if {styleCount::%uuid of player%::29} >= 100:
+		getch(player, 29)
+
+on consume of raw chicken:
+	{@DO_STYLE} is true
+	add 1 to {styleCount::%uuid of player%::29}
+	if {styleCount::%uuid of player%::29} >= 100:
+		getch(player, 29)
+
+on consume of raw rabbit:
+	{@DO_STYLE} is true
+	add 1 to {styleCount::%uuid of player%::29}
+	if {styleCount::%uuid of player%::29} >= 100:
+		getch(player, 29)
+
+on consume of raw mutton:
+	{@DO_STYLE} is true
+	add 1 to {styleCount::%uuid of player%::29}
+	if {styleCount::%uuid of player%::29} >= 100:
+		getch(player, 29)
+
+on consume of carrot:
+	{@DO_STYLE} is true
+	add 1 to {styleCount::%uuid of player%::30}
+	if {styleCount::%uuid of player%::30} >= 100:
+		getch(player, 30)	
+
+on consume of golden apple:
+	{@DO_STYLE} is true
+	add 1 to {styleCount::%uuid of player%::31}
+	if {styleCount::%uuid of player%::31} >= 30:
+		getch(player, 31)
+
+on consume of poisonous potato:
+	{@DO_STYLE} is true
+	add 1 to {styleCount::%uuid of player%::32}
+	if {styleCount::%uuid of player%::32} >= 30:
+		getch(player, 32)
+
+on consume of any potion:
+	{@DO_STYLE} is true
+	add 1 to {styleCount::%uuid of player%::33}
+	if {styleCount::%uuid of player%::33} >= 30:
+		getch(player, 33)
+
+on consume of cooked salmon:
+	{@DO_STYLE} is true
+	add 1 to {styleCount::%uuid of player%::34}
+	if {styleCount::%uuid of player%::34} >= 100:
+		getch(player, 34)
+
+on consume of cooked cod:
+	{@DO_STYLE} is true
+	add 1 to {styleCount::%uuid of player%::35}
+	if {styleCount::%uuid of player%::35} >= 100:
+		getch(player, 35)
+
+
+on consume of tropical fish:
+	{@DO_STYLE} is true
+	add 1 to {styleCount::%uuid of player%::36}
+	if {styleCount::%uuid of player%::36} >= 100:
+		getch(player, 36)
+
+on consume of bread:
+	{@DO_STYLE} is true
+	add 1 to {styleCount::%uuid of player%::37}
+	if {styleCount::%uuid of player%::37} >= 100:
+		getch(player, 37)
+
+on consume of baked potato:
+	{@DO_STYLE} is true
+	add 1 to {styleCount::%uuid of player%::38}
+	if {styleCount::%uuid of player%::38} >= 100:
+		getch(player, 38)
+
+on consume of rotten flesh:
+	{@DO_STYLE} is true
+	add 1 to {styleCount::%uuid of player%::39}
+	if {styleCount::%uuid of player%::39} >= 50:
+		getch(player, 39)
+
+on consume of pufferfish:
+	{@DO_STYLE} is true
+	getch(player, 40)
+
+
+on consume of cooked chicken:
+	{@DO_STYLE} is true
+	add 1 to {styleCount::%uuid of player%::41}
+	if {styleCount::%uuid of player%::41} >= 100:
+		getch(player, 41)
+
+on consume of pumpkin pie:
+	{@DO_STYLE} is true
+	add 1 to {styleCount::%uuid of player%::42}
+	if {styleCount::%uuid of player%::42} >= 50:
+		getch(player, 42)
+
+on consume of melon slice:
+	{@DO_STYLE} is true
+	add 1 to {styleCount::%uuid of player%::43}
+	if {styleCount::%uuid of player%::43} >= 50:
+		getch(player, 43)
+
+on consume of cookie:
+	{@DO_STYLE} is true
+	add 1 to {styleCount::%uuid of player%::44}
+	if {styleCount::%uuid of player%::44} >= 10:
+		getch(player, 44)
+
+on craft of cake:
+	{@DO_STYLE} is true
+	add 1 to {styleCount::%uuid of player%::45}
+	if {styleCount::%uuid of player%::45} >= 20:
+		getch(player, 45)
+
+on craft of shears:
+	{@DO_STYLE} is true
+	getch(player, 46)
+
+on craft of compass:
+	{@DO_STYLE} is true
+	getch(player, 47)
+
+on craft of torch:
+	{@DO_STYLE} is true
+	add 1 to {styleCount::%uuid of player%::48}
+	if {styleCount::%uuid of player%::48} >= 64:
+		getch(player, 48)
+
+on craft of lantern:
+	{@DO_STYLE} is true
+	add 1 to {styleCount::%uuid of player%::49}
+	if {styleCount::%uuid of player%::49} >= 64:
+		getch(player, 49)
+
+on craft of campfire:
+	{@DO_STYLE} is true
+	add 1 to {styleCount::%uuid of player%::50}
+	if {styleCount::%uuid of player%::50} >= 3:
+		getch(player, 50)
+
+on craft of candle:
+	{@DO_STYLE} is true
+	add 1 to {styleCount::%uuid of player%::51}
+	if {styleCount::%uuid of player%::51} >= 20:
+		getch(player, 51)
+
+on craft of flint and steel:
+	{@DO_STYLE} is true
+	getch(player, 52)
+
+
+
+
+on inventory click:
+	{@DO_STYLE} is true
+	if type of clicked inventory is smithing inventory:
+		index of clicked slot is 3
+		clicked slot is not air
+		if "%clicked item%" contains "netherite sword":
+			getch(player, 53)
+	else if event-inventory is furnace inventory:
+		index of clicked slot is 2
+		if "%clicked item%" contains "glass":
+			set {_ia} to item amount of clicked item
+			add {_ia} to {styleCount::%uuid of player%::67}
+			if {styleCount::%uuid of player%::67} >= 64:
+				getch(player, 67)
+	else if event-inventory is player inventory:
+		index of clicked slot is 0
+		if "%clicked item%" contains "glass":
+			set {_ia} to item amount of clicked item
+			add {_ia} to {styleCount::%uuid of player%::67}
+			if {styleCount::%uuid of player%::67} >= 64:
+				getch(player, 67)
+
+
+on craft of crossbow:
+	{@DO_STYLE} is true
+	getch(player, 54)
+
+on craft of arrow:
+	{@DO_STYLE} is true
+	add 1 to {styleCount::%uuid of player%::55}
+	if {styleCount::%uuid of player%::55} >= 100:
+		getch(player, 55)
+
+on craft of bookshelf:
+	{@DO_STYLE} is true
+	add 1 to {styleCount::%uuid of player%::56}
+	if {styleCount::%uuid of player%::56} >= 10:
+		getch(player, 56)
+
+on craft of lectern:
+	{@DO_STYLE} is true
+	add 1 to {styleCount::%uuid of player%::57}
+	if {styleCount::%uuid of player%::57} >= 10:
+		getch(player, 57)
+
+on craft of enchanting table:
+	{@DO_STYLE} is true
+	getch(player, 58)
+
+on craft of minecart:
+	{@DO_STYLE} is true
+	add 1 to {styleCount::%uuid of player%::59}
+	if {styleCount::%uuid of player%::59} >= 10:
+		getch(player, 59)
+
+on craft of chest:
+	{@DO_STYLE} is true
+	add 1 to {styleCount::%uuid of player%::60}
+	if {styleCount::%uuid of player%::60} >= 100:
+		getch(player, 60)
+
+on craft of anvil:
+	{@DO_STYLE} is true
+	getch(player, 61)
+
+on craft of grindstone:
+	{@DO_STYLE} is true
+	getch(player, 62)
+
+on craft of any bed:
+	{@DO_STYLE} is true
+	add 1 to {styleCount::%uuid of player%::63}
+	if {styleCount::%uuid of player%::63} >= 5:
+		getch(player, 63)
+
+on craft of jukebox:
+	{@DO_STYLE} is true
+	getch(player, 64)
+
+on craft of boat:
+	{@DO_STYLE} is true
+	add 1 to {styleCount::%uuid of player%::65}
+	if {styleCount::%uuid of player%::65} >= 5:
+		getch(player, 65)
+
+on craft of iron bars:
+	{@DO_STYLE} is true
+	add 1 to {styleCount::%uuid of player%::66}
+	if {styleCount::%uuid of player%::66} >= 64:
+		getch(player, 66)
+
+
+
+on tool break:
+	{@DO_STYLE} is true
+	add 1 to {styleCount::%uuid of player%::69}
+	if {styleCount::%uuid of player%::69} >= 300:
+		getch(player, 68)
+	if {styleCount::%uuid of player%::69} >= 50:
+		getch(player, 69)
+	if event-item is golden pickaxe:
+		getch(player, 70)
+	if event-item is helmet:
+		add 1 to {styleCount::%uuid of player%::71}
+		if {styleCount::%uuid of player%::71} >= 3:
+			getch(player, 71)
+	if event-item is chestplate:
+		add 1 to {styleCount::%uuid of player%::72}
+		if {styleCount::%uuid of player%::72} >= 3:
+			getch(player, 72)
+	if event-item is leggings:
+		add 1 to {styleCount::%uuid of player%::73}
+		if {styleCount::%uuid of player%::73} >= 3:
+			getch(player, 73)
+	if event-item is boots:
+		add 1 to {styleCount::%uuid of player%::74}
+		if {styleCount::%uuid of player%::74} >= 3:
+			getch(player, 74)
+	if event-item is sword:
+		add 1 to {styleCount::%uuid of player%::75}
+		if {styleCount::%uuid of player%::75} >= 10:
+			getch(player, 75)
+		if {styleCount::%uuid of player%::75} >= 100:
+			getch(player, 76)
+
+
+on tame:
+	wait 1 seconds
+	{@DO_STYLE} is true
+	set {_p} to owner of event-entity
+	if "%event-entity%" contains "cat":
+		add 1 to {styleCount::%uuid of {_p}%::77}
+		if {styleCount::%uuid of {_p}%::77} >= 5:
+			getch({_p}, 77)
+	if "%event-entity%" contains "parrot":
+		add 1 to {styleCount::%uuid of {_p}%::78}
+		if {styleCount::%uuid of {_p}%::78} >= 5:
+			getch({_p}, 78)
+	if "%event-entity%" contains "horse":
+		getch({_p}, 79)
+
+on damage:
+	{@DO_STYLE} is true
+	if victim is a player:
+		if attacker is a llama:
+			add 1 to {styleCount::%uuid of victim%::80}
+			if {styleCount::%uuid of victim%::80} >= 10:
+				getch(victim, 80)
+
+on right click on entity:
+	{@DO_STYLE} is true
+	if event-entity is pig:
+		if player's tool is saddle:
+			getch(player, 81)
+	if event-entity is cow:
+		if player's tool is bucket:
+			getch(player, 82)
+
+on jump:
+	{@DO_STYLE} is true
+	add 1 to {styleCount::%uuid of player%::83}
+	if {styleCount::%uuid of player%::83} >= 300:
+		getch(player, 83)
+	if {styleCount::%uuid of player%::83} >= 1000:
+		getch(player, 84)
+	if {styleCount::%uuid of player%::83} >= 2000:
+		getch(player, 85)
+
+
+
+
+on break of stone:
+	{@DO_STYLE} is true
+	add 1 to {styleCount::%uuid of player%::95}
+	if {styleCount::%uuid of player%::95} >= 1000:
+		getch(player, 95)
+
+on break of ancient debris:
+	{@DO_STYLE} is true
+	add 1 to {styleCount::%uuid of player%::96}
+	if {styleCount::%uuid of player%::96} >= 200:
+		getch(player, 96)
+
+on break of diamond ore:
+	{@DO_STYLE} is true
+	add 1 to {styleCount::%uuid of player%::97}
+	if {styleCount::%uuid of player%::97} >= 100:
+		getch(player, 97)
+
+on break of deepslate diamond ore:
+	{@DO_STYLE} is true
+	add 1 to {styleCount::%uuid of player%::97}
+	if {styleCount::%uuid of player%::97} >= 100:
+		getch(player, 97)
+
+on break of gold ore:
+	{@DO_STYLE} is true
+	add 1 to {styleCount::%uuid of player%::98}
+	if {styleCount::%uuid of player%::98} >= 100:
+		getch(player, 98)
+
+on break of deepslate gold ore:
+	{@DO_STYLE} is true
+	add 1 to {styleCount::%uuid of player%::98}
+	if {styleCount::%uuid of player%::98} >= 100:
+		getch(player, 98)
+
+on break of coal ore:
+	{@DO_STYLE} is true
+	add 1 to {styleCount::%uuid of player%::99}
+	if {styleCount::%uuid of player%::99} >= 100:
+		getch(player, 99)
+
+on break of deepslate coal ore:
+	{@DO_STYLE} is true
+	add 1 to {styleCount::%uuid of player%::99}
+	if {styleCount::%uuid of player%::99} >= 100:
+		getch(player, 99)
+
+on break of any log:
+	{@DO_STYLE} is true
+	add 1 to {styleCount::%uuid of player%::100}
+	if {styleCount::%uuid of player%::100} >= 100:
+		getch(player, 100)
+
+on break of flower:
+	{@DO_STYLE} is true
+	add 1 to {styleCount::%uuid of player%::101}
+	if {styleCount::%uuid of player%::101} >= 100:
+		getch(player, 101)
+
+on break of redstone ore:
+	{@DO_STYLE} is true
+	add 1 to {styleCount::%uuid of player%::102}
+	if {styleCount::%uuid of player%::102} >= 100:
+		getch(player, 102)
+
+on break of deepslate redstone ore:
+	{@DO_STYLE} is true
+	add 1 to {styleCount::%uuid of player%::102}
+	if {styleCount::%uuid of player%::102} >= 100:
+		getch(player, 102)
+
+on break of copper ore:
+	{@DO_STYLE} is true
+	add 1 to {styleCount::%uuid of player%::103}
+	if {styleCount::%uuid of player%::103} >= 100:
+		getch(player, 103)
+
+on break of deepslate copper ore:
+	{@DO_STYLE} is true
+	add 1 to {styleCount::%uuid of player%::103}
+	if {styleCount::%uuid of player%::103} >= 100:
+		getch(player, 103)
+
+on break of emerald ore:
+	{@DO_STYLE} is true
+	add 1 to {styleCount::%uuid of player%::104}
+	if {styleCount::%uuid of player%::104} >= 100:
+		getch(player, 104)
+
+on break of deepslate emerald ore:
+	{@DO_STYLE} is true
+	add 1 to {styleCount::%uuid of player%::104}
+	if {styleCount::%uuid of player%::104} >= 100:
+		getch(player, 104)
+
+on break of nether gold ore:
+	{@DO_STYLE} is true
+	add 1 to {styleCount::%uuid of player%::105}
+	if {styleCount::%uuid of player%::105} >= 100:
+		getch(player, 105)
+
+on break of iron ore:
+	{@DO_STYLE} is true
+	add 1 to {styleCount::%uuid of player%::86}
+	if {styleCount::%uuid of player%::86} >= 100:
+		getch(player, 106)
+	if {styleCount::%uuid of player%::86} >= 500:
+		getch(player, 86)
+
+on break of deepslate iron ore:
+	{@DO_STYLE} is true
+	add 1 to {styleCount::%uuid of player%::86}
+	if {styleCount::%uuid of player%::86} >= 100:
+		getch(player, 106)
+	if {styleCount::%uuid of player%::86} >= 500:
+		getch(player, 86)
+
+on shoot:
+	{@DO_STYLE} is true
+	if projectile is a snowball:
+		add 1 to {styleCount::%uuid of shooter%::87}
+		if {styleCount::%uuid of shooter%::87} >= 100:
+			getch(shooter, 87)
+
+on damage:
+	{@DO_STYLE} is true
+	if health of victim > 0:
+		if health of victim < 1:
+			getch(victim, 88)
+
+on place of any flower:
+	{@DO_STYLE} is true
+	add 1 to {styleCount::%uuid of player%::89}
+	if {styleCount::%uuid of player%::89} >= 100:
+		getch(player, 89)
+
+
+
+
+on death:
+	{@DO_STYLE} is true
+	if victim is a player:
+		add 1 to {styleCount::%uuid of victim%::90}
+		if {styleCount::%uuid of victim%::90} >= 50:
+			getch(victim, 90)
+
+on pick up of trident:
+	{@DO_STYLE} is true
+	getch(player, 91)
+
+
+on craft of spyglass:
+	{@DO_STYLE} is true
+	getch(player, 92)
+
+on craft of snow block:
+	{@DO_STYLE} is true
+	add 1 to {styleCount::%uuid of player%::93}
+	if {styleCount::%uuid of player%::93} >= 64:
+		getch(player, 93)
+
+
+on world change:
+	{@DO_STYLE} is true
+	if player's world is "world_nether":
+		getch(player, 94)
+
+
+on break of deepslate lapis lazuli ore:
+	{@DO_STYLE} is true
+	add 1 to {styleCount::%uuid of player%::107}
+	if {styleCount::%uuid of player%::107} >= 100:
+		getch(player, 107)
+
+on break of lapis lazuli ore:
+	{@DO_STYLE} is true
+	add 1 to {styleCount::%uuid of player%::107}
+	if {styleCount::%uuid of player%::107} >= 100:
+		getch(player, 107)
+
+on break of nether quartz ore:
+	{@DO_STYLE} is true
+	add 1 to {styleCount::%uuid of player%::108}
+	if {styleCount::%uuid of player%::108} >= 100:
+		getch(player, 108)
+
+on death:
+	{@DO_STYLE} is true
+	if victim is a player:
+		if attacker is a player:
+			add 1 to {styleCount::%uuid of attacker%::22}
+			add 1 to {styleCount::%uuid of victim%::24}
+			if {styleCount::%uuid of attacker%::22} >= 10:
+				getch(attacker, 22)
+			if {styleCount::%uuid of attacker%::22} >= 30:
+				getch(attacker, 23)
+			if {styleCount::%uuid of victim%::24} >= 10:
+				getch(victim, 24)	
+	if victim is a monster:
+		if attacker is a player:
+			add 1 to {styleCount::%uuid of attacker%::1}
+			if {styleCount::%uuid of attacker%::1} >= 3000:
+				getch(attacker, 1)
+	if attacker is a player:
+		if "%victim% " contains "blaze":
+			add 1 to {styleCount::%uuid of attacker%::3}
+			if {styleCount::%uuid of attacker%::3} >= 200:
+				getch(attacker, 3)
+		if "%victim% " contains "bee":
+			add 1 to {styleCount::%uuid of attacker%::5}
+			if {styleCount::%uuid of attacker%::5} >= 100:
+				getch(attacker, 5)
+		if "%victim% " contains "zombie":
+			add 1 to {styleCount::%uuid of attacker%::6}
+			if {styleCount::%uuid of attacker%::6} >= 100:
+				getch(attacker, 6)
+		if "%victim% " contains "spider":
+			add 1 to {styleCount::%uuid of attacker%::7}
+			if {styleCount::%uuid of attacker%::7} >= 100:
+				getch(attacker, 7)
+		if "%victim% " contains "enderman":
+			add 1 to {styleCount::%uuid of attacker%::8}
+			if {styleCount::%uuid of attacker%::8} >= 50:
+				getch(attacker, 8)
+		if "%victim% " contains "skeleton":
+			add 1 to {styleCount::%uuid of attacker%::9}
+			if {styleCount::%uuid of attacker%::9} >= 150:
+				getch(attacker, 9)
+		if "%victim% " contains "wolf":
+			add 1 to {styleCount::%uuid of attacker%::10}
+			if {styleCount::%uuid of attacker%::10} >= 100:
+				getch(attacker, 10)
+		if "%victim% " contains "polar bear":
+			add 1 to {styleCount::%uuid of attacker%::11}
+			if {styleCount::%uuid of attacker%::11} >= 100:
+				getch(attacker, 11)
+		if "%victim% " contains "dolphin":
+			add 1 to {styleCount::%uuid of attacker%::12}
+			if {styleCount::%uuid of attacker%::12} >= 50:
+				getch(attacker, 12)
+		if "%victim% " contains "drowned":
+			add 1 to {styleCount::%uuid of attacker%::13}
+			if {styleCount::%uuid of attacker%::13} >= 50:
+				getch(attacker, 13)
+		if "%victim% " contains "pig":
+			add 1 to {styleCount::%uuid of attacker%::14}
+			if {styleCount::%uuid of attacker%::14} >= 200:
+				getch(attacker, 14)
+		if "%victim% " contains "chicken":
+			add 1 to {styleCount::%uuid of attacker%::15}
+			if {styleCount::%uuid of attacker%::15} >= 200:
+				getch(attacker, 15)
+		if "%victim% " contains "turtle":
+			add 1 to {styleCount::%uuid of attacker%::16}
+			if {styleCount::%uuid of attacker%::16} >= 30:
+				getch(attacker, 16)
+		if "%victim% " contains "fox":
+			add 1 to {styleCount::%uuid of attacker%::17}
+			if {styleCount::%uuid of attacker%::17} >= 50:
+				getch(attacker, 17)
+		if "%victim% " contains "squid":
+			add 1 to {styleCount::%uuid of attacker%::18}
+			if {styleCount::%uuid of attacker%::18} >= 200:
+				getch(attacker, 18)
+		if "%victim% " contains "silverfish":
+			add 1 to {styleCount::%uuid of attacker%::19}
+			if {styleCount::%uuid of attacker%::19} >= 50:
+				getch(attacker, 19)
+		if "%victim% " contains "slime":
+			add 1 to {styleCount::%uuid of attacker%::20}
+			if {styleCount::%uuid of attacker%::20} >= 100:
+				getch(attacker, 20)
+		if "%victim% " contains "witch":
+			add 1 to {styleCount::%uuid of attacker%::21}
+			if {styleCount::%uuid of attacker%::21} >= 1:
+				getch(attacker, 21)
+
+			
+on damage:
+	{@DO_STYLE} is true
+	if victim is a player:
+		if attacker is a monster:
+			add 1 to {styleCount::%uuid of victim%::2}
+			if {styleCount::%uuid of victim%::2} >= 100:
+				getch(victim, 2)
+		if damage cause is poison:
+			add 1 to {styleCount::%uuid of victim%::4}
+			if {styleCount::%uuid of victim%::4} >= 50:
+				getch(victim, 4)
+
+

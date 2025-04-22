@@ -1,0 +1,24 @@
+on load:
+    if {tipsIndex} is set:
+        delete {tipsIndex}
+
+every 10 minutes:
+    if {tipsIndex} is not set:
+        set {tipsIndex} to true
+        broadcast "&b[TIP] 홈페이지에서 다양한 정보, 규칙, 디스코드 주소 등을 확인해보세요! &f&n<link:http://mc.yu.ac.kr>서버 주소 확인하기<reset>"
+        wait 10 minutes
+        broadcast "&e[TIP] 유저 간 소통, 서버 소식은 디스코드에서 활발히 이루어지고 있어요! &f&n<link:https://discord.gg/S2aUqpKTwG>디스코드 확인하기<reset>"
+        wait 10 minutes
+        broadcast "&a[TIP] 채팅창에 ""/cl [숫자]""을 입력하여 서버에서 사용가능한 명령어를 확인해봐요!"
+        wait 10 minutes
+        broadcast "&e[TIP] YUMC 서버는 기본적으로 영어를 한글로 자동변환하고 있습니다. 영어를 치고 싶다면 다음과 같이 입력해주세요! &d[[&f하고 싶은 말&d]]"
+        wait 10 minutes
+        broadcast "&b[TIP] 칭호 시스템 도입! 여러 도전과제를 달성하여 멋진 칭호를 획득해봐요! &7(명령어 : /ch, /칭호)<reset>"
+        wait 10 minutes
+        broadcast "&d[TIP] YUMC 서버 오픈 채팅방이 개설되었습니다! 자유로이 서버원들과 소통해보아요  &f&n<link:https://open.kakao.com/o/gjRdHDlg>클릭하여 오픈채팅으로 가기<reset>%nl%&7초대 코드 : 2024yumc"
+        wait 10 minutes
+        broadcast "&d[TIP] &b토지 말소 신청 서비스가 진행되고 있습니다! 장기 미접속 시 토지 소유권이 사라질 수 있으니 디스코드 채널을 꼭 열람해주세요."
+        wait 3 ticks
+        delete {tipsIndex}
+
+

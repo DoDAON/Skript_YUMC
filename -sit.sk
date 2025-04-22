@@ -1,0 +1,530 @@
+on inventory click:
+	if name of clicked item contains "&8&1&f&r소파":
+		cancel event
+		set player's tool to clicked item named "소파"
+		close player's inventory
+		
+
+command /sofa:
+	permission: op
+	trigger:
+		if player's game mode is not creative:
+			message "&c■ 크리에이티브만 사용 가능한 명령어입니다." to player
+			stop
+		if player's game mode is creative:
+			open chest inventory with 6 rows named "&b소파" to player
+			set {_item} to saddle named "&8&1&f&r소파" with model data 301
+			set slot 0 of current inventory of player to {_item}
+			set {_item} to saddle named "&8&1&f&r소파" with model data 302
+			set slot 1 of current inventory of player to {_item}
+			set {_item} to saddle named "&8&1&f&r소파" with model data 303
+			set slot 2 of current inventory of player to {_item}
+			set {_item} to saddle named "&8&1&f&r소파" with model data 304
+			set slot 3 of current inventory of player to {_item}
+			set {_item} to saddle named "&8&1&f&r소파" with model data 305
+			set slot 4 of current inventory of player to {_item}
+			set {_item} to saddle named "&8&1&f&r소파" with model data 306
+			set slot 5 of current inventory of player to {_item}
+			set {_item} to saddle named "&8&1&f&r소파" with model data 307
+			set slot 6 of current inventory of player to {_item}
+			set {_item} to saddle named "&8&1&f&r소파" with model data 308
+			set slot 7 of current inventory of player to {_item}
+			set {_item} to saddle named "&8&1&f&r소파" with model data 309
+			set slot 8 of current inventory of player to {_item}
+			set {_item} to saddle named "&8&1&f&r소파" with model data 310
+			set slot 9 of current inventory of player to {_item}
+			set {_item} to saddle named "&8&1&f&r소파" with model data 311
+			set slot 10 of current inventory of player to {_item}
+			set {_item} to saddle named "&8&1&f&r소파" with model data 312
+			set slot 11 of current inventory of player to {_item}
+			set {_item} to saddle named "&8&1&f&r소파" with model data 313
+			set slot 12 of current inventory of player to {_item}
+			set {_item} to saddle named "&8&1&f&r소파" with model data 314
+			set slot 13 of current inventory of player to {_item}
+			set {_item} to saddle named "&8&1&f&r소파" with model data 315
+			set slot 14 of current inventory of player to {_item}
+			set {_item} to saddle named "&8&1&f&r소파" with model data 316
+			set slot 15 of current inventory of player to {_item}
+			set {_item} to saddle named "&8&1&f&r소파" with model data 317
+			set slot 16 of current inventory of player to {_item}
+			set {_item} to saddle named "&8&1&f&r소파" with model data 318
+			set slot 17 of current inventory of player to {_item}
+			set {_item} to saddle named "&8&1&f&r소파" with model data 319
+			set slot 18 of current inventory of player to {_item}
+			set {_item} to saddle named "&8&1&f&r소파" with model data 320
+			set slot 19 of current inventory of player to {_item}
+			set {_item} to saddle named "&8&1&f&r소파" with model data 321
+			set slot 20 of current inventory of player to {_item}
+			set {_item} to saddle named "&8&1&f&r소파" with model data 322
+			set slot 21 of current inventory of player to {_item}
+			set {_item} to saddle named "&8&1&f&r소파" with model data 323
+			set slot 22 of current inventory of player to {_item}
+			set {_item} to saddle named "&8&1&f&r소파" with model data 324
+			set slot 23 of current inventory of player to {_item}
+			set {_item} to saddle named "&8&1&f&r소파" with model data 325
+			set slot 24 of current inventory of player to {_item}
+			set {_item} to saddle named "&8&1&f&r소파" with model data 326
+			set slot 25 of current inventory of player to {_item}
+			set {_item} to saddle named "&8&1&f&r소파" with model data 327
+			set slot 26 of current inventory of player to {_item}
+			set {_item} to saddle named "&8&1&f&r소파" with model data 328
+			set slot 27 of current inventory of player to {_item}
+			set {_item} to saddle named "&8&1&f&r소파" with model data 329
+			set slot 28 of current inventory of player to {_item}
+			set {_item} to saddle named "&8&1&f&r소파" with model data 330
+			set slot 29 of current inventory of player to {_item}
+			set {_item} to saddle named "&8&1&f&r소파" with model data 331
+			set slot 30 of current inventory of player to {_item}
+			set {_item} to saddle named "&8&1&f&r소파" with model data 332
+			set slot 31 of current inventory of player to {_item}
+			set {_item} to saddle named "&8&1&f&r소파" with model data 333
+			set slot 32 of current inventory of player to {_item}
+			set {_item} to saddle named "&8&1&f&r소파" with model data 334
+			set slot 33 of current inventory of player to {_item}
+			set {_item} to saddle named "&8&1&f&r소파" with model data 335
+			set slot 34 of current inventory of player to {_item}
+			set {_item} to saddle named "&8&1&f&r소파" with model data 336
+			set slot 35 of current inventory of player to {_item}
+			set {_item} to saddle named "&8&1&f&r소파" with model data 337
+			set slot 36 of current inventory of player to {_item}
+			set {_item} to saddle named "&8&1&f&r소파" with model data 338
+			set slot 37 of current inventory of player to {_item}
+			set {_item} to saddle named "&8&1&f&r소파" with model data 339
+			set slot 38 of current inventory of player to {_item}
+			set {_item} to saddle named "&8&1&f&r소파" with model data 340
+			set slot 39 of current inventory of player to {_item}
+			set {_item} to saddle named "&8&1&f&r소파" with model data 341
+			set slot 40 of current inventory of player to {_item}
+			set {_item} to saddle named "&8&1&f&r소파" with model data 342
+			set slot 41 of current inventory of player to {_item}
+			set {_item} to saddle named "&8&1&f&r소파" with model data 343
+			set slot 42 of current inventory of player to {_item}
+			set {_item} to saddle named "&8&1&f&r소파" with model data 344
+			set slot 43 of current inventory of player to {_item}
+			set {_item} to saddle named "&8&1&f&r소파" with model data 345
+			set slot 44 of current inventory of player to {_item}
+			set {_item} to saddle named "&8&1&f&r소파" with model data 346
+			set slot 45 of current inventory of player to {_item}
+			set {_item} to saddle named "&8&1&f&r소파" with model data 347
+			set slot 46 of current inventory of player to {_item}
+			set {_item} to saddle named "&8&1&f&r소파" with model data 348
+			set slot 47 of current inventory of player to {_item}
+			set {_item} to saddle named "&8&1&f&r소파" with model data 349
+			set slot 48 of current inventory of player to {_item}
+			set {_item} to saddle named "&8&1&f&r소파" with model data 350
+			set slot 49 of current inventory of player to {_item}
+			set {_item} to saddle named "&8&1&f&r소파" with model data 351
+			set slot 50 of current inventory of player to {_item}
+			set {_item} to saddle named "&8&1&f&r소파" with model data 352
+			set slot 51 of current inventory of player to {_item}
+			set slot 52 of current inventory of player to {gui.space}
+			set slot 53 of current inventory of player to {gui.next} named "&b소파 다음>>>"
+
+on inventory click:
+	if "%name of clicked item% " contains "소파 다음>>>":
+		cancel event
+		close player's inventory
+		execute player command "/faso222"
+	if "%name of clicked item% " contains "<<<소파 이전":
+		cancel event
+		close player's inventory
+		execute player command "/sofa"
+
+command /jesa:
+	trigger:
+		execute player command "/bellyflop"
+
+command /faso222:
+	permission: op
+	trigger:
+		if player's game mode is not creative:
+			message "&c■ 크리에이티브만 사용 가능한 명령어입니다." to player
+			stop
+		if player's game mode is creative:
+			open chest inventory with 6 rows named "&b소파" to player
+			set {_i} to 0
+			loop 54 times:
+				set slot {_i} of current inventory of player to {gui.space}
+				add 1 to {_i}
+			set {_item} to saddle named "&8&1&f&r소파" with model data 353
+			set slot 0 of current inventory of player to {_item}
+			set {_item} to saddle named "&8&1&f&r소파" with model data 354
+			set slot 1 of current inventory of player to {_item}
+			set {_item} to saddle named "&8&1&f&r소파" with model data 355
+			set slot 2 of current inventory of player to {_item}
+			set {_item} to saddle named "&8&1&f&r소파" with model data 356
+			set slot 3 of current inventory of player to {_item}
+			set {_item} to saddle named "&8&1&f&r소파" with model data 357
+			set slot 4 of current inventory of player to {_item}
+			set {_item} to saddle named "&8&1&f&r소파" with model data 358
+			set slot 5 of current inventory of player to {_item}
+			set {_item} to saddle named "&8&1&f&r소파" with model data 359
+			set slot 6 of current inventory of player to {_item}
+			set {_item} to saddle named "&8&1&f&r소파" with model data 360
+			set slot 7 of current inventory of player to {_item}
+			set {_item} to saddle named "&8&1&f&r소파" with model data 361
+			set slot 8 of current inventory of player to {_item}
+			set {_item} to saddle named "&8&1&f&r소파" with model data 362
+			set slot 9 of current inventory of player to {_item}
+			set {_item} to saddle named "&8&1&f&r소파" with model data 363
+			set slot 10 of current inventory of player to {_item}
+			set {_item} to saddle named "&8&1&f&r소파" with model data 364
+			set slot 11 of current inventory of player to {_item}
+
+			set {_item} to slimeball named "&8&1&f&r자판기" with model data 2
+			set slot 12 of current inventory of player to {_item}
+			
+			set {_item} to slimeball named "&8&1&f&r개찰기" with model data 3
+			set slot 13 of current inventory of player to {_item}
+
+			set {_item} to slimeball named "&8&1&f&r냉장고" with model data 4
+			set slot 14 of current inventory of player to {_item}
+
+			set {_item} to saddle named "&8&1&f&r걸상" with model data 900
+			set slot 15 of current inventory of player to {_item}
+
+			set {_item} to saddle named "&8&1&f&r게이밍의자" with model data 901
+			set slot 16 of current inventory of player to {_item}
+			set {_item} to saddle named "&8&1&f&r게이밍의자" with model data 902
+			set slot 17 of current inventory of player to {_item}
+			set {_item} to saddle named "&8&1&f&r게이밍의자" with model data 903
+			set slot 18 of current inventory of player to {_item}
+			set {_item} to saddle named "&8&1&f&r게이밍의자" with model data 904
+			set slot 19 of current inventory of player to {_item}
+			set {_item} to saddle named "&8&1&f&r게이밍의자" with model data 905
+			set slot 20 of current inventory of player to {_item}
+			set {_item} to saddle named "&8&1&f&r의자" with model data 906
+			set slot 21 of current inventory of player to {_item}
+			set {_item} to slimeball named "&8&1&f&r독도" with model data 1
+			set slot 22 of current inventory of player to {_item}
+
+			set {_item} to saddle named "&8&1&f&r유메타 의자" with model data 908
+			set slot 23 of current inventory of player to {_item}
+
+			set slot 52 of current inventory of player to {gui.pre} named "&b<<<소파 이전"
+
+
+
+
+on rightclick with cookie:
+	if player is op:
+		if player's tool is cookie:
+			spawn 1 armor stand at location 0.5 above event-block
+			set {_s} to last spawned entity
+			add "{NoGravity:1}" to nbt of {_s}
+	#		add "{Small:1}" to nbt of {_s}
+			add "{Invisible:1}" to nbt of {_s}
+			add "{Pose:{Head:[0f,0f,0f]}}" to nbt of {_s}
+	#		set {_k} to model data of player's tool
+			set {_item} to cookie with model data 30
+			set helmet of last spawned entity to {_item}
+			set block at location 1 above event-block to barrier
+
+on rightclick with slimeball:
+	if event-block is set:
+		if event-block is barrier:
+			stop
+		if player is op:
+			if player is sneaking:
+				stop
+			if model data of player's tool is 0:
+				stop
+			spawn 1 armor stand at location 0.5 above event-block
+			set {_s} to last spawned entity
+			add "{NoGravity:1}" to nbt of {_s}
+			add "{Invisible:1}" to nbt of {_s}
+			if 0 < player's yaw:
+				if player's yaw < 90:
+				#south
+
+					add "{Pose:{Head:[0f,180f,0f]}}" to nbt of {_s}
+			if 90 < player's yaw:
+				if player's yaw < 180:
+				#west
+
+					add "{Pose:{Head:[0f,270f,0f]}}" to nbt of {_s}
+			if 180 < player's yaw:
+				if player's yaw < 270:
+				#north
+
+					add "{Pose:{Head:[0f,360f,0f]}}" to nbt of {_s}
+			if 270 < player's yaw:
+				if player's yaw < 370:
+				#east
+
+					add "{Pose:{Head:[0f,90f,0f]}}" to nbt of {_s}
+
+			set {_item} to player's tool
+			set helmet of last spawned entity to {_item}
+			set block at location 1 above event-block to barrier
+			set block at location 2 above event-block to barrier
+
+
+
+on rightclick with saddle:
+	if event-block is set:
+		if event-block is barrier:
+			stop
+		if player's game mode is creative:
+			if player is sneaking:
+				stop
+			if model data of player's tool is 0:
+				stop
+			spawn 1 armor stand at location 0.5 above event-block
+			set {_s} to last spawned entity
+			add "{NoGravity:1}" to nbt of {_s}
+			add "{Small:1}" to nbt of {_s}
+			add "{Invisible:1}" to nbt of {_s}
+			if 0 < player's yaw:
+				if player's yaw < 90:
+				#south
+
+					add "{Pose:{Head:[0f,0f,0f]}}" to nbt of {_s}
+			if 90 < player's yaw:
+				if player's yaw < 180:
+				#west
+
+					add "{Pose:{Head:[0f,90f,0f]}}" to nbt of {_s}
+			if 180 < player's yaw:
+				if player's yaw < 270:
+				#north
+
+					add "{Pose:{Head:[0f,180f,0f]}}" to nbt of {_s}
+			if 270 < player's yaw:
+				if player's yaw < 370:
+				#east
+
+					add "{Pose:{Head:[0f,270f,0f]}}" to nbt of {_s}
+
+#			if "%player's facing%" is "west":
+#				add "{Pose:{Head:[0f,90f,0f]}}" to nbt of {_s}
+#			if "%player's facing%" is "north":
+#				add "{Pose:{Head:[0f,180f,0f]}}" to nbt of {_s}
+#			if "%player's facing%" is "east":
+#				add "{Pose:{Head:[0f,270f,0f]}}" to nbt of {_s}
+#			if "%player's facing%" is "south":
+#				add "{Pose:{Head:[0f,0f,0f]}}" to nbt of {_s}
+				
+			set {_item} to player's tool
+			set helmet of last spawned entity to {_item}
+			set block at location 1 above event-block to barrier
+#			set block at location 2 above event-block to barrier
+
+
+on break of barrier:
+	loop all entities in radius 0.5 around event-block:
+		if "%loop-entity%" contains "armor stand":
+			if player's game mode is creative:
+				if helmet of loop-entity is saddle:
+					delete loop-entity
+					stop
+				if helmet of loop-entity is slimeball:
+					delete loop-entity
+					stop
+			else:
+				cancel event
+
+
+
+
+
+on rightclick:
+	if "%event-block%" contains "empty flower pot":
+		if player's world is not "world":
+			if player's world is not "campus":
+				if player's world is not "flatland":
+					if player's world is not "joseon":
+						if player's world is not "gbg65":
+							if player's world is not "openflat":
+								if player's world is not "creative3":
+									stop
+		if player's tool is air:
+			if player is not sneaking:
+				if player's vehicle is not set:
+					cancel the event
+					set {_l} to location 1.7 under event-block
+					set yaw of {_l} to player's yaw
+					spawn 1 armor stand at {_l}
+					set {_s} to last spawned entity
+					set {_item} to iron ingot with model data 13
+					set helmet of {_s} to {_item}
+					add "{NoGravity:1}" to nbt of {_s}
+					add "{Invisible:1}" to nbt of {_s}
+					set {_j} to player's yaw
+					make player ride {_s}
+					if {tutorial::%uuid of player%} is 5:
+						message "&d&l[안내] &r&d본 서버에서는 꽃이 없는 화분을 의자로 사용합니다. 빈 손으로 우클릭하면 앉을 수 있습니다." to player
+						set {tutorial::%uuid of player%} to 6
+						wait 5 seconds
+						npcmsg(player,"&d방송","&7%{nickname::%uuid of player%}%&7 학생은 교무실로 오세요.")
+						wait 4 seconds
+						npcmsg(player,"鞬&b&l 교사 배쌤","교무실로 다녀와요.")
+						execute console command "/warp tuto2 %player%"
+						wait 3 seconds
+						execute console command "/warp tuto2 %player%"
+		else:
+			send action bar "&b빈 손으로 화분(의자)을 우클릭하면 앉을 수 있습니다." to player
+
+#on right click on carpet:
+#	if player is not sneaking:
+#		if player's vehicle is not set:
+#			if player's world is not "world":
+#				if player's world is not "campus":
+#					if player's world is not "flatland":
+#						if player's world is not "openflat":
+#							if player's world is not "creative3":
+#								stop
+						
+#			if player's tool is not air:
+#				send action bar "&b빈 손으로 카펫을 우클릭하면 앉을 수 있습니다." to player
+#				stop
+#			cancel the event
+#			set {_l} to location 2.1 under event-block
+#			set yaw of {_l} to player's yaw
+#			spawn 1 armor stand at {_l}
+#			set {_s} to last spawned entity
+#			set {_item} to iron ingot with model data 13
+#			set helmet of {_s} to {_item}
+#			add "{NoGravity:1}" to nbt of {_s}
+#			add "{Invisible:1}" to nbt of {_s}
+#			make player ride {_s}
+
+on right click on barrier:
+	if player is not sneaking:
+		if player's vehicle is not set:
+			loop all entities in radius 1.8 around event-block:
+				if loop-entity is item frame:
+					if model data of loop-entity's item is 726:
+#						message "%nbt of loop-entity%" to player
+						cancel the event
+						set {_l} to location 2.6 under event-block
+						set yaw of {_l} to player's yaw
+						spawn 1 armor stand at {_l}
+						set {_s} to last spawned entity
+						set {_item} to iron ingot with model data 13
+						set helmet of {_s} to {_item}
+						add "{NoGravity:1}" to nbt of {_s}
+						add "{Invisible:1}" to nbt of {_s}
+						make player ride {_s}
+						set {_loc} to location of event-block
+						set block at {_loc} to air
+						set {sadari::%uuid of player%} to {_loc}
+						exit loop
+
+on right click on barrier:
+	if player is not sneaking:
+		if player's vehicle is not set:
+			if player's world is "dungeon":
+				stop
+			if player's world is not "world":
+				if player's world is not "campus":
+					if player's world is not "flatland":
+						if player's world is not "joseon":
+							if player's world is not "gbg65":
+								if player's world is not "menu":
+									if player's world is not "minigame":
+										stop
+			set {_ii} to 0
+			if "%region at location of player%" contains "minigame_has":
+				stop
+			loop all entities in radius 0.8 around event-block:
+				if "%loop-entity%" contains "armor stand":
+					if helmet of loop-entity is saddle:
+						set {_ii} to 1
+						set {_js} to loop-entity
+						exit loop
+			if {_ii} is 1:
+
+				set {_l} to location 1.7 under event-block
+				set {_jjj} to "Pose" tag of nbt of {_js}
+
+				set {_u::*} to split "%{_jjj}%" at ","
+
+				if "%{_u::2}%" contains "90":
+					set yaw of {_l} to 270
+				else if "%{_u::2}%" contains "180":
+					set yaw of {_l} to 0
+				else if "%{_u::2}%" contains "270":
+					set yaw of {_l} to 90
+				else:
+					set yaw of {_l} to 180
+
+				spawn 1 armor stand at {_l}
+				set {_s} to last spawned entity
+				set {_item} to iron ingot with model data 13
+				set helmet of {_s} to {_item}
+				add "{NoGravity:1}" to nbt of {_s}				
+				add "{Invisible:1}" to nbt of {_s}
+
+	
+				make player ride {_s}
+
+				if location of event-block is {radiochair}:
+					loop all entities in radius 30 around event-block:
+						if loop-entity is item frame:
+							if loop-entity's item is lime dye:
+								set {_num} to model data of loop-entity's item
+								if {_num} is 9086:
+									set {_item} to lime dye with model data 9085
+									set loop-entity's item to {_item}
+									set {radiocha} to uuid of player
+
+
+on right click on cauldron:
+	if player is not sneaking:
+		if player's vehicle is not set:
+#			if player's world is not "flat":
+#				stop
+
+			set {_l} to location 1.7 under event-block
+			set {_jjj} to "Pose" tag of nbt of {_js}
+
+			set {_u::*} to split "%{_jjj}%" at ","
+
+			set yaw of {_l} to 90
+
+			spawn 1 armor stand at {_l}
+			set {_s} to last spawned entity
+			set {_item} to iron ingot with model data 13
+			set helmet of {_s} to {_item}
+			add "{NoGravity:1}" to nbt of {_s}				
+			add "{Invisible:1}" to nbt of {_s}
+
+
+			make player ride {_s}
+
+on dismount:
+	if {radiocha} is uuid of player:
+		loop all entities in radius 30 around player:
+			if loop-entity is item frame:
+				if loop-entity's item is lime dye:
+					set {_num} to model data of loop-entity's item
+					if {_num} is 9085:
+						set {_item} to lime dye with model data 9086
+						set loop-entity's item to {_item}
+						delete {radiocha}
+	set {_item} to iron ingot with model data 13
+	if helmet of player's vehicle is {_item}:
+		delete player's vehicle
+	else:
+		stop
+	
+	if block at player's location is not air:
+		set {_lll} to player's location
+
+		add 1.7 to y coordinate of {_lll}
+		wait 1 ticks
+		teleport player to {_lll}
+		wait 2 ticks
+		teleport player to {_lll}
+
+	if {taxiwon::%uuid of player%} is set:
+		wait 2 ticks
+		teleport player to {taxiwon::%uuid of player%}
+		delete {taxiwon::%uuid of player%}
+	if {sadari::%uuid of player%} is set:
+		set block at {sadari::%uuid of player%} to barrier
+		wait 4 ticks
+		teleport player to block 2 above {sadari::%uuid of player%}
+		delete {sadari::%uuid of player%}
+

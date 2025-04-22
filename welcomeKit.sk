@@ -1,0 +1,84 @@
+command /welcomeSetting:
+    permission: op
+    trigger:
+        set {_gui} to addInventoryToValue(2, "&1&0&0&0&r&0웰컴키트 세팅")
+        loop 9 times:
+            addSlotItemToValue({_gui}, loop-num - 1, {welcomeKit::%loop-num%})
+        addSlotItemToValueWithName({_gui}, 13, light blue concrete, "&a수령하기!", "")
+        open {_gui} to player
+
+on inventory close:
+    if event-inventory's name is "&1&0&0&0&r&0웰컴키트 세팅":
+        set {kitCount} to 0
+        loop 9 times:
+            set {welcomeKit::%loop-num%} to slot loop-num -1 of event-inventory
+            if {welcomeKit::%loop-num%} is not air:
+                add 1 to {kitCount}
+        message "&d&l[ SYSTEM ] &f%{kitCount}%개의 웰컴키트" to player
+
+on inventory click:
+    if name of current inventory contains  "&1&0&0&0&r":
+        if clicked item is light blue concrete named "&a수령하기!":
+            cancel event
+
+
+
+
+command /welcomKit:
+    trigger:
+        if {isWelcomKit::%uuid of player%} is true:
+            message "&c&l[ WARNING ] &f이미 웰컴키트를 수령하셨습니다!"
+        else:
+            set {_gui} to addInventoryToValue(2, "&1&0&0&1&r&0&lWELCOME!!")
+            loop 9 times:
+                addSlotItemToValue({_gui}, loop-num - 1, {welcomeKit::%loop-num%})
+            addSlotItemToValueWithName({_gui}, 13, light blue concrete, "&a수령하기!", "")
+            open {_gui} to player
+
+on inventory click:
+    if name of current inventory contains  "&1&0&0&1&r":
+        cancel event
+        if clicked item is light blue concrete named "&a수령하기!":
+            set {_air} to 0
+            loop 36 times:
+                if slot loop-value of player's inventory is air:
+                    add 1 to {_air}
+            if {_air} is less than {kitCount}:
+                message "&c&l[ WARNING ] &f인벤토리 공간이 부족합니다!"
+                close player's inventory
+            else:
+                set {_DoDAON} to "DoDAON" parsed as offline player
+                close player's inventory
+                loop 9 times:
+                    give player {welcomeKit::%loop-value%}
+                    wait 1 tick
+                wait 1 tick
+                set {isWelcomKit::%uuid of player%} to true
+                message "&a&l[ SUCCESS ] &f%{nick::%uuid of player%}%님이 웰컴키트를 수령하셨습니다!" to {_DoDAON}
+                message "&a&l[ SUCCESS ] &f웰컴키트를 수령하셨습니다!" to player
+
+
+command /testKitReset <player>:
+    permission: op
+    trigger:
+        set {_player} to uuid of arg 1
+        delete {isWelcomKit::%{_player}%}
+        message "%{nick::%{_player}%}%의 웰컴키트 수령여부 삭제완료" to player
+
+#>TODO: s나중에 웰컴키트 목록 바뀔 때 전체 초기화할 수 있는 로직 추가
+
+command /testKitValues:
+    permission: op
+    trigger:
+        loop 9 times:
+            message "%{welcomeKit::%loop-value%}%" to player
+
+
+
+every 10 minutes:
+    loop all players:
+        {nick::%uuid of loop-player%} is set
+        if {isWelcomKit::%uuid of loop-player%} is not set:
+            showTitleToPlayer("&b웰컴키트&f를 받아주세요!", loop-player, 1 second, 1 second, 1 second)
+            play sound "ENTITY_PLAYER_LEVELUP" with volume 1 with pitch 1 to loop-player
+            message "&d&l[ SYSTEM ] &b/welcomkit &f명령어를 통해서 웰컴키트를 수령할 수 있어요!" to loop-player

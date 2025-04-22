@@ -1,0 +1,965 @@
+#> 방산흥 -> 우리 형 방산응은 어디있지
+#> 방산응 -> 방사능물고기로 이것저것 (이벤트)
+#> 꿀꿀이 -> 특정 전리품 가져다주면 본낚싯대 주는 거
+#> 강태공 -> 낚시 관련 이벤트
+#> 강씨 자손들 -> 상점
+#> 최외출 -> 스폰으로 가기
+#> 지하 내려가면 낚시왕의 무덤이 있음. (이벤트)
+#> 루피 이벤트 -> 하늘섬 (커스텀 바이옴해서 낚시 다르게 된다면 그것도 추가해보셈)
+
+options:
+    WORLD: "fishingspot"
+    TAB: "  "
+
+    #> 꿀꿀이 이벤트 아이템 갯수
+    #> 1. 비기너 낚싯대
+    LAVA_QUEST_1: 1
+    #> 2. 금주괴
+    LAVA_QUEST_2: 64
+    #> 3. 복어가 담긴 양동이
+    LAVA_QUEST_3: 1
+    #> 4. 뼈다귀
+    LAVA_QUEST_4: 64
+
+    #> 꿀꿀이 퀘스트 요구 아이템 가짓수
+    LAVA_QUEST_LIST: 4
+
+
+
+    #> 강태공 이벤트 아이템 갯수
+    #> 1. 비기너 낚싯대
+    MASTER_QUEST_1: 1
+    #> 2. 은빛 낚싯대
+    MASTER_QUEST_2: 1
+    #> 3. 금빛 낚싯대
+    MASTER_QUEST_3: 1
+    #> 4. 별빛 낚싯대
+    MASTER_QUEST_4: 1
+
+    #> 강태공 퀘스트 요구 아이템 가짓수
+    MASTER_QUEST_LIST: 4
+
+
+    #> 코인에 필요한 물고기 개수
+    COIN_TIER_1_REQUIRE: 5
+    COIN_TIER_2_REQUIRE: 5
+    COIN_TIER_3_REQUIRE: 5
+    COIN_TIER_4_REQUIRE: 5
+
+
+    #> 상점 코인 필요 개수
+    SHOP1_TIER_1_REQUIRE: 3
+    SHOP1_TIER_2_REQUIRE: 5
+    SHOP1_TIER_3_REQUIRE: 9
+    SHOP1_TIER_4_REQUIRE: 9
+
+    DENY_SPAWN: "zombie, skeleton, creeper, spider, witch, bat, zombie_villager, villager, phantom, cow, sheep, pig, chicken, slime, magma_cube, enderman, pillager, vindicator, ghast, zombified_piglin, piglin, drowned, endermite, wither_skeleton"
+
+
+#> 퀘스트 시간 설정
+function questClearTime() :: text:
+    set {_time} to now formatted as "HH:mm"
+    set {_date} to now formatted as "yyyy/MM/dd"
+    set {_result} to "%{_date}% %{_time}%"
+    return {_result}
+
+
+
+
+
+#> 꿀꿀이 교환 검사 로직
+#> 인벤에 재료 하나하나 검사해서 맞는지 판단
+function checkLavaEvent(p: player) :: boolean:
+    set {_up} to uuid of {_p}
+    #> 비기너 낚싯대
+    set {_questItem1} to 0
+    #> 금주괴
+    set {_questItem2} to 0
+    #> 복어가 담긴 양동이
+    set {_questItem3} to 0
+    #> 뼈다귀
+    set {_questItem4} to 0
+    loop items in {_p}'s inventory:
+        if loop-item is fishing rod:
+            set {_tag} to nbt compound of loop-item
+            if "%{_tag}%" contains "beginner_rod":
+                set {_dd} to "%item amount of loop-item%" parsed as integer
+            add {_dd} to {_questItem1}
+        else if loop-item is gold ingot:
+            set {_dd} to "%item amount of loop-item%" parsed as integer
+            add {_dd} to {_questItem2}
+        else if loop-item is pufferfish bucket:
+            #> 뒤에 아쿠아틱 몹 바꿔야할듯 정확한 이름으로
+            set {_dd} to "%item amount of loop-item%" parsed as integer
+            add {_dd} to {_questItem3}
+        else if loop-item is bone:
+            set {_dd} to "%item amount of loop-item%" parsed as integer
+            add {_dd} to {_questItem4}
+        set {_dd} to 0
+    set {_checkSum} to 0
+    if {_questItem1} >= {@LAVA_QUEST_1}:
+        add 1 to {_checkSum}
+    if {_questItem2} >= {@LAVA_QUEST_2}:
+        add 1 to {_checkSum}
+    if {_questItem3} >= {@LAVA_QUEST_3}:
+        add 1 to {_checkSum}
+    if {_questItem4} >= {@LAVA_QUEST_4}:
+        add 1 to {_checkSum}
+    if {_checkSum} is {@LAVA_QUEST_LIST}:
+        return true
+    return false
+
+function clearLavaEvent(p: player):
+    set {_delete1} to false
+    set {_delete2} to {@LAVA_QUEST_2}
+    set {_delete3} to false
+    set {_delete4} to {@LAVA_QUEST_4}
+    loop items in {_p}'s inventory:
+        if loop-item is fishing rod:
+            set {_tag} to nbt compound of loop-item
+            "%{_tag}%" does not contain "shulker"
+            if "%{_tag}%" contains "beginner_rod":
+                {_delete1} is false
+                remove {@LAVA_QUEST_1} of loop-item from {_p}'s inventory
+                set {_delete1} to true
+        else if loop-item is gold ingot:
+            {_delete2} is not 0
+            set {_dd} to "%item amount of loop-item%" parsed as integer
+            if {_dd} > {_delete2}:
+                set {_dd} to {_delete2}
+            remove {_dd} of loop-item from {_p}'s inventory
+            subtract {_dd} from {_delete2}
+        else if loop-item is pufferfish bucket:
+            {_delete3} is false
+            remove {@LAVA_QUEST_3} of loop-item from {_p}'s inventory
+            set {_delete3} to true
+        else if loop-item is bone:
+            {_delete4} is not 0
+            set {_dd} to "%item amount of loop-item%" parsed as integer
+            if {_dd} > {_delete4}:
+                set {_dd} to {_delete4}
+            remove {_dd} of loop-item from {_p}'s inventory
+            subtract {_dd} from {_delete4}
+
+#> 꿀꿀이 이벤트
+function openFishingSpotLava(p: player):
+    set {_gui} to addInventoryToValue(1, "&f&f&f&f&r&0퀘스트: 꿀꿀이의 보물 1호")
+    loop 9 times:
+        addSlotItemToValue({_gui}, loop-num - 1, {fishingSpotLava::%loop-num%})
+    set {_test} to checkLavaEvent({_p})
+    if {_test} is false:
+        addSlotItemToValueWithName({_gui}, 8, red concrete, "&c퀘스트 진행중", "&7재료 아이템을 모아오세요")
+    else if {_test} is true:
+        addSlotItemToValueWithName({_gui}, 8, light blue concrete, "&a퀘스트 완료", "&7클릭하여 수령하기")
+    open {_gui} to {_p}
+
+
+#> 낚시 상점 이벤트
+function openFishingSpotShop1(p: player):
+    set {_gui} to addInventoryToValue(1, "&f&f&f&f&r&0교환할 낚싯대를 선택해봐!")
+    loop 9 times:
+        addSlotItemToValue({_gui}, loop-num - 1, {fishingSpotShop::%loop-num%})
+    open {_gui} to {_p}
+
+command /fishingspotshop1spawn:
+    permission: op
+    trigger:
+        addInventory(1, player, "Test")
+        addSlotNbtItem(0, player, fishing rod, "&f&l초심자의 낚싯대", "%nl%&b✅획득 조건%nl%&f- &6초심자의 코인&f 3개", 50001)
+        addSlotNbtItem(1, player, fishing rod, "&7&l은빛 낚싯대", "%nl%&b✅획득 조건%nl%&f- &7은빛 코인&f 5개", 50002)
+        addSlotNbtItem(2, player, fishing rod, "&e&l금빛 낚싯대", "%nl%&b✅획득 조건%nl%&f- &e금빛 코인&f 9개", 50003)
+        addSlotNbtItem(3, player, fishing rod, "&e&l별빛 낚싯대", "%nl%&b✅획득 조건%nl%&f- &5별빛 코인&f 9개", 50004)
+
+
+
+function checkShop1Amount(p: player, require: integer, rod: text) :: boolean:
+    set {_amount} to 0
+    loop items in {_p}'s inventory:
+        set {_tag} to nbt compound of loop-item
+        if {_rod} is "초심자의 낚싯대":
+            "%{_tag}%" contains "초심자 코인"
+            add "%item amount of loop-item%" parsed as integer to {_amount}
+        else if {_rod} is "은빛 낚싯대":
+            "%{_tag}%" contains "은빛 코인"
+            add "%item amount of loop-item%" parsed as integer to {_amount}
+        else if {_rod} is "금빛 낚싯대":
+            "%{_tag}%" contains "금빛 코인"
+            add "%item amount of loop-item%" parsed as integer to {_amount}
+        else if {_rod} is "별빛 낚싯대":
+            "%{_tag}%" contains "별빛 코인"
+            add "%item amount of loop-item%" parsed as integer to {_amount}
+    if {_amount} >= {_require}:
+        return true
+    else:
+        return false
+
+function checkShop1Event(p: player, rod: text) :: boolean:
+    if {_rod} is "초심자의 낚싯대":
+        return checkShop1Amount({_p}, {@SHOP1_TIER_1_REQUIRE}, {_rod})
+    else if {_rod} is "은빛 낚싯대":
+        return checkShop1Amount({_p}, {@SHOP1_TIER_2_REQUIRE}, {_rod})
+    else if {_rod} is "금빛 낚싯대":
+        return checkShop1Amount({_p}, {@SHOP1_TIER_3_REQUIRE}, {_rod})
+    else if {_rod} is "별빛 낚싯대":
+        return checkShop1Amount({_p}, {@SHOP1_TIER_4_REQUIRE}, {_rod})
+    return false
+
+
+function clearShop1Event(p: player, rod: text):
+    set {_check} to 0
+    set {_amount} to 0
+    loop items in {_p}'s inventory:
+        if {_check} >= {@SHOP1_TIER_1_REQUIRE}:
+            exit loop
+        else if {_check} >= {@SHOP1_TIER_2_REQUIRE}:
+            exit loop
+        else if {_check} >= {@SHOP1_TIER_3_REQUIRE}:
+            exit loop
+        else if {_check} >= {@SHOP1_TIER_4_REQUIRE}:
+            exit loop
+        set {_tag} to nbt compound of loop-item
+        "%{_tag}%" does not contain "shulker"
+        "%{_tag}%" does not contain "rod"
+        if {_rod} is "초심자의 낚싯대":
+            "%{_tag}%" contains "초심자 코인"
+            set {_amount} to "%item amount of loop-item%" parsed as integer
+            if {_amount} > {@SHOP1_TIER_1_REQUIRE}:
+                set {_amount} to {@SHOP1_TIER_1_REQUIRE}
+            set {_test} to {@SHOP1_TIER_1_REQUIRE} - {_check}
+            if {_amount} > {_test}:
+                set {_amount} to {_test}
+            remove {_amount} of loop-item from {_p}'s inventory
+            add {_amount} to {_check}
+        else if {_rod} is "은빛 낚싯대":
+            "%{_tag}%" contains "은빛 코인"
+            set {_amount} to "%item amount of loop-item%" parsed as integer
+            if {_amount} > {@SHOP1_TIER_2_REQUIRE}:
+                set {_amount} to {@SHOP1_TIER_2_REQUIRE}
+            set {_test} to {@SHOP1_TIER_2_REQUIRE} - {_check}
+            if {_amount} > {_test}:
+                set {_amount} to {_test}
+            remove {_amount} of loop-item from {_p}'s inventory
+            add {_amount} to {_check}
+        else if {_rod} is "금빛 낚싯대":
+            "%{_tag}%" contains "금빛 코인"
+            set {_amount} to "%item amount of loop-item%" parsed as integer
+            if {_amount} > {@SHOP1_TIER_3_REQUIRE}:
+                set {_amount} to {@SHOP1_TIER_3_REQUIRE}
+            set {_test} to {@SHOP1_TIER_3_REQUIRE} - {_check}
+            if {_amount} > {_test}:
+                set {_amount} to {_test}
+            remove {_amount} of loop-item from {_p}'s inventory
+            add {_amount} to {_check}
+        else if {_rod} is "별빛 낚싯대":
+            "%{_tag}%" contains "별빛 코인"
+            set {_amount} to "%item amount of loop-item%" parsed as integer
+            if {_amount} > {@SHOP1_TIER_4_REQUIRE}:
+                set {_amount} to {@SHOP1_TIER_4_REQUIRE}
+            set {_test} to {@SHOP1_TIER_4_REQUIRE} - {_check}
+            if {_amount} > {_test}:
+                set {_amount} to {_test}
+            remove {_amount} of loop-item from {_p}'s inventory
+            add {_amount} to {_check}
+
+
+
+
+
+#> 떼껄룩 이벤트
+function openFishingSpotCoin(p: player):
+    addInventory(1, {_p}, "&f&f&f&f&r&0떼껄룩...")
+    addSlotItem(0, {_p}, paper, "&a초심자 코인 획득하기", " %nl%&b✅획득 조건%nl%&f- 종류 무관 무등급 생선 5마리")
+    addSlotItem(1, {_p}, paper, "&7은빛 코인 획득하기", " %nl%&b✅획득 조건%nl%&f- 종류 무관 실버 등급 생선 5마리")
+    addSlotItem(2, {_p}, paper, "&e금빛 코인 획득하기", " %nl%&b✅획득 조건%nl%&f- 종류 무관 골드 등급 생선 5마리")
+    addSlotItem(3, {_p}, paper, "&5별빛 코인 획득하기", " %nl%&b✅획득 조건%nl%&f- 종류 무관 특수 생선 5마리%nl%&f- &7(무지개 물고기, 게)")
+
+command /fishingspotcoinspawn:
+    permission: op
+    trigger:
+        addInventory(1, player, "Test")
+        addSlotNbtItem(0, player, paper, "&a초심자 코인 획득하기", " %nl%&b✅획득 조건%nl%&f- 종류 무관 무등급 생선 5마리", 61001)
+        addSlotNbtItem(1, player, paper, "&7은빛 코인 획득하기", " %nl%&b✅획득 조건%nl%&f- 종류 무관 실버 등급 생선 5마리", 61002)
+        addSlotNbtItem(2, player, paper, "&e금빛 코인 획득하기", " %nl%&b✅획득 조건%nl%&f- 종류 무관 골드 등급 생선 5마리", 61003)
+        addSlotNbtItem(3, player, paper, "&5별빛 코인 획득하기", " %nl%&b✅획득 조건%nl%&f- 종류 무관 특수 생선 5마리%nl%&f- &7(무지개 물고기, 게)", 61004)
+        addSlotNbtItem(4, player, paper, "&a초심자 코인", "%nl%&b✅획득 조건%nl%&f- 종류 무관 무등급 생선 5마리", 61001)
+        addSlotNbtItem(5, player, paper, "&7은빛 코인", "%nl%&b✅획득 조건%nl%&f- 종류 무관 실버 등급 생선 5마리", 61002)
+        addSlotNbtItem(6, player, paper, "&e금빛 코인", "%nl%&b✅획득 조건%nl%&f- 종류 무관 골드 등급 생선 5마리", 61003)
+        addSlotNbtItem(7, player, paper, "&5별빛 코인", "%nl%&b✅획득 조건%nl%&f- 종류 무관 특수 생선 5마리%nl%&f- &7(무지개 물고기, 게)", 61004)
+        addSlotItem(8, player, paper, "&a초심자 코인 획득하기", " %nl%&b✅획득 조건%nl%&f- 종류 무관 무등급 생선 5마리")
+
+
+
+
+#> 떼껄룩 코인 확인
+function checkCoinAmount(p: player, require: integer, coin: text) :: boolean:
+    set {_amount} to 0
+    loop items in {_p}'s inventory:
+        set {_tag} to nbt compound of loop-item
+        "%{_tag}%" contains "CustomFishing"
+        "%{_tag}%" does not contain "shulker"
+        if {_coin} is "초심자 코인":
+            "%{_tag}%" does not contain "rainbow_fish"
+            "%{_tag}%" does not contain "crab"
+            "%{_tag}%" does not contain "silver_star"
+            "%{_tag}%" does not contain "golden_star"
+            add "%item amount of loop-item%" parsed as integer to {_amount}
+        else if {_coin} is "은빛 코인":
+            "%{_tag}%" contains "silver_star"
+            add "%item amount of loop-item%" parsed as integer to {_amount}
+        else if {_coin} is "금빛 코인":
+            "%{_tag}%" contains "golden_star"
+            add "%item amount of loop-item%" parsed as integer to {_amount}
+        else if {_coin} is "별빛 코인":
+            if "%{_tag}%" contains "rainbow_fish":
+                add "%item amount of loop-item%" parsed as integer to {_amount}
+            if "%{_tag}%" contains "crab":
+                add "%item amount of loop-item%" parsed as integer to {_amount}
+    if {_amount} >= {_require}:
+        return true
+    else:
+        return false
+#> @param p 플레이어
+#> @param c 코인 종류 : 나중에 어느 물고기 검사할지 정함
+#> @param 
+#> @return true : 교환 가능 / false : 교환 불가능
+function checkCoinEvent(p: player, c: text) :: boolean:
+    if {_c} is "초심자 코인":
+        return checkCoinAmount({_p}, {@COIN_TIER_1_REQUIRE}, {_c})
+    else if {_c} is "은빛 코인":
+        return checkCoinAmount({_p}, {@COIN_TIER_2_REQUIRE}, {_c})
+    else if {_c} is "금빛 코인":
+        return checkCoinAmount({_p}, {@COIN_TIER_3_REQUIRE}, {_c})
+    else if {_c} is "별빛 코인":
+        return checkCoinAmount({_p}, {@COIN_TIER_4_REQUIRE}, {_c})
+    return false
+
+function clearCoinEvent(p: player, coin: text):
+    set {_check} to 0
+    set {_amount} to 0
+    loop items in {_p}'s inventory:
+        set {_tag} to nbt compound of loop-item
+        "%{_tag}%" does not contain "shulker"
+        "%{_tag}%" does not contain "rod"
+        "%{_tag}%" contains "CustomFishing"
+        if {_coin} is "초심자 코인":
+            if {_check} >= {@COIN_TIER_1_REQUIRE}:
+                exit loop
+            "%{_tag}%" does not contain "rainbow_fish"
+            "%{_tag}%" does not contain "silver_star"
+            "%{_tag}%" does not contain "golden_star"
+            set {_amount} to "%item amount of loop-item%" parsed as integer
+            if {_amount} > {@COIN_TIER_1_REQUIRE}:
+                set {_amount} to {@COIN_TIER_1_REQUIRE}
+            set {_test} to {@COIN_TIER_1_REQUIRE} - {_check}
+            if {_amount} > {_test}:
+                set {_amount} to {_test}
+            remove {_amount} of loop-item from {_p}'s inventory
+            add {_amount} to {_check}
+        else if {_coin} is "은빛 코인":
+            if {_check} >= {@COIN_TIER_2_REQUIRE}:
+                exit loop
+            "%{_tag}%" contains "silver_star"
+            set {_amount} to "%item amount of loop-item%" parsed as integer
+            if {_amount} > {@COIN_TIER_2_REQUIRE}:
+                set {_amount} to {@COIN_TIER_2_REQUIRE}
+            set {_test} to {@COIN_TIER_2_REQUIRE} - {_check}
+            if {_amount} > {_test}:
+                set {_amount} to {_test}
+            remove {_amount} of loop-item from {_p}'s inventory
+            add {_amount} to {_check}
+        else if {_coin} is "금빛 코인":
+            if {_check} >= {@COIN_TIER_3_REQUIRE}:
+                exit loop
+            "%{_tag}%" contains "golden_star"
+            set {_amount} to "%item amount of loop-item%" parsed as integer
+            if {_amount} > {@COIN_TIER_3_REQUIRE}:
+                set {_amount} to {@COIN_TIER_3_REQUIRE}
+            set {_test} to {@COIN_TIER_3_REQUIRE} - {_check}
+            if {_amount} > {_test}:
+                set {_amount} to {_test}
+            remove {_amount} of loop-item from {_p}'s inventory
+            add {_amount} to {_check}
+        else if {_coin} is "별빛 코인":
+            if {_check} >= {@COIN_TIER_4_REQUIRE}:
+                exit loop
+            if "%{_tag}%" contains "rainbow_fish":
+                set {_amount} to "%item amount of loop-item%" parsed as integer
+            if "%{_tag}%" contains "crab":
+                set {_amount} to "%item amount of loop-item%" parsed as integer
+            if {_amount} > {@COIN_TIER_4_REQUIRE}:
+                set {_amount} to {@COIN_TIER_4_REQUIRE}
+            set {_test} to {@COIN_TIER_4_REQUIRE} - {_check}
+            if {_amount} > {_test}:
+                set {_amount} to {_test}
+            remove {_amount} of loop-item from {_p}'s inventory
+            add {_amount} to {_check}
+
+
+
+#> 강태공 교환 검사 로직
+#> 인벤에 재료 하나하나 검사해서 맞는지 판단
+function checkMasterEvent(p: player) :: boolean:
+    set {_up} to uuid of {_p}
+    #> 비기너 낚싯대
+    set {_questItem1} to 0
+    #> 은빛 낚싯대
+    set {_questItem2} to 0
+    #> 금빛 낚싯대
+    set {_questItem3} to 0
+    #> 별빛 낚싯대
+    set {_questItem4} to 0
+    loop items in {_p}'s inventory:
+        if loop-item is fishing rod:
+            set {_tag} to nbt compound of loop-item
+            "%{_tag}%" does not contain "shulker"
+            if "%{_tag}%" contains "beginner_rod":
+                set {_dd} to "%item amount of loop-item%" parsed as integer
+                add {_dd} to {_questItem1}
+            else if "%{_tag}%" contains "silver_rod":
+                set {_dd} to "%item amount of loop-item%" parsed as integer
+                add {_dd} to {_questItem2}
+            else if "%{_tag}%" contains "golden_rod":
+                set {_dd} to "%item amount of loop-item%" parsed as integer
+                add {_dd} to {_questItem3}
+            else if "%{_tag}%" contains "star_rod":
+                set {_dd} to "%item amount of loop-item%" parsed as integer
+                add {_dd} to {_questItem4}
+        set {_dd} to 0
+    set {_checkSum} to 0
+    if {_questItem1} >= {@MASTER_QUEST_1}:
+        add 1 to {_checkSum}
+    if {_questItem2} >= {@MASTER_QUEST_2}:
+        add 1 to {_checkSum}
+    if {_questItem3} >= {@MASTER_QUEST_3}:
+        add 1 to {_checkSum}
+    if {_questItem4} >= {@MASTER_QUEST_4}:
+        add 1 to {_checkSum}
+    if {_checkSum} is {@MASTER_QUEST_LIST}:
+        return true
+    return false
+
+
+function clearMasterEvent(p: player):
+    loop items in {_p}'s inventory:
+        if loop-item is fishing rod:
+            set {_tag} to nbt compound of loop-item
+            if "%{_tag}%" contains "beginner_rod":
+                remove {@MASTER_QUEST_1} of loop-item from {_p}'s inventory
+            else if "%{_tag}%" contains "silver_rod":
+                remove {@MASTER_QUEST_2} of loop-item from {_p}'s inventory
+            else if "%{_tag}%" contains "golden_rod":
+                remove {@MASTER_QUEST_3} of loop-item from {_p}'s inventory
+            else if "%{_tag}%" contains "star_rod":
+                remove {@MASTER_QUEST_4} of loop-item from {_p}'s inventory
+
+
+#> 강태공 이벤트
+function openFishingSpotMaster(p: player):
+    set {_gui} to addInventoryToValue(1, "&f&f&f&f&r&0퀘스트: 장인이 되기 위해서")
+    loop 9 times:
+        addSlotItemToValue({_gui}, loop-num - 1, {fishingSpotMaster::%loop-num%})
+    set {_test} to checkMasterEvent({_p})
+    if {_test} is false:
+        addSlotItemToValueWithName({_gui}, 8, red concrete, "&c퀘스트 진행중", "&7재료 아이템을 모아오세요")
+    else if {_test} is true:
+        addSlotItemToValueWithName({_gui}, 8, light blue concrete, "&a퀘스트 완료", "&7클릭하여 수령하기")
+    open {_gui} to {_p}
+
+
+
+
+
+
+on rightclick:
+    player's world is "fishingspot"
+    if "%clicked entity%" contains "꿀꿀이":
+        showTitleToPlayer("&c바쁜데 무슨 일이야...??!", player, 1 second, 1 second, 1 second)
+        onPlaySoundEvent("entity.piglin.ambient", player)
+        message "%{@TAB}%&c&l[ 꿀꿀이 ] &r&f : 내 낚싯대가 갖고 싶다고?? 세상에 공짜가 어딨어!%nl%&f대신에 이걸 가져다주면 특별히 너에게 주도록 하지" to player
+        wait 2 seconds
+        openFishingSpotLava(player)
+    else if "%clicked entity%" contains "최외출":
+        execute player command "/s"
+    else if "%clicked entity%" contains "흥만이":
+        execute console command "/mv tp %player% %{@WORLD}%"
+    else if "%clicked entity%" contains "강바다":
+        showTitleToPlayer("&f낚싯대 보러 왔구나?", player, 1 second, 0 second, 1 second)
+        message "%{@TAB}%&b&l[ 강바다 ] &r&f : 낚싯대 보러 왔구나?" to player
+        onPlaySoundEvent("BLOCK_NOTE_BLOCK_BELL", player)
+        wait 1 second
+        onPlaySoundEvent("item.book.page_turn", player)
+        openFishingSpotShop1(player)
+    else if "%clicked entity%" contains "방산흥":
+        onPlaySoundEvent("entity.fox.ambient", player)
+        message "%{@TAB}%&6&l[ 방산흥 ] &r&f : 우리 동생은 언제 올꼬..." to player
+    else if "%clicked entity%" contains "방산응":
+        showTitleToPlayer("&3헤헤..헤헿ㅎ..", player, 1 second, 1 second, 1 second)
+        onPlaySoundEvent("entity.fox.ambient", player)
+        message "%{@TAB}%&6&l[ 방산응 ] &r&f : 마싣따... 이개바로오 방사능의 맏...!!@@" to player
+        set {fishingSpotCooldownRubbish::%uuid of player%} to true
+        wait 1 second
+        execute console command "/shopkeeper open fishingspotrubbish %player%"
+        wait 2 seconds
+        delete {fishingSpotCooldownRubbish::%uuid of player%}
+    else if "%clicked entity%" contains "떼껄룩":
+        message "%{@TAB}%&3&l[ 떼껄룩 ] &r&f : 떼껄룩..." to player
+        showTitleToPlayer("&3떼껄룩...", player, 1 second, 1 second, 1 second)
+        onOptionalPlaySoundEvent("yumc.takealook", player, 1, 1)
+        wait 1 second
+        openFishingSpotCoin(player)
+    else if "%clicked entity%" contains "루피":
+        message "%{@TAB}%&c&l[ 루피 ] &r&f조로!! 저기 근사한 섬이 보이는데??!!" to player
+        onOptionalPlaySoundEvent("entity.villager.ambient", player, 1, 2)
+    else if "%clicked entity%" contains "조로":
+        message "%{@TAB}%&2&l[ 조로 ] &r&f루피, 저게 어딜봐서 섬이라는 거지? 그냥 낡아빠진 다리잖아!!" to player
+        onOptionalPlaySoundEvent("entity.pillager.ambient", player, 1, 1)
+    else if "%clicked entity%" contains "강태공":
+        showTitleToPlayer("&9왔는가 나그네여..", player, 1 second, 1 second, 1 second)
+        message "%{@TAB}%&9&l[ 강태공 ] &r&f그대의 실력은 익히 들었다네.. 하지만 한 단계 더 나아가기 위해선 훌륭한 동료도 때로는 필요하지.." to player
+        onOptionalPlaySoundEvent("entity.villager.ambient", player, 1, 0.5)
+        wait 2 seconds
+        openFishingSpotMaster(player)
+    else if "%clicked entity%" contains "&b&l[ NPC ] &f동진":
+        message "%{@TAB}%&b&l[ 동진 ] &r&f내가 소중히 가꾼 이 섬에 많은 사람이 오니 뿌듯하구만%nl%&7(낚시 월드 '하늘 호수'의 기획, 건축 및 리소스 전반을 책임졌습니다)%nl% " to player
+        onOptionalPlaySoundEvent("entity.allay.ambient_without_item", player, 1, 1)
+    else if "%clicked entity%" contains "&b&l[ NPC ] &f해도":
+        message "%{@TAB}%&9&l[ 강태공 ] &r&f이 자 말인가? 내 의지를 처음으로 이어준 아주 용감한 청년일세. 자네도 이 자의 용기를 이어받게나..!%nl%&7(2024년 5월 19일 오전 1시 33분, 출시 3일 후 '퀘스트: 장인이 되기 위해서'를 서버 처음으로 클리어하였습니다)%nl% " to player
+        onOptionalPlaySoundEvent("entity.villager.ambient", player, 1, 0.5)
+    else if "%clicked entity%" contains "&b&l[ NPC ] &f시난":
+        message "%{@TAB}%&b&l[ 시난 ] &r&f다온아 낚시왕 타령은 그만하고 밥이나 사줘%nl%&7(낚시 월드 '하늘 호수'의 건축과 이스터에그에 큰 기여를 하였습니다)%nl% " to player
+        onOptionalPlaySoundEvent("entity.witch.ambient", player, 1, 0.5)
+    else if "%clicked entity%" contains "잭 스패로우":
+        {fishingSpotCooldownJack::%uuid of player%} is not set
+        showTitleToPlayer("&6하아.. 하아..", player, 1 second, 1 second, 1 second)
+        message "%{@TAB}%&6&l[ 잭 스패로우 ] &r&f두 번씩이나 이 거지같은 섬에 버려지다니..." to player
+        onOptionalPlaySoundEvent("yumc.jack", player, 1, 1)
+        set {fishingSpotCooldownJack::%uuid of player%} to true
+        wait 1 second
+        execute console command "/shopkeeper open fishingspotjack %player%"
+        wait 2 seconds
+        delete {fishingSpotCooldownJack::%uuid of player%}
+
+
+
+
+#> ======================================================
+#> 세팅 부분
+#> ======================================================
+
+#> 상점1 세팅
+command /fishingspotshop1edit:
+    permission: op
+    trigger:
+        set {_gui} to addInventoryToValue(1, "&f&f&f&1&r&0낚시상점 세팅")
+        loop 9 times:
+            addSlotItemToValue({_gui}, loop-num - 1, {fishingSpotShop::%loop-num%})
+        open {_gui} to player
+
+on inventory close:
+    if event-inventory's name is "&f&f&f&1&r&0낚시상점 세팅":
+        loop 9 times:
+            set {fishingSpotShop::%loop-num%} to slot loop-num -1 of event-inventory
+        message "&d&l[ SYSTEM ] &f저장완료" to player
+
+#> 꿀꿀이 세팅
+command /fishingspotlavaedit:
+    permission: op
+    trigger:
+        set {_gui} to addInventoryToValue(1, "&f&f&f&1&r&0꿀꿀이 세팅")
+        loop 9 times:
+            addSlotItemToValue({_gui}, loop-num - 1, {fishingSpotLava::%loop-num%})
+        open {_gui} to player
+
+on inventory close:
+    if event-inventory's name is "&f&f&f&1&r&0꿀꿀이 세팅":
+        loop 9 times:
+            set {fishingSpotLava::%loop-num%} to slot loop-num -1 of event-inventory
+        message "&d&l[ SYSTEM ] &f저장완료" to player
+
+
+#> 떼껄룩 세팅
+command /fishingspotcoinedit:
+    permission: op
+    trigger:
+        set {_gui} to addInventoryToValue(1, "&f&f&f&1&r&0떼껄룩 세팅")
+        loop 9 times:
+            addSlotItemToValue({_gui}, loop-num - 1, {fishingSpotCoin::%loop-num%})
+        open {_gui} to player
+
+on inventory close:
+    if event-inventory's name is "&f&f&f&1&r&0떼껄룩 세팅":
+        loop 9 times:
+            set {fishingSpotCoin::%loop-num%} to slot loop-num -1 of event-inventory
+        message "&d&l[ SYSTEM ] &f저장완료" to player
+
+
+
+#> 강태공 세팅
+command /fishingspotmasteredit:
+    permission: op
+    trigger:
+        set {_gui} to addInventoryToValue(1, "&f&f&f&1&r&0강태공 세팅")
+        loop 9 times:
+            addSlotItemToValue({_gui}, loop-num - 1, {fishingSpotMaster::%loop-num%})
+        open {_gui} to player
+
+on inventory close:
+    if event-inventory's name is "&f&f&f&1&r&0강태공 세팅":
+        loop 9 times:
+            set {fishingSpotMaster::%loop-num%} to slot loop-num -1 of event-inventory
+        message "&d&l[ SYSTEM ] &f저장완료" to player
+
+
+
+
+#> ======================================================
+#> ======================================================
+
+
+
+
+
+#> TODO: barrier 저 부분 각 코인마다 검사하도록 로직 짜보셈 왜 이름 인식 못하는지 모르겠음 ㄹㅇ
+
+on inventory click:
+    if name of current inventory contains  "&f&f&f&f&r":
+        cancel event
+        set {_tag} to nbt compound of clicked item
+        if clicked item is light blue concrete named "&a퀘스트 완료":
+            if name of current inventory contains "&f&f&f&f&r&0퀘스트: 꿀꿀이의 보물 1호":
+                close player's inventory
+                clearLavaEvent(player)
+                wait 1 tick
+                showTitleToPlayer("&c이것이 바로 돈의 맛...?", player, 1 second, 1 second, 1 second)
+                onPlaySoundEvent("entity.player.levelup", player)
+                message "%{@TAB}%&c&l[ 꿀꿀이 ] &r&f : 내가 가장 아끼는 &4&l뼈다귀 낚싯대&r&f를 주도록하지%nl%&f소중한 친구이니 조심히 다뤄" to player
+                execute console command "/customfishing items rod give %player% bone_rod"
+            else if name of current inventory contains "&f&f&f&f&r&0퀘스트: 장인이 되기 위해서":
+                close player's inventory
+                clearMasterEvent(player)
+                wait 1 tick
+                showTitleToPlayer("&9%{nick::%uuid of player%}%, 어떤가 내 걸작이", player, 3 second, 1 second, 1 second)
+                onPlaySoundEvent("entity.player.levelup", player)
+                message "%{@TAB}%&9&l[ 강태공 ] &r&f그대가 가는 길이 곧 옳은 길이길..." to player
+                execute console command "/customfishing items rod give %player% master_rod"
+                if {firstMasterMission} is not set:
+                    set {firstMasterMission} to uuid of player
+                    broadcast "&7===================================%nl% %nl%&b&l%{@TAB}%[ FISHING ] &r&e%{nick::%uuid of player%}%(이)가 대가의 낚싯대를 처음으로 획득했습니다!%nl% %nl%&7==================================="
+                    log "%now% :: %{nick::%uuid of player%}% 대가의 낚싯대 최초 획득" to "fishing.log"
+        else if clicked item is paper named "&a초심자 코인 획득하기":
+            if player doesn't have enough space for 1 of barrier:
+                message "%{@TAB}%&3&l[ 떼껄룩 ] &r&f : 떼껄룩..;;%nl%%{@TAB}%&c&l[ SYSTEM ] &r&f인벤토리에 공간이 부족합니다" to player
+            else if checkCoinEvent(player, "초심자 코인") is true:
+                clearCoinEvent(player, "초심자 코인")
+                onPlaySoundEvent("entity.experience_orb.pickup", player)
+                message "%{@TAB}%&3&l[ 떼껄룩 ] &r&f : 떼껄룩...!%nl%%{@TAB}%&d&l[ SYSTEM ] &r&a초심자 코인&f을 획득하였습니다" to player
+                giveItemToPlayerWithNbt(player, 1, paper, "&a초심자 코인", "&f다양한 아이템과 교환해보아요", 61001)
+            else:
+                message "%{@TAB}%&3&l[ 떼껄룩 ] &r&f : 떼껄룩..;;%nl%%{@TAB}%&c&l[ SYSTEM ] &r&f재료가 부족합니다" to player
+                onOptionalPlaySoundEvent("entity.cat.ambient", player, 1, 0.5)
+        else if clicked item is paper named "&7은빛 코인 획득하기":
+            if player doesn't have enough space for 1 of barrier:
+                message "%{@TAB}%&3&l[ 떼껄룩 ] &r&f : 떼껄룩..;;%nl%%{@TAB}%&c&l[ SYSTEM ] &r&f인벤토리에 공간이 부족합니다" to player
+            else if checkCoinEvent(player, "은빛 코인") is true:
+                clearCoinEvent(player, "은빛 코인")
+                onPlaySoundEvent("entity.experience_orb.pickup", player)
+                message "%{@TAB}%&3&l[ 떼껄룩 ] &r&f : 떼껄룩...!%nl%%{@TAB}%&d&l[ SYSTEM ] &r&7은빛 코인&f을 획득하였습니다" to player
+                giveItemToPlayerWithNbt(player, 1, paper, "&7은빛 코인", "&f다양한 아이템과 교환해보아요", 61002)
+            else:
+                message "%{@TAB}%&3&l[ 떼껄룩 ] &r&f : 떼껄룩..;;%nl%%{@TAB}%&c&l[ SYSTEM ] &r&f재료가 부족합니다" to player
+                onOptionalPlaySoundEvent("entity.cat.ambient", player, 1, 0.5)
+        else if clicked item is paper named "&e금빛 코인 획득하기":
+            if player doesn't have enough space for 1 of barrier:
+                message "%{@TAB}%&3&l[ 떼껄룩 ] &r&f : 떼껄룩..;;%nl%%{@TAB}%&c&l[ SYSTEM ] &r&f인벤토리에 공간이 부족합니다" to player
+            else if checkCoinEvent(player, "금빛 코인") is true:
+                clearCoinEvent(player, "금빛 코인")
+                onPlaySoundEvent("entity.experience_orb.pickup", player)
+                message "%{@TAB}%&3&l[ 떼껄룩 ] &r&f : 떼껄룩...!%nl%%{@TAB}%&d&l[ SYSTEM ] &r&e금빛 코인&f을 획득하였습니다" to player
+                giveItemToPlayerWithNbt(player, 1, paper, "&e금빛 코인", "&f다양한 아이템과 교환해보아요", 61003)
+            else:
+                message "%{@TAB}%&3&l[ 떼껄룩 ] &r&f : 떼껄룩..;;%nl%%{@TAB}%&c&l[ SYSTEM ] &r&f재료가 부족합니다" to player
+                onOptionalPlaySoundEvent("entity.cat.ambient", player, 1, 0.5)
+        else if clicked item is paper named "&5별빛 코인 획득하기":
+            if player doesn't have enough space for 1 of barrier:
+                message "%{@TAB}%&3&l[ 떼껄룩 ] &r&f : 떼껄룩..;;%nl%%{@TAB}%&c&l[ SYSTEM ] &r&f인벤토리에 공간이 부족합니다" to player
+            else if checkCoinEvent(player, "별빛 코인") is true:
+                clearCoinEvent(player, "별빛 코인")
+                onPlaySoundEvent("entity.experience_orb.pickup", player)
+                message "%{@TAB}%&3&l[ 떼껄룩 ] &r&f : 떼껄룩...!%nl%%{@TAB}%&d&l[ SYSTEM ] &r&5별빛 코인&f을 획득하였습니다" to player
+                giveItemToPlayerWithNbt(player, 1, paper, "&5별빛 코인", "&f다양한 아이템과 교환해보아요", 61004)
+            else:
+                message "%{@TAB}%&3&l[ 떼껄룩 ] &r&f : 떼껄룩..;;%nl%%{@TAB}%&c&l[ SYSTEM ] &r&f재료가 부족합니다" to player
+                onOptionalPlaySoundEvent("entity.cat.ambient", player, 1, 0.5)
+        else if "%{_tag}%" contains "초심자의 낚싯대":
+            name of current inventory does not contain "&f&f&f&f&r&0퀘스트: 장인이 되기 위해서"
+            if player doesn't have enough space for 1 of barrier:
+                onPlaySoundEvent("BLOCK_NOTE_BLOCK_BELL", player)
+                message "%{@TAB}%&b&l[ 강바다 ] &r&f : 가방이 조금 무거운 거 같은데??%nl%%{@TAB}%&c&l[ SYSTEM ] &r&f인벤토리에 공간이 부족합니다" to player
+            else if checkShop1Event(player, "초심자의 낚싯대") is true:
+                clearShop1Event(player, "초심자의 낚싯대")
+                onPlaySoundEvent("item.book.page_turn", player)
+                message "%{@TAB}%&b&l[ 강바다 ] &r&f : 조심히쓰길 바라!" to player
+                execute console command "/customfishing items rod give %player% beginner_rod"
+            else:
+                onPlaySoundEvent("BLOCK_NOTE_BLOCK_BELL", player)
+                message "%{@TAB}%&b&l[ 강바다 ] &r&f : 이 친구들의 가치는 죽은 낚시왕께서도 알아주시지!%nl%%{@TAB}%&c&l[ SYSTEM ] &r&f재료가 부족합니다" to player
+        else if "%{_tag}%" contains "은빛 낚싯대":
+            name of current inventory does not contain "&f&f&f&f&r&0퀘스트: 장인이 되기 위해서"
+            if player doesn't have enough space for 1 of barrier:
+                onPlaySoundEvent("BLOCK_NOTE_BLOCK_BELL", player)
+                message "%{@TAB}%&b&l[ 강바다 ] &r&f : 가방이 조금 무거운 거 같은데??%nl%%{@TAB}%&c&l[ SYSTEM ] &r&f인벤토리에 공간이 부족합니다" to player
+            else if checkShop1Event(player, "은빛 낚싯대") is true:
+                clearShop1Event(player, "은빛 낚싯대")
+                onPlaySoundEvent("item.book.page_turn", player)
+                message "%{@TAB}%&b&l[ 강바다 ] &r&f : 조심히쓰길 바라!" to player
+                execute console command "/customfishing items rod give %player% silver_rod"
+            else:
+                onPlaySoundEvent("BLOCK_NOTE_BLOCK_BELL", player)
+                message "%{@TAB}%&b&l[ 강바다 ] &r&f : 이 친구들의 가치는 죽은 낚시왕께서도 알아주시지!%nl%%{@TAB}%&c&l[ SYSTEM ] &r&f재료가 부족합니다" to player
+        else if "%{_tag}%" contains "금빛 낚싯대":
+            name of current inventory does not contain "&f&f&f&f&r&0퀘스트: 장인이 되기 위해서"
+            if player doesn't have enough space for 1 of barrier:
+                onPlaySoundEvent("BLOCK_NOTE_BLOCK_BELL", player)
+                message "%{@TAB}%&b&l[ 강바다 ] &r&f : 가방이 조금 무거운 거 같은데??%nl%%{@TAB}%&c&l[ SYSTEM ] &r&f인벤토리에 공간이 부족합니다" to player
+            else if checkShop1Event(player, "금빛 낚싯대") is true:
+                clearShop1Event(player, "금빛 낚싯대")
+                onPlaySoundEvent("item.book.page_turn", player)
+                message "%{@TAB}%&b&l[ 강바다 ] &r&f : 조심히쓰길 바라!" to player
+                execute console command "/customfishing items rod give %player% golden_rod"
+            else:
+                onPlaySoundEvent("BLOCK_NOTE_BLOCK_BELL", player)
+                message "%{@TAB}%&b&l[ 강바다 ] &r&f : 이 친구들의 가치는 죽은 낚시왕께서도 알아주시지!%nl%%{@TAB}%&c&l[ SYSTEM ] &r&f재료가 부족합니다" to player
+        else if "%{_tag}%" contains "별빛 낚싯대":
+            name of current inventory does not contain "&f&f&f&f&r&0퀘스트: 장인이 되기 위해서"
+            if player doesn't have enough space for 1 of barrier:
+                onPlaySoundEvent("BLOCK_NOTE_BLOCK_BELL", player)
+                message "%{@TAB}%&b&l[ 강바다 ] &r&f : 가방이 조금 무거운 거 같은데??%nl%%{@TAB}%&c&l[ SYSTEM ] &r&f인벤토리에 공간이 부족합니다" to player
+            else if checkShop1Event(player, "별빛 낚싯대") is true:
+                clearShop1Event(player, "별빛 낚싯대")
+                onPlaySoundEvent("item.book.page_turn", player)
+                message "%{@TAB}%&b&l[ 강바다 ] &r&f : 조심히쓰길 바라!" to player
+                execute console command "/customfishing items rod give %player% star_rod"
+            else:
+                onPlaySoundEvent("BLOCK_NOTE_BLOCK_BELL", player)
+                message "%{@TAB}%&b&l[ 강바다 ] &r&f : 이 친구들의 가치는 죽은 낚시왕께서도 알아주시지!%nl%%{@TAB}%&c&l[ SYSTEM ] &r&f재료가 부족합니다" to player
+
+
+
+on region enter:
+    wait 3 ticks
+    if "%region at player%" contains "fishingspotnormal":
+        execute console command "/warp fishingspotnether %player%"
+    else if "%region at player%" contains "fishingspotnether":
+        execute console command "/warp fishingspotnormal %player%"
+    else if "%region at player%" contains "fishingspotskyworldentrance":
+        execute console command "/warp skyworldentrance %player%"
+        showTitleToPlayer("&b하늘 정원", player, 3 second, 1 second, 1 second)
+
+
+every 2 seconds:
+    loop all players:
+        loop-player's world is {@WORLD}
+        loop-player is not op
+        "%region at loop-player%" does not contain "fishingspot"
+        execute console command "/mv tp %loop-player% %{@WORLD}%"
+        message "%{@TAB}%&c&l[ WARNING ] 하늘 호수에서 벗어났습니다!" to loop-player
+        #> 기본 호수 : fishingspotskylake
+        #> 하늘섬 : fishingspotskyisland
+
+
+
+#> effect
+every 60 seconds:
+    loop all players:
+        loop-player's world is {@WORLD}
+        clear all the potion effects of loop-player
+        apply potion of speed of tier 2 to loop-player for 120 seconds
+        apply potion of jump boost of tier 1 to loop-player for 120 seconds
+
+
+
+
+
+#> 퀘스트 초기화 커맨드
+#command /fishingspotquestreset <integer> <player>:
+    #permission: op
+    #trigger:
+        #if arg 1 is 1:
+            #if {fishingSpotLavaEvent::%uuid of arg 2%} is true:
+                #delete {fishingSpotLavaEvent::%uuid of arg 2%}
+                #delete {quest::%uuid of arg 2%::fishingSpotLavaEvent}
+                #message "%{@TAB}%&d&l[ SYSTEM ] &r&f %{nick::%uuid of arg 2%}%의 꿀꿀이 퀘스트 유무가 지워짐" to player
+            #else:
+                #message "%{@TAB}%&c&l[ SYSTEM ] &r&f %{nick::%uuid of arg 2%}%은(는) 꿀꿀이 퀘스트를 수행하지 않음" to player
+
+
+#> 월드 텔레포트 커맨드
+command /낚시:
+    aliases: /worldfishing, /skrtl
+    permission: op
+    trigger:
+        execute console command "/mv tp %player% %{@WORLD}%"
+        apply potion of speed of tier 2 to player for 120 seconds
+        apply potion of jump boost of tier 1 to player for 120 seconds
+
+on rightclick:
+    player's world is "campus"
+    if "%clicked entity%" contains "때껄룩":
+        execute console command "/mv tp %player% %{@WORLD}%"
+
+
+
+#> 기본 방지
+on break:
+    player's world is {@WORLD}
+    player is not op
+    event-block is barrel
+    set {_nbt} to nbt compound of event-block
+    if "%{_nbt}%" contains "Slot":
+        set {_temp} to true
+        message "ㅎㅇ" to player
+    else:
+        cancel event
+
+
+
+on break:
+    player's world is {@WORLD}
+    player is not op
+    event-block is not barrel
+    cancel event
+
+on place:
+    player's world is {@WORLD}
+    player is not op
+    cancel event
+
+#> 블럭 우클릭(문이나 다락문, 레버 등등)
+
+on rightclick:
+    player's world is {@WORLD}
+    player is not op
+    event-entity is set
+    if event-entity is horse:
+        cancel event
+    else if "%name of event-entity%" contains "boat":
+        cancel event
+
+on rightclick:
+    player's world is {@WORLD}
+    player is not op
+    if "%player's tool%" contains "bucket":
+        cancel event
+    else if "%player's tool%" contains "양동이":
+        cancel event
+
+
+
+on rightclick:
+    player's world is {@WORLD}
+    player is not op
+    event-block is set
+    if "%event-block%" contains "carpet":
+        set {_index} to true
+    else if "%event-block%" contains "flower" and "pot":
+        set {_index} to true
+    else if "%event-block%" contains "slab":
+        set {_index} to true
+    else if "%event-block%" contains "stair":
+        set {_index} to true
+    else if "%event-block%" contains "ender" and "chest":
+        set {_index} to true
+    if {_index} is not set:
+        cancel event
+        if "%region at player%" contains "fishingspotkinggrave":
+            "%event-block%" contains "trapped" and "chest":
+                showTitleToPlayer("&0내 목소리가 들리던가...?", player, 2 second, 1 second, 1 second)
+                message "%{@TAB}%&0&l[ 낚시왕 ] &r&f : 용케도 발견했구나... 기다리거라" to player
+                #onPlaySoundEvent("entity.ender_dragon.growl", player)
+                onOptionalPlaySoundEvent("entity.ender_dragon.ambient", player, 1, 0.5)
+        if "%event-block%" contains "barrel":
+            execute console command "/customfishing open market %player%"
+
+
+on rightclick on entity:
+    player's world is {@WORLD}
+    player is not op
+    set {_nbt} to nbt compound of event-entity
+    if tag "Invisible" of {_nbt} is 1:
+        set tag "Invisible" of {_nbt} to 1
+    else:
+        set tag "Invisible" of {_nbt} to 0
+
+
+#> 아이템 액자 뽀새는 거 방지
+on damage:
+    attacker's world is {@WORLD}
+    attacker is not op
+    victim is a item frame
+    cancel event
+    set {_nbt} to nbt compound of victim
+    if tag "Invisible" of {_nbt} is 1:
+        set tag "Invisible" of {_nbt} to 1
+    else:
+        set tag "Invisible" of {_nbt} to 0
+
+
+#> 아이템 액자 꺼내는 거 방지
+on rightclick:
+    player's world is {@WORLD}
+    player is not op
+    if event-entity is item frame:
+        cancel event
+
+
+on break of item frame:
+    player's world is {@WORLD}
+    player is not op
+    if "%item of event-entity%" contains "air":
+        cancel event
+    else:
+        cancel event
+
+
+
+
+command /fishingspotdenyspawn:
+    permission: op
+    trigger:
+        execute player command "/rg flag -w ""fishingspot"" __global__ deny-spawn %{@DENY_SPAWN}%"
+
+command /testtestfishing:
+    permission: op
+    trigger:
+        message "&7===================================%nl% %nl%&b&l%{@TAB}%[ FISHING ] &r&e%{nick::%uuid of player%}%(이)가 대가의 낚싯대를 처음으로 획득했습니다!%nl% %nl%&7===================================" to player
+
+
+on damage:
+    attacker's world is {@WORLD}
+    attacker is not op
+    attacker is a player
+    cancel event
+
+on damage:
+    victim's world is {@WORLD}
+    victim is a player
+    damage cause is fall
+    cancel event
+
+
+on drop:
+    player's world is {@WORLD}
+    player is not op
+    event-item is fishing rod
+    cancel event
+
+
+
+
+
+
+#> 낚시월드 -317 -60 85
+command /dongjincookie:
+    permission: op
+    trigger:
+        giveItemToPlayerWithNbt(player, 1, golden carrot, "&a동진 쿠키", "&f영남대에서만 찾아볼 수 있는 특제 쿠키!%nl%&f맛은 언제나 상상을 넘어선다고%nl% %nl%&7보기엔 그래도 먹을 수 있어요..!!", 1)

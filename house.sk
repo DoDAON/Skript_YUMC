@@ -1,0 +1,3 @@
+on spawn:
+    if event-entity's world is "house":
+        cancel event

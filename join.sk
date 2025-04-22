@@ -1,0 +1,112 @@
+on join:
+#    if player is not op:
+#        broadcast "&c■ OP가 아닌 유저(%player%)&c의 접속으로 킥 처리합니다."
+#        kick player due to "&c현재 시즌5 준비 중이므로 오피가 아닌 유저는 접속이 어렵습니다."
+#        stop
+    if player is not op:
+        if {fixTimeOn} is true:
+            kick player due to "&c&l[ SYSTEM ] &f YUMC 서버점검 중입니다. 잠시 후 접속해주세요. 자세한 안내는 디소크드를 확인해주세요"
+            stop
+    if {nick::%uuid of player%} is set:
+        set join message to "&a&l[+] &r%{nick::%uuid of player%}%&r&7(%player%)&e님의 등장!"
+        set {_player} to uuid of player
+        if {partylist::%{_player}%::*} is set:
+            if {partyIndex::%{_player}%} is not set:
+                set {partyIndex::%{_player}%} to 0
+            loop {partylist::%{_player}%::*}:
+                add 1 to {_index}
+            if {partyIndex::%{_player}%} is not {_index}:
+                set {partyIndex::%{_player}%} to {_index}
+    else:
+        set join message to "&a&l[+] &r%player%&r&7(%player%)&e님의 등장!"
+
+    set {_ismember} to text from "http://mc.yu.ac.kr/ismember.php?uuid=%uuid of player%"
+    if "%{_ismember}%" contains "YESYESYES":
+        set {ismember1::%uuid of player%} to 1
+        message "&a■ 허가된 플레이어의 입장을 환영합니다!" to player
+        message "&a■ /cl 로 명령어를 확인하실 수 있습니다." to player
+        delete {nick::%uuid of player%}
+        if {nick::%uuid of player%} is not set:
+            set {_cb::*} to {_ismember} split at "///"
+            set {nick::%uuid of player%} to {_cb::2} 
+            execute console command "/nickname %player% %{nick::%uuid of player%}%"
+            execute console command "/tab player %player% customtabname &f%{nick::%uuid of player%}%"
+            execute console command "/tab player %player% customtagname &f%{nick::%uuid of player%}%"
+            if {firstPlayer::%uuid of player%} is true:
+                execute console command "/mv tp %player% campus"
+                delete {firstPlayer::%uuid of player%}
+            wait 3 seconds
+            message "&d&l[ SYSTEM ] &e/cl &f명령어를 사용하여 서버에 이용 가능한 명령어를 확인해주세요!%nl%&7(/cl 1, /cl 2, ...)" to player 
+            message "&b&l[ TIP ] &c서버 리소스팩&f이 존재합니다. 사용하셔야 서버의 모든 자원을 보실 수 있습니다" to player 
+            wait 10 seconds
+            if {isWelcomKit::%uuid of player%} is not set:
+                showTitleToPlayer("&b웰컴키트&f를 받아주세요!", player, 1 second, 1 second, 1 second)
+                play sound "ENTITY_PLAYER_LEVELUP" with volume 1 with pitch 1 to player
+                message "&d&l[ SYSTEM ] &b/welcomkit &f명령어를 통해서 웰컴키트를 수령할 수 있어요!" to player
+    else:
+        broadcast "&e■ 가입되지 않은 플레이어(%player%)&f의 접속입니다."
+        kick player due to "&aYUMC 공식 홈페이지에서 회원가입(영대생 인증)이 필요한 플레이어입니다.%nl%&f 홈페이지에 접속해서 인증을 진행해주세요! &e>>http://mc.yu.ac.kr<<"
+        #kick player due to "&cYUMC 공식 홈페이지에서 회원가입(영대생 인증)이 필요한 플레이어입니다. 공식 홈페이지 &e<< http://mc.yu.ac.kr >> &c에서 가입을 진행하시기 바랍니다. 문제가 있는 경우 관리자에게 문의하세요."
+
+on first join:
+#    if player is not op:
+#        broadcast "&c■ OP가 아닌 유저(%player%)&c의 접속으로 킥 처리합니다."
+#        kick player due to "&c현재 시즌5 준비 중이므로 오피가 아닌 유저는 접속이 어렵습니다."
+#        stop
+
+    if {nick::%uuid of player%} is set:
+        set join message to "&a&l[+] &r%{nick::%uuid of player%}%&r&7(%player%)&e님의 등장!"
+        set {_player} to uuid of player
+        if {partylist::%{_player}%::*} is set:
+            if {partyIndex::%{_player}%} is not set:
+                set {partyIndex::%{_player}%} to 0
+            loop {partylist::%{_player}%::*}:
+                add 1 to {_index}
+            if {partyIndex::%{_player}%} is not {_index}:
+                set {partyIndex::%{_player}%} to {_index}
+    else:
+        set join message to "&a&l[+] &r%player%&r&7(%player%)&e님의 등장!"
+
+    set {_ismember} to text from "http://mc.yu.ac.kr/ismember.php?uuid=%uuid of player%"
+    if "%{_ismember}%" contains "YESYESYES":
+        set {ismember1::%uuid of player%} to 1
+        message "&a■ 허가된 플레이어의 입장을 환영합니다!" to player
+        message "&a■ /cl 로 명령어를 확인하실 수 있습니다." to player
+        delete {nick::%uuid of player%}
+        if {nick::%uuid of player%} is not set:
+            set {_cb::*} to {_ismember} split at "///"
+            set {nick::%uuid of player%} to {_cb::2} 
+            execute console command "/nickname %player% %{nick::%uuid of player%}%"
+            execute console command "/tab player %player% customtabname %{nick::%uuid of player%}%"
+            execute console command "/tab player %player% customtagname %{nick::%uuid of player%}%"
+            wait 1 tick
+            execute console command "/mv tp %player% campus"
+            wait 3 seconds
+            message "&d&l[ SYSTEM ] &e/cl &f명령어를 사용하여 서버에 이용 가능한 명령어를 확인해주세요!%nl%&7(/cl 1, /cl 2, ...)" to player 
+            message "&b&l[ TIP ] &c서버 리소스팩&f이 존재합니다. 사용하셔야 서버의 모든 자원을 보실 수 있습니다" to player 
+            wait 10 seconds
+            if {isWelcomKit::%uuid of player%} is not set:
+                showTitleToPlayer("&b웰컴키트&f를 받아주세요!", player, 1 second, 1 second, 1 second)
+                play sound "ENTITY_PLAYER_LEVELUP" with volume 1 with pitch 1 to player
+                message "&d&l[ SYSTEM ] &b/welcomkit &f명령어를 통해서 웰컴키트를 수령할 수 있어요!" to player
+    else:
+        broadcast "&e■ 가입되지 않은 플레이어(%player%)&f의 접속입니다."
+        set {firstPlayer::%uuid of player%} to true
+        kick player due to "&aYUMC 공식 홈페이지에서 회원가입(영대생 인증)이 필요한 플레이어입니다.%nl%&f 홈페이지에 접속해서 인증을 진행해주세요! &e>>http://mc.yu.ac.kr<<"
+        #kick player due to "&cYUMC 공식 홈페이지에서 회원가입(영대생 인증)이 필요한 플레이어입니다. 공식 홈페이지 &e<< http://mc.yu.ac.kr >> &c에서 가입을 진행하시기 바랍니다. 문제가 있는 경우 관리자에게 문의하세요."
+
+on quit:
+    if {nick::%uuid of player%} is set:
+        set quit message to "&c&l[-] &r%{nick::%uuid of player%}%&r&7(%player%)&e님의 퇴장!"
+    else:
+        set quit message to "&c&l[-] &r%player%&r&7(%player%)&e님의 퇴장!"
+
+
+
+
+
+
+
+command /testjoinmes:
+    trigger:
+        message "&aYUMC 공식 홈페이지에서 회원가입(영대생 인증)이 필요한 플레이어입니다.&f 클릭하여 공식 홈페이지로 가봐요! &e>> &n<link:http://mc.yu.ac.kr>http://mc.yu.ac.kr <reset>&e << %nl%&r&a문제가 발생했을 경우 디스코드로 문의주세요. %nl%&b >> &n<link:https://discord.gg/S2aUqpKTwG>  디스코드 바로가기  <reset> &b<<" to player

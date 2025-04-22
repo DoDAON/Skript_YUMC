@@ -1,0 +1,229 @@
+options:
+    HEAD: "Q" or "q" or "W" or "w" or "E" or "e" or "R" or "r" or "T" or "t" or "A" or "a" or "S" or "s" or "D" or "d" or "F" or "f" or "G" or "g" or "Z" or "z" or "X" or "x" or "C" or "c" or "V" or "v"
+    BODY: "Y" or "y" or "U" or "u" or "I" or "i" or "O" or "o" or "P" or "p" or "H" or "h" or "J" or "j" or "K" or "k" or "L" or "l" or "B" or "b" or "N" or "n" or "M" or "m"
+    BODY_H: "K" or "k" or "L" or "l" or "o"
+    BODY_N: "J" or "j" or "L" or "l" or "p"
+    BODY_M: "L" or "l"
+    FOOT: "q" or "w" or "e" or "R" or "r" or "T" or "t" or "A" or "a" or "S" or "s" or "D" or "d" or "F" or "f" or "G" or "g" or "Z" or "z" or "X" or "x" or "C" or "c" or "V" or "v"
+    PAIR: "Q" or "E" or "W"
+    FOOT_R: "t"
+    FOOT_S: "w" or "G" or "g"
+    FOOT_Q: "t"
+    FOOT_F: "r" or "A" or "a" or "q" or "t" or "X" or "x" or "V" or "v" or "G" or "g"
+
+function translateWhisperMessage(t: text) :: text:
+    set {_ddao} to {_t}
+    set {_split::*} to {_t} split at "]]"
+    loop {_split::*}:
+        set {_tran::%loop-index%::*} to loop-value split at "[["
+    loop {_split::*}:
+        loop {_tran::%loop-index-1%::*}:
+            if loop-index-2 is "1":
+                delete {_merge}
+                set {_char::*} to loop-value-2 split at ""
+                set {_cn} to 0
+                set {_ln} to 1
+                set {_while} to true
+                while {_while} is true:
+                    # 자음
+                    add 1 to {_cn}
+                    if {hangul::%{_char::%{_cn}%}%} is not set:
+                        set {_lett::%{_ln}%} to "%{_char::%{_cn}%}%"
+                    else if {_char::%{_cn}%} is {@BODY}:
+                        set {_lett::%{_ln}%} to "%{_char::%{_cn}%}%"
+                    else if {_char::%{_cn}%} is {@HEAD}:
+                        set {_lett::%{_ln}%} to "%{_char::%{_cn}%}%"
+                    # 모음
+                        add 1 to {_cn}
+                        if {_char::%{_cn}%} is {@HEAD}:
+                            remove 1 from {_cn}
+                        else if {_char::%{_cn}%} is {@BODY}:
+                            set {_end1} to true
+                            set {_lett::%{_ln}%} to "%{_lett::%{_ln}%}%%{_char::%{_cn}%}%"
+                    # 모음+모음
+                            add 1 to {_cn}
+                            if {_char::%{_cn}%} is {@BODY}:
+                                remove 1 from {_cn}
+                                if {_char::%{_cn}%} is "h" or "H":
+                                    add 1 to {_cn}
+                                    if {_char::%{_cn}%} is {@BODY_H}:
+                                        set {_lett::%{_ln}%} to "%{_lett::%{_ln}%}%%{_char::%{_cn}%}%"
+                                        add 1 to {_cn}
+                                    else:
+                                        set {_pass} to true
+                                else if {_char::%{_cn}%} is "n" or "N":
+                                    add 1 to {_cn}
+                                    if {_char::%{_cn}%} is {@BODY_N}:
+                                        set {_lett::%{_ln}%} to "%{_lett::%{_ln}%}%%{_char::%{_cn}%}%"
+                                        add 1 to {_cn}
+                                    else:
+                                        set {_pass} to true
+                                else if {_char::%{_cn}%} is "m" or "M":
+                                    add 1 to {_cn}
+                                    if {_char::%{_cn}%} is {@BODY_M}:
+                                        set {_lett::%{_ln}%} to "%{_lett::%{_ln}%}%%{_char::%{_cn}%}%"
+                                        add 1 to {_cn}
+                                    else:
+                                        set {_pass} to true
+                    # 자음받임
+                    if {_pass} is true:
+                        set {_pass} to false
+                        set {_end1} to false
+                        remove 1 from {_cn}
+                    if {_end1} is true:
+                        set {_end1} to false
+                        if {hangul::%{_char::%{_cn}%}%} is not set:
+                            remove 1 from {_cn}
+                        else if {_char::%{_cn}%} is {@PAIR}:
+                            remove 1 from {_cn}
+                        else if {_char::%{_cn}%} is {@BODY}:
+                            remove 1 from {_cn}
+                        else if {_char::%{_cn}%} is {@FOOT}:
+                            set {_end2} to true
+                            set {_lett::%{_ln}%} to "%{_lett::%{_ln}%}%%{_char::%{_cn}%}%"
+                            add 1 to {_cn}
+                            if {_char::%{_cn}%} is {@HEAD}:
+                                remove 1 from {_cn}
+                                if {_char::%{_cn}%} is "r":
+                                    add 1 to {_cn}
+                                    if {_char::%{_cn}%} is {@FOOT_R}:
+                                        set {_lett::%{_ln}%} to "%{_lett::%{_ln}%}%%{_char::%{_cn}%}%"
+                                        add 1 to {_cn}
+                                    else:
+                                        set {_pass} to true
+                                else if {_char::%{_cn}%} is "s" or "S":
+                                    add 1 to {_cn}
+                                    if {_char::%{_cn}%} is {@FOOT_S}:
+                                        set {_lett::%{_ln}%} to "%{_lett::%{_ln}%}%%{_char::%{_cn}%}%"
+                                        add 1 to {_cn}
+                                    else:
+                                        set {_pass} to true
+                                else if {_char::%{_cn}%} is "f" or "F":
+                                    add 1 to {_cn}
+                                    if {_char::%{_cn}%} is {@FOOT_F}:
+                                        set {_lett::%{_ln}%} to "%{_lett::%{_ln}%}%%{_char::%{_cn}%}%"
+                                        add 1 to {_cn}
+                                    else:
+                                        set {_pass} to true
+                                else if {_char::%{_cn}%} is "q":
+                                    add 1 to {_cn}
+                                    if {_char::%{_cn}%} is {@FOOT_Q}:
+                                        set {_lett::%{_ln}%} to "%{_lett::%{_ln}%}%%{_char::%{_cn}%}%"
+                                        add 1 to {_cn}
+                                    else:
+                                        set {_pass} to true
+                                else:
+                                    add 1 to {_cn}
+                                    set {_pass} to true
+                    # 공백제거
+                    if {_pass} is true:
+                        set {_pass} to false
+                        set {_end2} to false
+                        remove 1 from {_cn}
+                    if {_end2} is true:
+                        set {_end2} to false
+                        if {hangul::%{_char::%{_cn}%}%} is not set:
+                            remove 1 from {_cn}
+                        else if {_char::%{_cn}%} is {@HEAD}:
+                            remove 1 from {_cn}
+                        else if {_char::%{_cn}%} is {@BODY}:
+                            remove 1 from {_cn}
+                            set {_empty::*} to {_lett::%{_ln}%} split by ""
+                            if {_empty::6} is "": 
+                                set {_lett::%{_ln}%} to "%{_empty::1}%%{_empty::2}%%{_empty::3}%%{_empty::4}%"
+                            else if {_empty::5} is "": 
+                                set {_lett::%{_ln}%} to "%{_empty::1}%%{_empty::2}%%{_empty::3}%"
+                            else if {_empty::4} is "":
+                                set {_lett::%{_ln}%} to "%{_empty::1}%%{_empty::2}%"
+                            remove 1 from {_cn}
+                    # 쌍자음 변환
+                    set {_pair::*} to {_lett::%{_ln}%} split by ""
+                    loop {_pair::*}:
+                        if loop-value-3 is "Q":
+                            set {_pair::%loop-index-3%} to "qq"
+                        if loop-value-3 is "W":
+                            set {_pair::%loop-index-3%} to "ww"
+                        if loop-value-3 is "E":
+                            set {_pair::%loop-index-3%} to "ee"
+                        if loop-value-3 is "R":
+                            set {_pair::%loop-index-3%} to "rr"
+                        if loop-value-3 is "T":
+                            set {_pair::%loop-index-3%} to "tt"
+                        if loop-value-3 is "O":
+                            set {_pair::%loop-index-3%} to "oo"
+                        if loop-value-3 is "P":
+                            set {_pair::%loop-index-3%} to "pp"
+                        if {_pair} is not set:
+                            set {_pair} to "%{_pair::%loop-index-3%}%"
+                        else:
+                            set {_pair} to "%{_pair}%%{_pair::%loop-index-3%}%"
+                    set {_lett::%{_ln}%} to {_pair}
+                    delete {_pair}
+                    #레터결합
+                    if {_merge} is not set:
+                        if {hangul::%{_lett::%{_ln}%}%} is set:
+                            set {_merge} to "%{hangul::%{_lett::%{_ln}%}%}%"
+                        else:
+                            set {_merge} to "%{_lett::%{_ln}%}%"
+                    else:
+                        if {hangul::%{_lett::%{_ln}%}%} is set:
+                            set {_merge} to "%{_merge}%%{hangul::%{_lett::%{_ln}%}%}%"
+                        else:
+                            set {_merge} to "%{_merge}%%{_lett::%{_ln}%}%"
+                    add 1 to {_ln}
+                    if number of {_char::*} is {_cn}:
+                        set {_while} to false
+                set {_tran::%loop-index-1%::%loop-index-2%} to {_merge}
+            if {_finish} is not set:
+                set {_finish} to "%{_tran::%loop-index-1%::%loop-index-2%}%"
+            else if {_finish} is set:
+                set {_finish} to "%{_finish}%%{_tran::%loop-index-1%::%loop-index-2%}%"
+    replace all "&" with "" in {_finish}
+    return {_finish}
+
+
+
+
+#> 귓속말 로직
+#> @param msg   할 말
+#> @param to    귓속말 받는 플레이어
+#> @param from  귓속말 보내는 플레이어
+function whisperEvent(msg: text, to: player, from: player):
+    set {_msg} to translateWhisperMessage({_msg})
+    message "&e[ &c-> %{nick::%uuid of {_to}%}% &e] : &b%{_msg}%" to {_from}
+    message "&e[ &6%{nick::%uuid of {_from}%}% -> &e] : &a%{_msg}%" to {_to}
+    set {whisper::%uuid of {_from}%} to {_to}
+    set {whisper::%uuid of {_to}%} to {_from}
+    log "w-%{_from}%(%{nick::%uuid of {_from}%}%) -> %{_to}%(%{nick::%uuid of {_to}%}%) :: %{_msg}%" to "chatlog2.log"
+
+on tab complete of "/w":
+    set {_user::1} to "a"
+    set {_index} to 0
+    loop all players:
+        add 1 to {_index}
+        set {_user::%{_index}%} to {nick::%uuid of loop-player%}
+    set tab completions for position 1 to {_user::*}
+
+
+#> 귓속말
+command /w <text> [<text>]:
+    trigger:
+        set {_uuid} to HangulToUUID(arg 1)
+        set {_user} to uuidToUsername({_uuid})
+        if arg 2 is set:
+            whisperEvent(arg 2, {_user}, player)
+
+
+#> 최근 소통 플레이어에게 바로 보내기
+command /r [<text>]:
+    trigger:
+        if arg 1 is set:
+            if {whisper::%uuid of player%} is not set:
+                message "&4최근 수신, 발신한 플레이어가 존재하지 않습니다" to player
+            else:
+                whisperEvent(arg 1, {whisper::%uuid of player%}, player)
+
+
+#> 접속 종료 시 최근 소통 플레이어 삭제
+on disconnect:
+    delete {whisper::%uuid of player%}

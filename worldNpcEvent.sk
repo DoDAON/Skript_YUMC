@@ -1,0 +1,25 @@
+on rightclick:
+    if "%clicked entity%" contains "sykim1352npc":
+        chance of 33%:
+            message "&d&l[ NPC ] &r&f동진님.. 저 구리 얼마나 더 캐야해요...?" to player
+            stop
+        chance of 33%:
+            message "&d&l[ NPC ] &r&f구리 1만세트 가져오면 별풍선 5개" to player
+            stop
+        chance of 34%:
+            message "&d&l[ NPC ] &r&f구리 떡상은 꿈이 아니다..!" to player
+            stop
+    else if "%clicked entity%" contains "Poison_Kumonpc":
+        chance of 33%:
+            message "&d&l[ NPC ] &r&f오빠랑 호박 농사 지을래?" to player
+            stop
+        chance of 33%:
+            message "&d&l[ NPC ] &r&f모바일되나요? 폰으로도 호박 캘 수 있어요?" to player
+            stop
+        chance of 33%:
+            message "&d&l[ NPC ] &r&f아니면 오빠랑 쿠킹덤할래??" to player
+            stop
+        chance of 34%:
+            message "&d&l[ NPC ] &r&f도다온 호박 판매 당장 해라 1트째" to player
+            stop
+

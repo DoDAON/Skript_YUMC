@@ -1,0 +1,152 @@
+#> 1. 칭호 이름, 설명(조건) style.name::1 , style.lore::1 이런 식으로
+#> 2. 칭호 얻은 날짜 설정 styleDate.%uuid of player%::1 to %now% 이런 식으로
+#> 3. 칭호 얻은 날짜가 있다면 획득한 걸로 판단
+#> 4. 각 칭호 카운트 변수
+
+command /testgetstyle <integer>:
+    permission: op
+    trigger:
+        set {styleDate.%uuid of player%::%arg 1%} to "%now%"
+        message "됨" to player
+
+options:
+    SPECIAL_START: 5000
+    SPECAIL_CONTENT: "SPESPESPE"
+    MODE_NOM: "normal"
+    MODE_SPE: "special"
+
+
+#> 잭 스패로우 동진쿠키 64개 2세트로 코인 1개 획득, 코인 64개 2세트로 칭호 교환권 하나 획득
+#> 이름 : 내가 만든 쿠키, 획득 조건 : 하늘 호수에서 획득 가능
+
+
+#> TODO
+
+
+command /getstylename <player> <integer>:
+    permission: op
+    trigger:
+        set {styleDate.%uuid of arg 1%::%arg 2%} to "%now%"
+        message "&d[ SYSTEM ] &f%{nick::%uuid of arg 1%}%에게 %{style.name::%arg 2%}% 칭호를 주었습니다." to player
+        message "&d[ SYSTEM ] &f%{style.name::%arg 2%}% 칭호를 획득하였습니다!" to arg 1
+
+command /deletestylename <player> <integer>:
+    permission: op
+    trigger:
+        delete {styleDate.%uuid of arg 1%::%arg 2%}
+        message "&d[ SYSTEM ] &f%{nick::%uuid of arg 1%}%의 %{style.name::%arg 2%}% 칭호를 제거하였습니다." to player
+        message "&d[ SYSTEM ] &f%{style.name::%arg 2%}% 칭호를 제거하였습니다" to arg 1
+
+
+on load:
+    set {style.name::{@SPECIAL_START}} to {@SPECAIL_CONTENT}
+    
+
+
+function openStyleListPage(p: player, page: integer, mode: text):
+    close {_p}'s inventory
+    set {_startIndex} to 0
+    if {_mode} is {@MODE_SPE}:
+        addInventory(6, {_p}, "&a&l[칭호] &r&0칭호 목록 페이지/특수/%{_page}%")
+    else:
+        addInventory(6, {_p}, "&a&l[칭호] &r&0칭호 목록 페이지/일반/%{_page}%")
+    wait 1 tick
+    if {_mode} is {@MODE_NOM}:
+        set {_startIndex} to {_page} * 44 - 44 + {_page}
+    else if {_mode} is {@MODE_SPE}:
+        set {_startIndex} to {_page} * 44 - 44 + {_page} + {@SPECIAL_START}
+    loop 45 times:
+        if {style.name::%{_startIndex}%} is not set:
+            exit loop
+        if {styleDate.%uuid of {_p}%::%{_startIndex}%} is set:
+            addSlotItem(loop-num - 1, {_p}, lime dye, "&b%{style.name::%{_startIndex}%}%", "&b획득한 칭호 (%{styleDate.%uuid of {_p}%::%{_startIndex}%}%)%nl%&7%{style.lore::%{_startIndex}%}%")
+        else:
+            addSlotItem(loop-num - 1, {_p}, gray dye, "&b%{style.name::%{_startIndex}%}%", "&c미획득 칭호%nl%&7%{style.lore::%{_startIndex}%}%")
+        add 1 to {_startIndex}
+    if {styleCur::%uuid of {_p}%} is set:
+        addSlotItem(49, {_p}, skull of {_p}, "&d현재 장착 중인 칭호", "&e&l%{styleCur::%uuid of {_p}%}%%nl% %nl%&b&n클릭 시 장착을 해제합니다")
+    else:
+        addSlotItem(49, {_p}, skull of {_p}, "&d현재 장착 중인 칭호", "&c&l없음%nl% %nl%&b&n클릭 시 장착을 해제합니다")
+    if {_mode} is {@MODE_NOM}:
+        addSlotItem(47, {_p}, ender eye, "&a특수 칭호 목록 보기", "&7클릭 시 페이지로 넘어갑니다.")
+    else if {_mode} is {@MODE_SPE}:
+        addSlotItem(47, {_p}, ender pearl, "&a일반 칭호 목록 보기", "&7클릭 시 페이지로 넘어갑니다.")
+    if {_page} > 1:
+        addSlotItem(45, {_p}, arrow, "&r&l이전으로", "&7%{_page} - 1%페이지")
+    if {_mode} is {@MODE_NOM}:
+        set {_styleIndex} to {_page} * 44 + {_page} + 1
+    else if {_mode} is {@MODE_SPE}:
+        set {_styleIndex} to {_page} * 44 + {_page} + 1 + {@SPECIAL_START}
+    if {style.name::%{_styleIndex}%} is set:
+        addSlotItem(53, {_p}, arrow, "&r&l다음으로", "&7%{_page} + 1%페이지")
+
+
+command /ch:
+    aliases: /칭호
+    trigger:
+        openStyleListPage(player, 1, {@MODE_NOM})
+
+
+function checkNameInArray(name: text) :: integer:
+    set {_index} to 1
+    loop {style.name::*}:
+        if loop-value is {@SPECAIL_CONTENT}:
+            set {_index} to {@SPECIAL_START} + 1
+        else:
+            if {_name} contains loop-value:
+                return {_index}
+            add 1 to {_index}
+    return -1
+
+
+#> 나중에 특수 칭호는 숫자 다르게 해서 그 인덱스 넘어가면 색깔 다르게 설정
+function changePrefix(p: player, number: integer):
+    set {styleCur::%uuid of {_p}%} to {style.name::%{_number}%}
+    set {_color} to "&f"
+    if "%{opDisplayOff::%uuid of {_p}%}%" contains {levelPrefix::10}:
+        execute console command "/tab player %{_p}% tabprefix %{levelPrefix::10}% %{_color}%%{styleCur::%uuid of {_p}%}% &f"
+        execute console command "/tab player %{_p}% abovename %{levelPrefix::10}%"
+    else if "%{opDisplayOff::%uuid of {_p}%}%" contains {levelPrefix::11}:
+        execute console command "/tab player %{_p}% tabprefix %{levelPrefix::11}% %{_color}%%{styleCur::%uuid of {_p}%}% &f"
+        execute console command "/tab player %{_p}% abovename %{levelPrefix::11}%"
+    else:
+        execute console command "/tab player %{_p}% tabprefix %{_color}%%{styleCur::%uuid of {_p}%}% &f"
+        execute console command "/tab player %{_p}% abovename %{_color}%%{styleCur::%uuid of {_p}%}%"
+
+function deletePrefix(p: player):
+    delete {styleCur::%uuid of {_p}%}
+    if "%{opDisplayOff::%uuid of {_p}%}%" contains {levelPrefix::10}:
+        execute console command "/tab player %{_p}% tabprefix %{levelPrefix::10}% &f"
+        execute console command "/tab player %{_p}% abovename %{levelPrefix::10}%"
+    else if "%{opDisplayOff::%uuid of {_p}%}%" contains {levelPrefix::11}:
+        execute console command "/tab player %{_p}% tabprefix %{levelPrefix::11}% &f"
+        execute console command "/tab player %{_p}% abovename %{levelPrefix::11}%"
+    else:
+        execute console command "/tab player %{_p}% tabprefix"
+        execute console command "/tab player %{_p}% abovename"
+
+
+on inventory click:
+    if name of current inventory contains "[칭호]":
+        cancel event
+        set {_pagedata::*} to split name of current inventory at "/"
+        set {_pageNum} to "%{_pagedata::3}%" parsed as integer
+        if clicked item is arrow named "&r&l다음으로":
+            openStyleListPage(player, {_pageNum} + 1, {@MODE_NOM})
+        else if clicked item is arrow named "&r&l이전으로":
+            openStyleListPage(player, {_pageNum} - 1, {@MODE_NOM})
+        else if clicked item is skull of player named "&d현재 장착 중인 칭호":
+            deletePrefix(player)
+            close player's inventory
+            message "&a&l[ STYLE ] &r&6칭호가 해제되었습니다" to player
+        else if clicked item is lime dye:
+            set {_number} to checkNameInArray(name of clicked item)
+            if {_number} is not -1:
+                changePrefix(player, {_number})
+                close player's inventory
+                message "&a&l[ STYLE ] &r&f칭호가 변경되었습니다! 마음에 드셨으면 좋겠네요" to player
+        else if clicked item is ender eye named "&a특수 칭호 목록 보기":
+            openStyleListPage(player, 1, {@MODE_SPE})
+        else if clicked item is ender pearl named "&a일반 칭호 목록 보기":
+            openStyleListPage(player, 1, {@MODE_NOM})
+

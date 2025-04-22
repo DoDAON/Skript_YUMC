@@ -1,0 +1,249 @@
+
+on join:
+    set {_player} to uuid of player
+    # 페가 선언
+    delete {pegaValue::%{_player}%}
+    # 광물 페가
+    delete {pegaMiner::%{_player}%}
+    # 농사 페가
+    delete {pegaFarm::%{_player}%}
+    # 낚시 페가
+    delete {pegaFishing::%{_player}%}
+    # 수렵 페가
+    delete {pegaHunting::%{_player}%}
+    if {pega::%{_player}%} is not set:
+        set {pega::%{_player}%} to 0
+    if {pegaName::%{_player}%} is not set:
+        set {pegaName::%{_player}%} to "%{nick::%{_player}%}%//%{pega::%{_player}%}%"
+
+
+#> {pegaName::%uuid of player%} : 페가 소지중인 플레이어
+#> {pega::%uuid of player%} : 페가 소지량
+
+#> &2&0&0&0&r
+#> 페가상점
+
+#> TODO : 달마다 페가 판매한 유저 대비 페가 획득량을 광물별로 계산해서 시세 측정
+
+
+#> split {_date} at "/"
+
+options:
+    pegaLimit: 500000
+
+on load:
+    if {priceDiamond} is not set:
+        set {priceDiamond} to 0
+    if {priceIron} is not set:
+        set {priceIron} to 0
+    if {priceGold} is not set:
+        set {priceGold} to 0
+    if {priceCopperBlock} is not set:
+        set {priceCopperBlock} to 0
+    if {pegaLimit} is not set:
+        set {pegaLimit} to {@pegaLimit}
+
+
+
+
+command /pegaUserAmount:
+    description: 페가 확인
+    permission: op
+    trigger:
+        set {_date} to now formatted as "yyyyMMdd"
+        set {_time} to now formatted as "HHmm"
+        set {_result} to "%{_date}%_%{_time}%"
+        loop {pegaName::*}:
+            set {_pegaIndex::*} to split loop-value at "//"
+            if {_pegaIndex::1} is not "<none>":
+                message "%loop-value%" to player
+                log "%loop-value%" to "pega/pega%{_result}%.log"
+
+
+command /pegaPriceSet <integer> <integer> <integer> <integer> <integer>:
+    description: 페가 설정
+    permission: op
+    usage: /pegaPriceSet <다이아몬드 가격> <철괴 가격> <금괴 가격> <구리블럭 가격> <석탄블럭 가격>
+    trigger:
+        set {priceDiamond} to arg 1
+        set {priceIron} to arg 2
+        set {priceGold} to arg 3
+        set {priceCopperBlock} to arg 4
+        set {priceCoalBlock} to arg 5
+        message "다이아 : %{priceDiamond}%, 철 : %{priceIron}%, 금 : %{priceGold}%, 구리블록 : %{priceCopperBlock}%, 석탄블럭 : %{priceCoalBlock}%" to player
+
+command /pegaShowPrice:
+    description: 페가 시세 볼 수 있음
+    permission: op
+    trigger:
+        message "다이아 : %{priceDiamond}%, 철 : %{priceIron}%, 금 : %{priceGold}%, 구리블록 : %{priceCopperBlock}%, 석탄블럭 : %{priceCoalBlock}%" to player
+
+
+command /pegaset <player> <integer>:
+    description: 페가 세팅
+    permission: op
+    usage: /pegaset <플레이어> <페가>
+    trigger:
+        set {_player} to uuid of arg 1
+        set {pega::%{_player}%} to arg 2
+        message "%{nick::%{_player}%}% 페가를 %arg 2% 으로 바꿈 ㅅㄱ" to player
+        set {pegaName::%{_player}%} to "%{nick::%{_player}%}%//%{pega::%{_player}%}%"
+
+
+on rightclick:
+    event-block is barrier
+    player's tool is not barrier
+    "%player's world%" contains "campus"
+    cancel event
+    loop all entities in radius 3 around event-block:
+        if loop-entity is item frame:
+            if item of loop-entity is slime ball:
+                if model data of item of loop-entity is 17:
+                    execute console command "/pegashop %player%"
+                    if {pega::%uuid of player%} is not set:
+                        set {pega::%uuid of player%} to 0
+
+function pegaMineralSellInventory(p: player):
+    addInventory(1, {_p}, "&2&0&0&0&r&0광물 판매")
+    addSlotItem( 0, {_p}, skull of {_p}, "&2&0&0&0&r&a판매 대상", "&7해당 광물을 판매합니다." )
+    addSlotItem( 1, {_p}, iron ingot, "&2&0&0&0&r&f철괴", "&7개당 시세 : %{priceIron}%" )
+    addSlotItem( 2, {_p}, gold ingot, "&2&0&0&0&r&e금괴", "&7개당 시세 : %{priceGold}%" )
+    addSlotItem( 3, {_p}, diamond, "&2&0&0&0&r&b다이아몬드", "&7개당 시세 : %{priceDiamond}%" )
+    addSlotItem( 4, {_p}, copper block, "&2&0&0&0&r&6구리 블럭", "&7개당 시세 : %{priceCopperBlock}%" )
+    addSlotItem( 5, {_p}, coal block, "&2&0&0&0&r&8석탄 블럭", "&7개당 시세 : %{priceCoalBlock}%" )
+    addSlotItem( 8, {_p}, red glazed terracotta, "&2&0&0&0&r&f일괄판매", "&7현재 인벤토리에 있는 모든%nl%&7광물을 판매합니다." )
+
+
+function pegaMineralSell(p: player):
+    set {_up} to uuid of {_p}
+    set {_diamonds} to 0
+    set {_irons} to 0
+    set {_golds} to 0
+    set {_coppers} to 0
+    set {_copperBlocks} to 0
+    set {_coalBlocks} to 0
+    loop items in {_p}'s inventory:
+        if loop-item is iron ingot:
+            set {_dd} to "%item amount of loop-item%" parsed as integer
+            add {_dd} to {_irons}
+        else if loop-item is gold ingot:
+            set {_dd} to "%item amount of loop-item%" parsed as integer
+            add {_dd} to {_golds}
+        else if loop-item is diamond:
+            set {_dd} to "%item amount of loop-item%" parsed as integer
+            add {_dd} to {_diamonds}
+        else if loop-item is copper block:
+            set {_dd} to "%item amount of loop-item%" parsed as integer
+            add {_dd} to {_copperBlocks}
+        else if loop-item is coal block:
+            set {_dd} to "%item amount of loop-item%" parsed as integer
+            add {_dd} to {_coalBlocks}
+        set {_dd} to 0
+    set {_sum} to 0
+    add {_diamonds} * {priceDiamond} to {_sum}
+    add {_irons} * {priceIron} to {_sum}
+    add {_golds} * {priceGold} to {_sum}
+    add {_copperBlocks} * {priceCopperBlock} to {_sum}
+    add {_coalBlocks} * {priceCoalBlock} to {_sum}
+    set {_tmp} to {_sum} + {pega::%{_up}%}
+    if {_tmp} > {pegaLimit}:
+        message "&c&l[ WARNING ] &r&c최대 페가를 넘겨 판매할 수 없습니다" to {_p}
+        stop
+    else:
+        add {_sum} to {pega::%{_up}%}
+        wait 1 tick
+        loop items in {_p}'s inventory:
+            if loop-item is iron ingot:
+                remove loop-item from {_p}'s inventory
+            if loop-item is gold ingot:
+                remove loop-item from {_p}'s inventory
+            if loop-item is diamond:
+                remove loop-item from {_p}'s inventory
+            if loop-item is copper block:
+                remove loop-item from {_p}'s inventory
+            if loop-item is coal block:
+                remove loop-item from {_p}'s inventory
+        send "&2&0&0&0&r&d&l[ SYSTEM ] &b광물을 판매했습니다" to {_p}
+        set {pegaName::%{_up}%} to "%{nick::%{_up}%}%//%{pega::%{_up}%}%"
+
+
+
+command /pegaShop [<player>]:
+    aliases: /페가상점
+    description: 페가상점임
+    permission: op
+    trigger:
+        if arg 1 is not set:
+            addInventory(1, player, "&2&0&0&0&r&0페가상점")
+            addSlotItem(3, player, diamond, "&2&0&0&0&r&a페가 판매", "&7자원을 팔아 페가를 획득합니다")
+            addSlotItem(5, player, chest, "&2&0&0&0&r&d개인 금고 열기", "")
+        else:
+            addInventory(1, arg 1, "&2&0&0&0&r&0페가상점")
+            addSlotItem(3, arg 1, diamond, "&2&0&0&0&r&a페가 판매", "&7자원을 팔아 페가를 획득합니다")
+            addSlotItem(5, arg 1, chest, "&2&0&0&0&r&d개인 금고 열기", "")
+
+on inventory click:
+    if name of current inventory contains  "&2&0&0&0&r":
+        cancel event
+        if clicked item is diamond named "&2&0&0&0&r&a페가 판매":
+            close player's inventory
+            pegaMineralSellInventory(player)
+        else if clicked item is red glazed terracotta named "&2&0&0&0&r&f일괄판매":
+            close player's inventory
+            pegaMineralSell(player)
+        else if clicked item is chest named "&2&0&0&0&r&d개인 금고 열기":
+            close player's inventory
+            message "&d&l[ SYSTEM ] &r&f1번 개인 금고를 이용합니다" to player
+            wait 2 ticks
+            execute console command "/vaultOpen1 %player%"
+
+#>message "&c&l[ WARNING ] &r&c금고 이용을 위한 페가가 부족합니다!%nl%&r&f(필요 금액 : 100페가)" to player
+
+
+#> 루프 36
+#> 다이아, 철, 금, 구리, 구리블럭 각각 골라서 팔 수 있음
+
+
+
+
+#> add {_diamonds} to {_diamonds} * item amount of diamond in player's inventory slot
+
+
+
+#> 구현해본 다이아 로켓 겉날개
+#send action bar "&c경고! &e폭죽사용 쿨타임이 남아있습니다" to player
+on rightclick:
+    player is op
+    if player's tool is diamond:
+        if gliding state of player is true:
+            if {cooldownGliding::%player%} is not set:
+                set {_v} to vector from yaw ( yaw of player ) and pitch ( pitch of player )
+                set normal length of {_v} to 1.6
+                set velocity of player to {_v}
+                set {cooldownGliding::%player%} to true
+                wait 1 seconds
+                delete {cooldownGliding::%player%}
+        #push player forwards at speed 1.5
+        #send action bar "rocket ~left!" to player
+
+
+
+
+
+
+
+
+
+command /pegagetfromsellfish <player> [<number>]:
+    permission: op
+    trigger:
+        set {_value1::*} to split "%arg 2%" at "."
+        set {_value} to "%{_value1::1}%" parsed as integer
+        if {_value} > {pegaLimit}:
+            message "&c&l[ WARNING ] &r&c최대 페가를 넘겨 판매할 수 없습니다" to arg 1
+        else:
+            add {_value} to {pega::%uuid of arg 1%}
+            message "&d&l[ SYSTEM ] &r&f물고기를 팔아 &b%{_value}%페가&f를 획득했습니다." to arg 1
+            set {pegaName::%uuid of arg 1%} to "%{nick::%uuid of arg 1%}%//%{pega::%uuid of arg 1%}%"
+        if {pega::%uuid of arg 1%} > {pegaLimit}:
+            set {pega::%uuid of arg 1%} to {pegaLimit}

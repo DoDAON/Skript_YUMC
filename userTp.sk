@@ -1,0 +1,78 @@
+on tab complete of "/tpc":
+    set {_user::1} to "a"
+    set {_index} to 0
+    loop all players:
+        add 1 to {_index}
+        set {_user::%{_index}%} to {nick::%uuid of loop-player%}
+    set tab completions for position 1 to {_user::*}
+
+
+command /tpc <text>:
+    trigger:
+        {nick::%uuid of player%} is set
+        set {_uuid} to HangulToUUID(arg 1)
+        set {_user} to uuidToUsername({_uuid})
+        if {_user} is player:
+            message "&4자기 자신에게 요청할 수 없습니다!" to player
+            stop
+        if {tpc%player%%{_user}%} is set:
+            message "&4이미 요청을 보냈습니다" to player
+        else if {fromPlayer%{_user}%} is set:
+            {fromPlayer%{_user}%} is not player
+            message "&6상대방이 다른 요청을 처리중입니다" to player
+        else:
+            set {_target} to uuid of {_user}
+            set {tpc%player%%{_user}%} to false
+            set {fromPlayer%{_user}%} to player
+            message "&4%{nick::%{_target}%}%&6에게 텔레포트 요청을 보냅니다.%nl%&6상대가 수락할 때까지 기다려주세요" to player
+            wait 1 tick
+            message "&4%{nick::%uuid of player%}%&6에게서 텔레포트 요청이 왔습니다.%nl%&b <run command:/okoktpc>[  수락한다  ]<reset>&f   &4 <run command:/nonotpc>[  거절한다  ]<reset>" to {_user}
+            loop 200 times:
+                if {tpc%player%%{_user}%} is true:
+                    exit loop
+                wait 5 ticks
+            if {tpc%player%%{_user}%} is true:
+                wait 1 tick
+                if {tpaccept%player%%{_user}%} is true:
+                    message "&6이동하였습니다" to player
+                    message "&4%{nick::%uuid of player%}%&6(이)가 이동하였습니다" to {_user}
+                    teleport player to {_user}
+                    wait 1 tick
+                    delete {tpc%player%%{_user}%}
+                    delete {tpaccept%player%%{_user}%}
+                    delete {fromPlayer%{_user}%}
+                else if {tpaccept%player%%{_user}%} is false:
+                    message "&6상대방이 요청을 거절하였습니다." to player
+                    message "&4%{nick::%uuid of player%}%&6의 요청을 거절하였습니다" to {_user}
+                    delete {tpc%player%%{_user}%}
+                    delete {tpaccept%player%%{_user}%}
+                    delete {fromPlayer%{_user}%}
+                else:
+                    message "&4잘못된 요청입니다." to player
+                    delete {tpc%player%%{_user}%}
+                    delete {tpaccept%player%%{_user}%}
+                    delete {fromPlayer%{_user}%}
+            else:
+                message "&6요청이 취소되었습니다" to player
+                message "&4%{nick::%uuid of player%}%&6(으)로부터의 요청이 취소되었습니다" to {_user}
+                wait 1 tick
+                delete {tpc%player%%{_user}%}
+                delete {tpaccept%player%%{_user}%}
+                delete {fromPlayer%{_user}%}
+
+
+command /okoktpc:
+    trigger:
+        if {tpc%{fromPlayer%player%}%%player%} is set:
+            set {tpc%{fromPlayer%player%}%%player%} to true
+            set {tpaccept%{fromPlayer%player%}%%player%} to true
+
+command /nonotpc:
+    trigger:
+        if {tpc%{fromPlayer%player%}%%player%} is set:
+            set {tpc%{fromPlayer%player%}%%player%} to true
+            set {tpaccept%{fromPlayer%player%}%%player%} to false
+
+
+
+

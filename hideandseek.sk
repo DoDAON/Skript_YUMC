@@ -1,0 +1,139 @@
+#> minigame_region_1 : 1번 리전
+#> minigame_region_2 : 2번 리전
+#> minigame_region_3 : 3번 리전
+#> minigame_start
+
+#> {has::room::*} 1, 2, 3번방 각 방에 게임이 진행중인지 아닌지를 체크
+#> 각 방 안에 있는 거는 checkPlayerIn 함수 써서 체크
+#> 만약에 false인데 방에 누가 있다면 퇴출하는 함수 제작
+
+#> {has::ingame::%uuid of player%} 방 숫자 : 포지션 변수로 하기엔 클락이 어긋날 가능성이 있어서 게임 중은 고정으로 박아두고 시작
+
+#> {has::position::%uuid of player%} 1 == 술래, 2 == 일반 유저
+#> {has::duration::*} 1, 2, 3 남은 게임 시간
+#> x bar progress
+#> y 경과 시간 ( 1씩 감소 )
+#> x= 100 * (480-y) / 480
+
+
+#> + {has::ingame1::*} 여기에 uuid of player 를 넣어서 관리하는 게 좋을까? 는 구현 단계에서 고민해볼 것.
+#> + 자신이 어떤 블럭인지 저장하는 변수도 만들어야 하나? 에 대한 의문
+
+
+
+options:
+    #> 게임 전체 코드 활성화
+    DO_HAS: true
+    #> 초기 세팅 활성화
+    FIRST_SETTING: false
+
+    #> 월드 이름
+    WORLD: "HideAndSeek"
+
+    #> 시작 엔피시 이름
+    START_NPC: "임시임시임시"
+
+    #> 리전 이름
+    MINIGAME_REGION_1 : "minigame_region_1"
+    MINIGAME_REGION_2 : "minigame_region_2"
+    MINIGAME_REGION_3 : "minigame_region_3"
+    #> 워프 이름
+    MINIGAME_START: "minigame_start"
+
+
+    #> 거절 스폰 목록
+    DENY_SPAWN: "zombie, skeleton, creeper, spider, witch, bat, zombie_villager, villager, phantom, cow, sheep, pig, chicken, slime, magma_cube, enderman, pillager, vindicator, ghast, zombified_piglin, piglin, drowned, endermite, wither_skeleton, horse, donkey"
+
+    #> 술래
+    TAGGER: 1
+    #> 일반 유저
+    USER: 2
+
+    #> 게임 시간, 8분
+    DURATION: 480
+    #> 중간 변경 시간, 4분 (4분 15초부터 변경 예고)
+    CHANGE: 240
+
+on load:
+    {@DO_HAS} is true
+    {@FIRST_SETTING} is true
+    #> 게임 진행 여부 세팅
+    set {has::room::1} to false
+    set {has::room::2} to false
+    set {has::room::3} to false
+    #> 게임 블럭 세팅
+    set {has::block::1} to "cobblestone"
+    set {has::block::2} to "stone_bricks"
+    set {has::block::3} to "oak_log"
+    set {has::block::4} to "white_wool"
+    set {has::block::5} to "slime_block"
+    set {has::block::6} to "shroomlight"
+    set {has::block::7} to "emerald_block"
+    set {has::block::8} to "sponge"
+    set {has::block::9} to "stone"
+    set {has::block::10} to "glowstone"
+    set {has::block::11} to "smooth_stone_slab"
+    set {has::block::12} to "stone_brick_slab"
+    set {has::block::13} to "coal_ore"
+    set {has::block::14} to "bookshelf"
+    set {has::block::15} to "red_wool"
+    set {has::block::16} to "bricks"
+    set {has::block::17} to "pumpkin"
+    set {has::block::18} to "blue_ice"
+
+
+
+command /hideandseekdenyspawn:
+    permission: op
+    trigger:
+        execute player command "/rg flag -w ""HideAndSeek"" __global__ deny-spawn %{@DENY_SPAWN}%"
+
+
+
+on rightclick:
+    {@DO_HAS} is true
+    player is op
+    "%clicked entity%" contains {@START_NPC}
+    execute player command "/warp %{@MINIGAME_START}% %player%"
+
+
+on region enter:
+    {@DO_HAS} is true
+    player is op
+    wait 3 ticks
+    if "%region at player%" contains "returnhastocampus":
+        execute console command "/spawn %player%"
+
+
+
+#> 쉬프트 토글 시 위치 고정
+on sneak toggle:
+    {@DO_HAS} is true
+    player's world is {@WORLD}
+    if "%region at location of player%" contains "minigame_region":
+        if {has::position::%uuid of player%} is {@USER}:
+            set {_b} to block at player's location
+            teleport player to location of {_b}
+
+
+local function transformationPlayer(p: player):
+    set {_ran} to random integer from 1 and 18
+    execute console command "/disguiseplayer %{_p}% Falling_Block %{has::block::%{_ran}%}%"
+
+
+on damage:
+    {@DO_HAS} is true
+    attacker is a player
+    victim is a player
+    attacker's world is {@WORLD}
+    victim's world is {@WORLD}
+    if {has::position::%uuid of attacker%} is not {@TAGGER}:
+        cancel event
+        stop
+    if {has::position::%uuid of victim%} is not {@USER}:
+        cancel event
+        stop
+
+
+
+

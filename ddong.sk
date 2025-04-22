@@ -1,0 +1,8 @@
+on sneak toggle:
+	if player is sneaking:
+		if "%block at player's location%" contains "composter":
+			if player's food level is not 0:
+				remove 1 from player's food level
+
+				set {_item} to 1 of snowball named "%{nick::%uuid of player%}%님의 똥" with model data 2000
+				drop 1 of {_item} at block at player's location

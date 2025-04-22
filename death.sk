@@ -1,0 +1,6 @@
+on death:
+    if attacker is a player:
+        set the death message to "&7&l[&r&7☠&7&l] &7%{nick::%uuid of victim%}%&7님이 &7%{nick::%uuid of attacker%}%&7님에 의해 죽었습니다 ········ &7[사유 : %damage cause%]"
+    else:
+        set the death message to "&7&l[&r&7☠&7&l] &7%{nick::%uuid of victim%}%&7님이 죽었습니다 ········ &7[사유 : %damage cause%]"
+

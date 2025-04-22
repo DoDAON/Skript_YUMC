@@ -1,0 +1,237 @@
+command /testchat:
+    trigger:
+        if player is op:
+            set {_nalja::*} to split "%now%" at ":"
+            message "%now%" to player
+            message "%{_nalja::1}%" to player
+            message "%{_nalja::2}%" to player
+
+command /testtips:
+    permission: op
+    trigger:
+        if player is op:
+            message "&b[TIP] 홈페이지에서 다양한 정보, 규칙, 디스코드 주소 등을 확인해보세요! &f&n<link:http://mc.yu.ac.kr>서버 주소 확인하기<reset>" to player
+            message "&e[TIP] 유저 간 소통, 서버 소식은 디스코드에서 활발히 이루어지고 있어요! &f&n<link:https://discord.gg/yumc>디스코드 확인하기<reset>" to player
+            message "&a[TIP] 채팅창에 ""/cl""을 입력하여 서버에서 사용가능한 명령어를 확인해봐요!" to player
+            message "&e[TIP] YUMC 서버는 기본적으로 영어를 한글로 자동변환하고 있습니다. 영어를 치고 싶다면 다음과 같이 입력해주세요! &d[[&f하고 싶은 말&d]]" to player
+
+
+
+
+command /dodele [<text>] [<integer>]:
+    permission: op
+    description: 파티리스트 더미값 삭제. 유저, 인덱스
+    trigger:
+        if player is op:
+            set {_player} to HangulToUUID(arg 1)
+            message "%{partylist::%{_player}%::%arg 2%}%" to player
+            delete {partylist::%{_player}%::%arg 2%}
+            message "성공" to player
+
+
+# 메시지(파티이름, string), 플레이어 아이디(not uuid, not nickname)
+function partyCreate(t: text, p:player):
+    set {_party} to {_t}
+    set {_player} to uuid of {_p}
+    if {partyIndex::%{_player}%} is not 9:
+        if {party::%{_party}%} is not set:
+            set {party::%{_party}%} to {_party}
+            set {party::%{_party}%::owner} to {_player}
+            add {_player} to {party::%{_party}%::members::*}
+            add {_party} to {partylist::%{_player}%::*}
+            add {party::%{_party}%} to {YUMCpartylist::*}
+            message "파티 &e%{_party}%&r가 생성되었습니다!" to {_p}
+            add 1 to {partyIndex::%{_player}%}
+            set {partyAddIdx::%{_player}%} to true
+        else:
+            message "&e%{_party}%&r의 이름을 가진 파티가 이미 존재합니다. 다른 이름으로 생성해주세요." to {_p}
+    else:
+        message "&4(주의)&r생성 및 소속 가능한 파티 개수를 초과합니다." to {_p}
+        delete {partyAddIdx::%{_player}%}
+        set {partyAddIdx2::%{_player}%} to true
+
+# 파티이름(string), 플레이어 아이디(not uuid, not nickname)
+function partyExit(t: text, p:player):
+    set {_player} to uuid of {_p}
+    remove {_player} from {party::%{_t}%::members::*}
+    remove {_t} from {partylist::%{_player}%::*}
+    subtract 1 from {partyIndex::%{_player}%}
+
+function partyPrintList():
+
+
+
+#command /testequipout <player>:
+    #permission: op
+    #trigger:
+        #set arg 1's leggings to air
+
+
+command /testaddidx:
+    permission: op
+    trigger:
+        if player is op:
+            if {partyAddIdx::%{_player}%} is set:
+                message "있음" to player
+            else:
+                message "없음" to player
+
+command /testaddidx2:
+    permission: op
+    trigger:
+        if player is op:
+            set {_player} to uuid of player
+            if {partyIndex::%{_player}%} is set:
+                message "%{partyIndex::%{_player}%}%" to player
+            else:
+                message "없다 이 자식아 ㅋㅋ" to player
+
+#생성, 파티원추가, 파티원추방, 탈퇴, 양도, 제거, 멤버확인, 파티리스트
+#생성 : 클로즈 인벤토리 -> 파티 이름을 지정하세요! -> 우리가 했던 거
+#파티원 추가 : 파티 선택 -> 현재 접속중인 유저 파싱 및 선택 -> 클로즈 인벤토리 및 수락하기까지 기다려주세요! -> 상대방은 10초간 파티수락 커맨드 입력 -> 완료 메시지
+#파티원 추방 : 파티 선택 -> 현재 접속중인 파티원 
+command /partypp:
+    permission: op
+    description: 파티
+    trigger:
+        if player is op:
+            set {_player} to {nick::%uuid of player%}
+            open chest with 1 rows named "&0&0&0&1&r&0파티메뉴" to player
+            set slot 0 of current inventory of player to skull of player named "&e%{_player}%&f의 파티메뉴" with lore "&7원하는 옵션을 선택해주세요!"
+            set slot 1 of current inventory of player to red concrete named "&0&0&0&1&r&l&f파티 생성" with lore "&7파티를 생성합니다."
+            set slot 2 of current inventory of player to orange concrete named "&0&0&0&1&r&l&f파티 탈퇴" with lore "&7파티를 나갑니다."
+            set slot 3 of current inventory of player to yellow concrete named "&0&0&0&1&r&l&f파티원 추가" with lore "&7파티원을 추가합니다."
+            set slot 4 of current inventory of player to lime concrete named "&0&0&0&1&r&l&f파티원 추방" with lore "&7파티원을 추방합니다."
+            set slot 5 of current inventory of player to light blue concrete named "&0&0&0&1&r&l&f파티장 양도" with lore "&7파티장을 양도합니다."
+            set slot 6 of current inventory of player to purple concrete named "&0&0&0&1&r&l&f파티 제거" with lore "&7파티를 제거합니다."
+            set slot 7 of current inventory of player to black concrete named "&0&0&0&1&r&l&f파티리스트 확인" with lore "&7소속된 파티를 출력합니다."
+            set slot 8 of current inventory of player to white concrete named "&0&0&0&1&r&l&f파티원 확인" with lore "&7소속된 파티의 파티원을 확인합니다."
+
+
+
+
+
+command /testindexPT [<text>]:
+    permission: op
+    description: 파티 임의로 카운트 추가
+    trigger:
+        if player is op:
+            set {_uuid} to HangulToUUID(arg 1)
+            set {_player} to {_uuid}
+            if {partylist::%{_player}%::*} is set:
+                loop {partylist::%{_player}%::*}:
+                    add 1 to {_in}
+                message "%{_in}%" to player
+
+
+#set {_uuid} to "0c005604-e329-49c4-a4a9-6c2aacb25afc"
+#set {_player} to {_uuid} parsed as offline player
+#message "test" to {_player}
+
+command /testhome [<text>] [<integer>]:
+    trigger:
+        set {_player} to HangulToUUID(arg 1)
+        if player is op:
+            if arg 2 is 1:
+                teleport player to {home::%{_player}%}
+            else if arg 2 is 2:
+                teleport player to {home2::%{_player}%}
+
+command /testdelTip:
+    permission: op
+    trigger:
+        if player is op:
+            if {tipsIndex} is set:
+                delete {tipsIndex}
+                message "성공적" to player
+
+command /testInvD:
+    permission: op
+    trigger:
+        if player is op:
+            open chest with 5 rows named "test inventory" to player
+            set slot 0 of current inventory of player to skull of player named "도다온" with lore "테스트"
+            set slot 22 of current inventory of player to diamond named "&r&b날 누르면 광물페가를 줄게" with lore "&r&7어서 나를 눌러봐"
+
+command /partymember [<text>]:
+    permission: op
+    trigger:
+        if player is op:
+            if arg 1 is set:
+                open chest with 5 rows named "&0&0&0&1&r%arg 1%'s party member" to player
+                set {_count} to 0
+                loop {party::%arg 1%::members::*}:
+                    set {_mm} to loop-value
+                    set {_m} to {_mm} parsed as offline player
+                    if {_mm} is {party::%arg 1%::owner}:
+                        set slot {_count} of current inventory of player to skull of {_m} named "%{_m}%" with lore "&a파티장"
+                    else :
+                        set slot {_count} of current inventory of player to skull of {_m} named "%{_m}%" with lore "&b파티원"
+                    add 1 to {_count}
+
+
+
+
+
+on inventory click:
+    set {_player} to uuid of player
+    if player is op:
+        if inventory name of event-inventory contains "test inventory":
+            if clicked raw slot is 22:
+                cancel event
+                open chest with 1 rows named "판매할꼬얌?" to player
+                set slot 0 and 1 and 2 and 3 of current inventory of player to lime stained glass pane named "&a응!!"
+                set slot 4 of current inventory of player to diamond named "&r&b광물페가 1획득!"
+                set slot 5 and 6 and 7 and 8 of current inventory of player to red stained glass pane named "&4아니!!"
+
+                #add 1 to {pegaMiner::%{_player}%}
+                #message "&b판매 성공! &e1광물페가를 획득했어" to player
+            else:
+                cancel event
+        if inventory name of    event-inventory contains "판매할꼬얌?":
+            if clicked raw slot is 0 or 1 or 2 or 3:
+                cancel event
+                add 1 to {pegaMiner::%{_player}%}
+                message "&b판매 성공! &e1광물페가를 획득했어" to player
+                close player's inventory
+            else if clicked raw slot is 5 or 6 or 7 or 8:
+                cancel event
+                message "&f아라쏘... 안 팔면 되지..." to player
+                close player's inventory
+            else:
+                cancel event
+
+
+
+
+
+
+
+on inventory click:
+    if player is op:
+        if inventory name of event-inventory contains "YUMC shop":
+            set {_test} to 0
+            set {_value} to true
+            loop 39 times:
+                if clicked raw slot is {_test}:
+                    message "test" to player
+                    set {_value} to false
+                add 1 to {_test}
+            if clicked raw slot is 2:
+                if "%clicked item%" is not "air":
+                    message "asdf" to player
+
+
+#아니 진짜 왜 주민 거래 받는 칸은 인식 못하냐고 시보랭
+#거기 인식해서 클릭했을 때 아이템이 있으면 경험치 들어오는 거 해야 하는데
+#;;;;
+
+
+
+
+#> 쉬프트 우클릭 시 엔더상자 열리도록
+on rightclick:
+    player is sneaking
+    player's held item is ender chest
+    cancel event
+    open ender chest of player to player

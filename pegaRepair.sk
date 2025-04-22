@@ -1,0 +1,67 @@
+options:
+    ID: "REPAIR"
+    PEGA_RATIO: 1
+    
+
+function pegaRepairInfo(p: player):
+    message "" to {_p}
+    message "&b===================================" to {_p}
+    message "&b&l[ %{@ID}% ] &r&b&l페가 수리" to {_p}
+    message "&b&l[ %{@ID}% ] &r&f수리 방법은 아래와 같습니다." to {_p}
+    message "  &f&l/repair : &r&7현재 들고 있는 아이템을 수리합니다." to {_p}
+    message "  &f수리 비용은 내구도 1 당 &b&l{@PEGA_RATIO}페가&r&f입니다" to {_p}
+    message "&b===================================" to {_p}
+    message "" to {_p}
+
+
+command /repair:
+    aliases: /tnfl, /수리
+    trigger:
+        if player's tool is air:
+            pegaRepairInfo(player)
+            stop
+        set {_max} to max durability of player's tool
+        set {_dura} to durability of player's tool
+        if {_max} == {_dura}:
+            pegaRepairInfo(player)
+            message "&c&l[ %{@ID}% ] 내구도가 충분합니다!" to player
+            stop
+        set {_tag} to nbt compound of player's tool
+        if "%{_tag}%" contains "CustomFishing":
+            pegaRepairInfo(player)
+            message "&c&l[ %{@ID}% ] 현재 하늘 호수 아이템은 모루를 활용한 수리밖에 되지 않습니다! 빠른 시일 내에 수정하도록 하겠습니다" to player
+            stop
+        set {_result} to {_max} - {_dura}
+        message "" to player
+        message "&b===================================" to player
+        message "&b&l[ %{@ID}% ] 페가 수리" to player
+        message "  최대 내구도 : %{_max}%" to player
+        message "  현재 내구도 : %{_dura}%" to player
+        message "  &a&l수리할 내구도 : %{_result}%" to player
+        message "&b===================================" to player
+        message "" to player
+        set {_pegaResult} to {_result} * {@PEGA_RATIO}
+        set {_up} to uuid of player
+        if {pega::%{_up}%} < {_pegaResult}:
+            message "&c&l[ %{@ID}% ] 페가가 부족합니다!" to player
+            stop
+        set player's tool's durability to {_max}
+        subtract {_pegaResult} from {pega::%{_up}%}
+        set {pegaName::%{_up}%} to "%{nick::%{_up}%}%//%{pega::%{_up}%}%"
+        message "&b&l[ %{@ID}% ] 내구도 수리를 완료하였습니다!%nl%&7(지불한 페가 : %{_pegaResult}%)" to player
+
+
+        #> set {pegaName::%{_up}%} to "%{nick::%{_up}%}%//%{pega::%{_up}%}%"
+
+
+
+command /testrepair:
+    permission: op
+    trigger:
+        set {_nbt} to nbt compound of player's tool
+        set {_a} to tag "CustomFishing" of {_nbt}
+        #set {_a} to tag "max_dur" of {_nbt}
+        set {_repair} to "%{_a}%" parsed as integer
+        message "%{_a}%" to player
+        send pretty nbt from nbt compound of player's tool
+        #set tag "CustomFishing:cur_dur" of {_nbt} to {_repair}

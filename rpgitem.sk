@@ -1,0 +1,39 @@
+#> 되게 OOP적인 전략을 짜야할 거 같음.
+#> 함수 하나를 클래스적인 요소로 추가한 다음
+#> 각각의 아이템에 pid 를 부여해서 해야하는게 잘 생각해보면 각 아이템별로 수치가 계속 바뀔 건데 그걸 
+
+
+
+
+#>   조썜의 F폭격기
+#> 무기
+#> 
+#> 스텟
+#> ⚔️ 공격력 +19
+
+
+
+
+command /testrpgitemgive:
+    permission: op
+    trigger:
+        set {_text} to "&9무기%nl% %nl%&7스텟%nl%&f⚔️ &8공격력 &a+19"
+        set {_item2} to diamond sword named "  &d조쌤의 F폭격기" with lore "%{_text}%"
+        set {_nbt} to nbt compound of {_item2}
+        set tag "HideFlags" of {_nbt} to 2
+        #> add "{id:""minecraft:diamond_sword"",tag:{Damage:19},Count:1b}" to nbt of {_item2}
+        give {_item2} to player
+
+
+
+
+on damage:
+    attacker is op
+    if attacker's held item is diamond sword named "  &d조쌤의 F폭격기":
+        set damage to 20
+
+command /testrpgitemid:
+    permission: op
+    trigger:
+        set {_itemid} to id of player's held item
+        message "%{_itemid}%:%durability of player's tool%" to player

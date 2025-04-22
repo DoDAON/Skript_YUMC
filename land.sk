@@ -1,0 +1,402 @@
+on join:
+    if {landPega::%uuid of player%} is not set:
+        set {landPega::%uuid of player%} to 1
+    else if {landPega::%uuid of player%} <= 0:
+        set {landPega::%uuid of player%} to 1
+    if {landTodayIndex::%uuid of player%} is not {tojimaxtime}:
+        set {_date} to now formatted as "yyyy/MM/dd"
+        set {_dates::*} to split {_date} at "/"
+        set {_naljja} to {_dates::3}
+        set {landTodayLimit::%uuid of player%} to 0
+        set {landTodayIndex::%uuid of player%} to {_naljja}
+
+#on load:
+    #loop all players:
+        #set {landPega::%uuid of loop-player%} to 1
+        #set {landTodayLimit::%uuid of loop-player%} to 0
+        #set {_date} to now formatted as "yyyy/MM/dd"
+        #set {_dates::*} to split {_date} at "/"
+        #set {_naljja} to {_dates::3}
+        #set {landTodayIndex::%uuid of player%} to {_naljja}
+
+
+every 1 second:
+    set {_date} to now formatted as "yyyy/MM/dd"
+    set {_dates::*} to split {_date} at "/"
+    set {_naljja} to {_dates::3}
+    if {_naljja} is not {tojimaxtime}:
+        set {tojimaxtime} to {_naljja}
+        loop all players:
+            set {landTodayLimit::%uuid of loop-player%} to 0
+            set {landTodayIndex::%uuid of loop-player%} to {_naljja}
+
+
+#> owned_chunk 여기에서 자기 uuid를 체크
+#> land::isMosterSpawnningDenied::청크번호 to boolean 
+#> 만약에 true다? 소환 X
+#> 만약에 false이거나 not set이다? 그냥 그대로
+#> 이것을 UI로 하도록
+
+#spawn reason is not breeding
+on spawn:
+    event-spawnreason is natural
+    event-entity is not player
+    event-entity is not item
+    #event-entity is not firework rocket
+    set {_chunk} to chunk at event-entity
+    set {_owner} to {owned_chunk::%{_chunk}%}
+    if {_owner} is set:
+        if {land::isMosterSpawnningDenied::%{_owner}%} is true:
+            cancel event
+
+
+command /landsetting:
+    aliases: /토지세팅
+    trigger:
+        addInventory(1, player, "&0[ 토지 ] %{nick::%uuid of player%}%의 토지 설정")
+        if {land::isMosterSpawnningDenied::%uuid of player%} is true:
+            addSlotItem(0, player, barrier, "&c몬스터 스폰 비활성화", "&7클릭 시 활성화 상태를 변경합니다.")
+        else:
+            addSlotItem(0, player, zombie spawn egg, "&a몬스터 스폰 활성화", "&7클릭 시 활성화 상태를 변경합니다.")
+
+on inventory click:
+    if name of current inventory contains "&0[ 토지 ] %{nick::%uuid of player%}%의 토지 설정":
+        cancel event
+        if clicked item is zombie spawn egg named "&a몬스터 스폰 활성화":
+            set {land::isMosterSpawnningDenied::%uuid of player%} to true
+            addSlotItem(0, player, barrier, "&c몬스터 스폰 비활성화", "&7클릭 시 활성화 상태를 변경합니다.")
+        else if clicked item is barrier named "&c몬스터 스폰 비활성화":
+            set {land::isMosterSpawnningDenied::%uuid of player%} to false
+            addSlotItem(0, player, zombie spawn egg, "&a몬스터 스폰 활성화", "&7클릭 시 활성화 상태를 변경합니다.")
+
+
+command /land [<text>]:
+    description: 현재 청크 위치를 표시합니다.
+    trigger:
+        if player's world is "world":
+            if player's world is not "world_nether":
+                set {_chunk} to chunk at player
+                set {_owner} to {owned_chunk::%{_chunk}%}
+                if {_owner} is not set:
+                    if arg 1 is not set:
+                        set {_chunk} to chunk at player
+                        message "현재 청크: (%{_chunk}%의 x 좌표, %{_chunk}%의 z 좌표)" to player
+                        message "&e토지 구매를 희망할 시 &f/land buy&e를 입력해주세요.&7(필요 재화는 %{landPega::%uuid of player%}%페가이며 판매 시 재화 회수가 불가능합니다!)%nl%&f오늘 남은 토지 구매량 (%{landTodayLimit::%uuid of player%}%/20)" to player
+                    else if arg 1 is "buy":
+                        if {landTodayLimit::%uuid of player%} >= 20:
+                            message "&4하루 최대 구매 횟수를 초과하였습니다!" to player
+                        else:
+                            if {landPega::%uuid of player%} <= {pega::%uuid of player%}:
+                                subtract {landPega::%uuid of player%} from {pega::%uuid of player%}
+                                set {_chunk} to chunk at player
+                                set {owned_chunk::%{_chunk}%} to uuid of player
+                                add 1 to {landTodayLimit::%uuid of player%}
+                                message "&e땅 구매 완료! &7(가격 : %{landPega::%uuid of player%}%)%nl%&7오늘 하루 남은 땅 구매 개수 : %{landTodayLimit::%uuid of player%}%/20" to player
+                                add 1 to {landPega::%uuid of player%}
+                            else:
+                                message "&4페가가 부족합니다!. &f필요 페가 : %{landPega::%uuid of player%}%" to player
+                else if {_owner} is set:
+                    if arg 1 is not set:
+                        message "현재 청크: (%{_chunk}%의 x 좌표, %{_chunk}%의 z 좌표)" to player
+                        message "&e토지 판매를 희망할 시 &f/land sell&e를 입력해주세요.&7(토지 판매 시 재화 회수가 불가능합니다!)" to player
+                    else if arg 1 is "sell":
+                        if {owned_chunk::%{_chunk}%} is uuid of player:
+                            subtract 1 from {landPega::%uuid of player%}
+                            if {landPega::%uuid of player%} <= 0:
+                                set {landPega::%uuid of player%} to 1
+                            set {_chunk} to chunk at player
+                            delete {owned_chunk::%{_chunk}%}
+                            message "&e땅 판매 완료!" to player
+                        else:
+                            message "&4(경고) 타인의 땅을 판매할 수 없습니다!" to player
+                #토지 판매
+                
+            else:
+                message "네더 월드에서는 토지를 구매하실 수 없습니다." to player
+        else:
+            message "캠퍼스월드에서는 토지를 구매하실 수 없습니다." to player
+
+
+command /testfishingsell:
+    permission: op
+    trigger:
+        set {_chunk} to chunk at player
+        message "%{nick::%{owned_chunk::%{_chunk}%}%}% 삭제함" to player
+        delete {owned_chunk::%{_chunk}%}
+
+
+on place:
+    player's world is "world"
+    player is not op
+    set {_test} to false
+    set {_chunk} to chunk at event-block
+    set {_owner} to {owned_chunk::%{_chunk}%}
+
+    loop {partylist::%{_owner}%::*}:
+        if {_test} is true:
+            exit loop
+        else:
+            loop {party::%loop-value-1%::members::*}:
+                if uuid of player is loop-value-2:
+                    set {_test} to true
+                    exit loop
+                else:
+                    set {_test} to false
+
+
+    #set {_isinParty::*} to {partylist::%{_owner}%::*}
+    if {_test} is false:
+        if type of shooter is not SHEEP:
+            if {_owner} is set:
+                if {_owner} is not uuid of player:
+                    cancel event
+                    message "타인의 땅에서 블록을 설치할 수 없습니다." to player
+
+on break:
+    player's world is "world"
+    set {_test} to false
+    set {_chunk} to chunk at event-block
+    set {_owner} to {owned_chunk::%{_chunk}%}
+    loop {partylist::%{_owner}%::*}:
+        if {_test} is true:
+            exit loop
+        else:
+            loop {party::%loop-value-1%::members::*}:
+                if uuid of player is loop-value-2:
+                    set {_test} to true
+                    exit loop
+                else:
+                    set {_test} to false
+    if {_test} is false:
+        if type of shooter is not SHEEP:
+            if {_owner} is set:
+                if {_owner} is not uuid of player:
+                    cancel event
+
+on break:
+    player's world is "world"
+    set {_test} to false
+    set {_chunk} to chunk at event-entity
+    set {_owner} to {owned_chunk::%{_chunk}%}
+    loop {partylist::%{_owner}%::*}:
+        if {_test} is true:
+            exit loop
+        else:
+            loop {party::%loop-value-1%::members::*}:
+                if uuid of player is loop-value-2:
+                    set {_test} to true
+                    exit loop
+                else:
+                    set {_test} to false
+    if event-entity is not player:
+        if type of shooter is not SHEEP:
+            if {_test} is false:
+                if {_owner} is set:
+                    if {_owner} is not uuid of player:
+                        cancel event
+
+on stepping on a pressure plate:
+    player's world is "world"
+    set {_test} to false
+    set {_chunk} to chunk at event-block
+    set {_owner} to {owned_chunk::%{_chunk}%}
+    loop {partylist::%{_owner}%::*}:
+        if {_test} is true:
+            exit loop
+        else:
+            loop {party::%loop-value-1%::members::*}:
+                if uuid of player is loop-value-2:
+                    set {_test} to true
+                    exit loop
+                else:
+                    set {_test} to false
+    if {_test} is false:
+        if {_owner} is set:
+            if {_owner} is not uuid of player:
+                cancel event
+
+
+on rightclick:
+    player's world is "world"
+    set {_test} to false
+    set {_chunk} to chunk at event-block
+    set {_owner} to {owned_chunk::%{_chunk}%}
+    loop {partylist::%{_owner}%::*}:
+        if {_test} is true:
+            exit loop
+        else:
+            loop {party::%loop-value-1%::members::*}:
+                if uuid of player is loop-value-2:
+                    set {_test} to true
+                    exit loop
+                else:
+                    set {_test} to false
+    if player is not op:
+        if {_test} is false:
+            if "%event-block%" contains "slab":
+                set {_index} to true
+            else if "%event-block%" contains "carpet":
+                set {_index} to true
+            else if event-block is crafting table:
+                set {_index} to true
+            else:
+                if {_owner} is set:
+                    if {_owner} is not uuid of player:
+                        cancel event
+
+
+#FIXME: 케이크 안 됨
+
+
+
+#엔티티 상대로 우클릭
+
+
+on rightclick on entity:
+    player's world is "world"
+    set {_test} to false
+    set {_chunk} to chunk at event-entity
+    set {_owner} to {owned_chunk::%{_chunk}%}
+    loop {partylist::%{_owner}%::*}:
+        if {_test} is true:
+            exit loop
+        else:
+            loop {party::%loop-value-1%::members::*}:
+                if uuid of player is loop-value-2:
+                    set {_test} to true
+                    exit loop
+                else:
+                    set {_test} to false
+    if player is not op:
+        if {_test} is false:
+            if {_owner} is set:
+                if {_owner} is not uuid of player:
+                    cancel event
+
+
+
+#on vehicle enter:
+    #FIXME: event-entity가 유저인 거 같음
+    #특정 엔티티만 탑승 제한 거는 게 안 되는 거 같음
+    #vehicle의 위치를 받아야 하는데 사람이 받음
+
+    #set {_test} to false
+    #set {_chunk} to chunk at entity
+    #set {_owner} to {owned_chunk::%{_chunk}%}
+    #loop {partylist::%{_owner}%::*}:
+        #if {_test} is true:
+            #exit loop
+        #else:
+            #loop {party::%loop-value-1%::members::*}:
+                #if uuid of event-entity is loop-value-2:
+                    #set {_test} to true
+                    #exit loop
+                #else:
+                    #set {_test} to false
+    #event-entity is player
+    #if {_test} is false:
+        #if {_owner} is set:
+            #if {_owner} is not uuid of event-entity:
+                #임시 비활성
+                #cancel event
+                #message "test" to player
+
+
+
+
+
+on damage:
+    attacker's world is "world"
+    set {_test} to false
+    set {_chunk} to chunk at victim
+    set {_owner} to {owned_chunk::%{_chunk}%}
+    attacker is a player
+    loop {partylist::%{_owner}%::*}:
+        if {_test} is true:
+            exit loop
+        else:
+            loop {party::%loop-value-1%::members::*}:
+                if uuid of damager is loop-value-2:
+                    set {_test} to true
+                    exit loop
+                else:
+                    set {_test} to false
+    if {_test} is false:
+        if victim is an animal:
+            if {_owner} is set:
+                if {_owner} is not uuid of damager:
+                    cancel event
+                    send action bar "&c경고! &e타인의 땅에서 동물을 해칠 수 없습니다!" to damager
+        else if victim is item frame:
+            if {_owner} is set:
+                if {_owner} is not uuid of damager:
+                    cancel event
+                    send action bar "&c경고! &e타인의 아이템액자에 접근할 수 없습니다!" to damager
+        else if victim is armor stand:
+            if {_owner} is set:
+                if {_owner} is not uuid of damager:
+                    cancel event
+                    send action bar "&c경고! &e타인의 아머스탠드에 접근할 수 없습니다!" to damager
+        else if victim is an allay:
+            if {_owner} is set:
+                if {_owner} is not uuid of damager:
+                    cancel event
+                    send action bar "&c경고! &e타인의 땅에서 동물을 해칠 수 없습니다!" to damager
+
+
+on break of item frame:
+    player's world is "world"
+    set {_test} to false
+    set {_chunk} to chunk at event-entity
+    set {_owner} to {owned_chunk::%{_chunk}%}
+    loop {partylist::%{_owner}%::*}:
+        if {_test} is true:
+            exit loop
+        else:
+            loop {party::%loop-value-1%::members::*}:
+                if uuid of player is loop-value-2:
+                    set {_test} to true
+                    exit loop
+                else:
+                    set {_test} to false
+    if {_test} is false:
+        if type of shooter is not SHEEP:
+            if {_owner} is set:
+                if {_owner} is not uuid of player:
+                    if "%item of event-entity%" contains "air":
+                        cancel event
+
+
+
+
+
+
+
+
+
+
+command /name [<text>]:
+    trigger:
+        #TEST command
+        if player is op:
+            set {_test} to {nick::%arg 1%}
+            message "%{_test}%" to player
+
+
+
+
+
+
+command /landExpired:
+    permission: op
+    trigger:
+        set {_chunk} to chunk at player
+        set {_uuid} to {owned_chunk::%{_chunk}%}
+        if {owned_chunk::%{_chunk}%} is not set:
+            message "여기 땅 주인 없음" to player
+        else:
+            message "%{nick::%{owned_chunk::%{_chunk}%}%}% 님의 땅을 매각했습니다" to player
+            delete {owned_chunk::%{_chunk}%}
+            subtract 1 from {landPega::%{_uuid}%}
+            if {landPega::%{_uuid}%} <= 0:
+                set {landPega::%{_uuid}%} to 1

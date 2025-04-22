@@ -1,0 +1,19 @@
+on rightclick:
+    event-block is barrier
+    "%player's world%" contains "playGround"
+    cancel event
+    loop all entities in radius 3 around event-block:
+        if loop-entity is item frame:
+            if item of loop-entity is black dye:
+                if model data of item of loop-entity is 1003:
+                    execute player command "/trash"
+
+on rightclick:
+    event-entity is item frame
+    "%player's world%" contains "playGround"
+    cancel event
+    loop all entities in radius 3 around event-entity:
+        if loop-entity is item frame:
+            if item of loop-entity is black dye:
+                if model data of item of loop-entity is 1003:
+                    execute player command "/trash"

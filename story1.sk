@@ -1,0 +1,13 @@
+#> 책 저장 방법
+#> 책을 특정 위치에 삽입 (손에 든 완성된 책)
+#> set {book.%arg 1%} to player's tool
+#> 현재 툴을 임시로 저장하고 바꿔치기하는 걸로 책 오픈
+#> set {_i} to player's tool
+#> set player's tool to {book.%arg 1%}
+#> open book {book.%arg 1%} to the player
+#> set player's tool to {_i}
+
+#> 책 저장 커맨드는 arg 받아서 하도록
+
+
+#> yaml 파일에서 스크립트 읽어오는 형식으로 나중에 대사 출력 고

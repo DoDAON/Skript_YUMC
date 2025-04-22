@@ -1,0 +1,1486 @@
+options:
+    DO_EVENT: false
+    HW: "  &6&l[ 할로윈 ] &r"
+    WN: "  &c&l[ WARNING ] &r"
+    HW_ITEM: "&6&l[ 할로윈 ] &r"
+    WORLD: "halloween1"
+    WORLD_REGION: "halloweenwholeregion"
+
+    QUEST_1: "잭 오 랜턴의 사탕 도둑을 찾아라"
+    QUEST_2: "강진주씨의 성공적인 할로윈 파티를 도와줘요!"
+    QUEST_3: "무너지는 해적선을 고쳐주세요!"
+    QUEST_4: "마녀의 저주를 풀어주세요!"
+
+    JINJU_QUEST_1: 5
+    JINJU_QUEST_2: 3
+    JINJU_QUEST_3: 10
+    JINJU_QUEST_4: 2
+    JINJU_QUEST_5: 1
+    JINJU_QUEST_AMOUNT: 5
+
+
+    QEUST4_REGION: "halloweenquest4"
+    QUEST4_ENTER: "halloweenQuest4Enter"
+
+    EGG_REGION: "halloweenegg1"
+
+    REWARD_LEVEL_2: 1
+    REWARD_LEVEL_3: 1
+    REWARD_LEVEL_4: 5
+    REWARD_LEVEL_5: 1
+    
+
+#> blue_dye 1~5 : 할로윈 번들
+#> TODO:할로캣한테 마녀모자 씌워주셈
+#> TODO: 할로윈 맵 전체 지도 그리기(어디에 무슨 엔피씨 있는지)
+#> TODO: 강사범 월척 물고기 얻는 로직
+#> TODO: 마지막 퀘스트 조합법 추가 로직으로 템 얻고 그걸로 해결하는 걸로도 구상해보셈(열쇠 이런 거 해서 뭐 봉인해제 이런 것도 좋고 뭐든)
+
+
+on inventory click:
+    player is not op
+    if "%name of player's current inventory% " contains "Repair":
+        if "%name of player's current inventory% " contains "Name":
+            set {_i0} to slot 0 of player's current inventory
+            set {_i2} to slot 2 of player's current inventory
+            if clicked slot is 2:
+                if "%{_i0}%" contains "할로윈":
+                    message "&c&l[ WARNING ] &r&c이벤트 아이템은 인챈트할 수 없습니다! (사유 : 할로윈)" to player
+                    cancel event
+
+
+#>============================================================
+#>============================================================
+
+#> 테스트코드 or 서버 사이드 코드
+
+#>============================================================
+#>============================================================
+
+
+command /psound:
+    permission: op
+    trigger:
+        onOptionalPlaySoundEvent("entity.ender_dragon.ambient", player, 1, 0.5)
+
+command /givehalloweenbundle <player> <integer>:
+    permission: op
+    trigger:
+        giveItemToPlayerWithNbt(arg 1, 1, blue dye, "%{@HW_ITEM}%&e호박 꾸러미 LV %arg 2%", "&7소유자: %{nick::%uuid of arg 1%}%", arg 2)
+
+
+command /testgivegivegive:
+    permission: op
+    trigger:
+        giveItemToPlayer(player, 1, orange shulker box, "%{@HW_ITEM}%&f할로윈 가구 박스", "&7설치해서 내용물을 확인해요")
+
+command /givehalloweencod <player>:
+    permission: op
+    trigger:
+        giveItemToPlayerWithNbt(arg 1, 1, cod, "%{@HW_ITEM}%&e강사범의 월척", "&7소유자: %{nick::%uuid of arg 1%}%", 50100)
+
+
+command /givehalloweendye <player>:
+    permission: op
+    trigger:
+        giveItemToPlayer(arg 1, 1, black dye, "%{@HW_ITEM}%&f특수 염료", "&7할로윈 마을에서의 특수 염료라고 한다.")
+
+
+
+
+#> 들고 있는 아이템 이름과 설명 출력해서 스플릿 몇 번 배열로 가는지 확인
+command /testsplit:
+    permission: op
+    trigger:
+        set {_a::*} to split name of player's held item at " "
+        set {_index} to 1
+        loop {_a::*}:
+            message "%{_index}% %loop-value%" to player
+            add 1 to {_index}
+        set {_lore::*} to lore of player's held item
+        set {_a::*} to split {_lore::1} at " "
+        set {_index} to 1
+        loop {_a::*}:
+            message "%{_index}% %loop-value%" to player
+            add 1 to {_index}
+
+
+
+#> step : 어느 퀘스트인지
+function levelupBundle(p: player, step: integer):
+    set {halloween::%uuid of {_p}%::quest%{_step}%} to true
+    loop items in {_p}'s inventory:
+        if loop-item is blue dye:
+            set {_tag} to nbt compound of loop-item
+            if "%{_tag}%" contains "호박 꾸러미":
+                set {_name::*} to split name of loop-value at " "
+                set {_level} to "%{_name::7}%" parsed as integer
+                add 1 to {_level}
+                remove 1 of loop-item from {_p}'s inventory
+                wait 1 tick
+                execute console command "/givehalloweenbundle %{_p}% %{_level}%"
+                add 1 to {halloween::%uuid of {_p}%.level}
+                message " " to {_p}
+                message "&b================================" to {_p}
+                message "%{@HW}%&b 꾸러미 레벨이 상승했습니다!" to {_p}
+                message "&b================================" to {_p}
+                wait 3 seconds
+                if {_level} is 5:
+                    message " " to {_p}
+                    message " " to {_p}
+                    message "&6================================" to {_p}
+                    message " " to {_p}
+                    message "%{@HW}%&e할로켓에게 다시 돌아가보자!" to {_p}
+                    message " " to {_p}
+                    message "&6================================" to {_p}
+                    onOptionalPlaySoundEvent("entity.cat.ambient", {_p}, 2, 2)
+                exit loop
+
+function checkOwnedBundle(p: player) :: boolean:
+    loop items in {_p}'s inventory:
+        if loop-item is blue dye:
+            set {_tag} to nbt compound of loop-item
+            if "%{_tag}%" contains "호박 꾸러미":
+                set {_lore::*} to lore of loop-item
+                set {_data::*} to split {_lore::1} at " "
+                if {_data::2} is not {nick::%uuid of {_p}%}:
+                    return false
+                else:
+                    return true
+    return false
+
+
+every 2 seconds:
+    loop all players:
+        loop-player's world is {@WORLD}
+        loop-player is not op
+        "%region at loop-player%" does not contain "halloween"
+        execute console command "/mv tp %loop-player% %{@WORLD}%"
+        message "&c&l[ WARNING ] 할로윈 마을에서 벗어났습니다!" to loop-player
+
+command /resethalloweenallvalue <player> <number> <number> <number> <number>:
+    permission: op
+    description: 유저, 1 1 1 1 (0일 경우 초기화 X, 각 퀘스트 별로 할건지 말건지)
+    trigger:
+        if arg 5 is not 0:
+            execute player command "/resethalloweengame4 %arg 1%"
+        if arg 4 is not 0:
+            execute player command "/resethalloweengame3 %arg 1%"
+        if arg 3 is not 0:
+            execute player command "/resethalloweengame2 %arg 1%"
+        if arg 2 is not 0:
+            execute player command "/resethalloweengame1 %arg 1%"
+        delete {halloween::%uuid of arg 1%.start}
+        delete {halloween::%uuid of arg 1%.level}
+        delete {halloween::%uuid of arg 1%::quest1}
+        delete {halloween::%uuid of arg 1%::quest2}
+        delete {halloween::%uuid of arg 1%::quest3}
+        delete {halloween::%uuid of arg 1%::quest4}
+        message "메인 변수 초기화됨" to player
+
+
+#> 보상 리셋
+command /resethalloweenreward <player>:
+    permission: op
+    trigger:
+        delete {halloween::%uuid of arg 1%.reward::2}
+        delete {halloween::%uuid of arg 1%.reward::3}
+        delete {halloween::%uuid of arg 1%.reward::4}
+        delete {halloween::%uuid of arg 1%.reward::5}
+        message "리워드 초기화됨" to player
+
+
+command /resethalloweengame4 <player>:
+    permission: op
+    trigger:
+        delete {halloween::%uuid of arg 1%.game4Accept}
+        set {halloween::%uuid of arg 1%::quest4} to false
+        message "할로윈 4 게임 초기화됨" to player
+
+
+command /resethalloweengame3 <player>:
+    permission: op
+    trigger:
+        delete {halloween::%uuid of arg 1%.game3Accept}
+        set {halloween::%uuid of arg 1%::quest3} to false
+        delete {halloween::%uuid of arg 1%.game3::1}
+        delete {halloween::%uuid of arg 1%.game3::2}
+        delete {halloween::%uuid of arg 1%.game3::3}
+        delete {halloween::%uuid of arg 1%.game3::4}
+        delete {halloween::%uuid of arg 1%.game3::5}
+        delete {halloween::%uuid of arg 1%.game3::6}
+        set {halloween::%uuid of arg 1%::quest3} to false
+        message "할로윈 3 게임 초기화됨" to player
+
+command /resethalloweengame2 <player>:
+    permission: op
+    trigger:
+        delete {halloween::%uuid of arg 1%.game2Accept}
+        set {halloween::%uuid of arg 1%::quest2} to false
+        message "할로윈 2 게임 초기화됨" to player
+
+command /resethalloweengame1 <player>:
+    permission: op
+    trigger:
+        delete {halloween::%uuid of arg 1%.game1Accept}
+        set {halloween::%uuid of arg 1%::quest1} to false
+        delete {halloween::%uuid of arg 1%.game1Npc::1}
+        delete {halloween::%uuid of arg 1%.game1Npc::2}
+        delete {halloween::%uuid of arg 1%.game1Npc::3}
+        message "할로윈 1 게임 초기화됨" to player
+
+
+
+
+
+#>============================================================
+#>============================================================
+
+#> 메인 로직
+
+#>============================================================
+#>============================================================
+
+
+on rightclick:
+    player's world is "campus"
+    if "%clicked entity%" contains "할로켓":
+        if {@DO_EVENT} is true:
+            execute console command "/halloween %player%"
+        else if {@DO_EVENT} is false:
+            execute console command "/mv tp %player% halloween1"
+    
+
+#> TODO: 이거 나중에 op코드로 계속 놔두고 뒤에 아이디 알규먼트 추가하자.
+command /halloween <player>:
+    aliases: /할로윈, /gkffhdnls
+    permission: op
+    trigger:
+        {@DO_EVENT} is true
+        execute console command "/mv tp %arg 1% halloween1"
+        onPlaySoundEvent("entity.witch.ambient", arg 1)
+        message "&6================================" to arg 1
+        message " " to arg 1
+        message "%{@HW}%&f할로윈 마을에 오신 걸 환영합니다" to arg 1
+        message " " to arg 1
+        message "%{@HW}%&f마을의 주민 &a할로캣&f을 찾아가 &6호박 꾸러미&f를 받아가세요!" to arg 1
+        message "%{@HW}%&f가지고 있으면 좋은 일이 일어날 수 있다고..!" to arg 1
+        message " " to arg 1
+        message "%{@HW}%&f다리를 따라 마을로 가보자" to arg 1
+        message "&6================================" to arg 1
+        showTitleToPlayer("&6매일이 축제다!!", arg 1, 2 second, 1 second, 1 second)
+        message "%{@HW}%&7자세한 안내 페이지는 아래를 확인해주세요!&%nl%&f<url:https://ekdhs402.notion.site/2024-YUMC-12ad09e38ec180b08064c69d2242b82c?pvs=4>&d&l[ 클릭해서 안내페이지로 ]<reset>" to arg 1
+        wait 1 second
+        if {halloween::%uuid of arg 1%.start} is not set:
+            #> 시작 여부 세팅
+            set {halloween::%uuid of arg 1%.start} to true
+            #> 할로윈 버킷 레벨 세팅
+            set {halloween::%uuid of arg 1%.level} to 0
+            #> 각 퀘스트 달성 여부 세팅
+            set {halloween::%uuid of arg 1%::quest1} to false
+            set {halloween::%uuid of arg 1%::quest2} to false
+            set {halloween::%uuid of arg 1%::quest3} to false
+            set {halloween::%uuid of arg 1%::quest4} to false
+
+
+
+
+function printCurrentQuestStat(p: player):
+    if {halloween::%uuid of {_p}%::quest1} is true:
+        message "&e%{@QUEST_1}% &b완료" to {_p}
+    else:
+        message "&e%{@QUEST_1}% &c수행 전" to {_p}
+    if {halloween::%uuid of {_p}%::quest2} is true:
+        message "&e%{@QUEST_2}% &b완료" to {_p}
+    else:
+        message "&e%{@QUEST_2}% &c수행 전" to {_p}
+    if {halloween::%uuid of {_p}%::quest3} is true:
+        message "&e%{@QUEST_3}% &b완료" to {_p}
+    else:
+        message "&e%{@QUEST_3}% &c수행 전" to {_p}
+    if {halloween::%uuid of {_p}%::quest4} is true:
+        message "&e%{@QUEST_4}% &b완료" to {_p}
+    else:
+        message "&e%{@QUEST_4}% &c수행 전" to {_p}
+
+
+#> 할로윈 리워드 세팅
+command /halloweenrewardedit:
+    permission: op
+    trigger:
+        set {_gui} to addInventoryToValue(1, "&0리워드 세팅")
+        loop 9 times:
+            addSlotItemToValue({_gui}, loop-num - 1, {halloweenReward::%loop-num%})
+        open {_gui} to player
+
+on inventory close:
+    if event-inventory's name is "&0리워드 세팅":
+        loop 9 times:
+            set {halloweenReward::%loop-num%} to slot loop-num -1 of event-inventory
+        message "&d&l[ SYSTEM ] &f저장완료" to player
+
+
+#> 불러올 때 addSlotItemToValue({_gui}, loop-num - 1, {halloweenJinju::%loop-num%})
+
+
+
+#> 타임 알규먼트에 위에 REWARD_LEVEL_2 이거 상수 쓰셈
+#> 레벨은 2, 3, 4, 5 가 들어옴
+function giveHalloweenReward(p: player, level: integer, time: integer):
+    set {_index} to {_level}
+    loop {_time} times:
+        if {_level} is 5:
+            set {_index} to 9
+        give {halloweenReward::%{_index} - 1%} to {_p}
+        add 1 to {_index}
+
+
+
+on inventory click:
+    {@DO_EVENT} is true
+    player's world is {@WORLD}
+    if name of current inventory contains "%{@HW_ITEM}%&0보상 목록 &7왼쪽 종이 확인":
+        if clicked item is light blue concrete:
+            set {_name::*} to split name of clicked item at " "
+            set {_amount} to 0
+            set {_level} to 0
+            if {_name::2} contains "2":
+                set {_amount} to {@REWARD_LEVEL_2}
+                set {_level} to 2
+            else if {_name::2} contain "3":
+                set {_amount} to {@REWARD_LEVEL_3}
+                set {_level} to 3
+            else if {_name::2} contain "4":
+                set {_amount} to {@REWARD_LEVEL_4}
+                set {_level} to 4
+            else if {_name::2} contain "5":
+                set {_amount} to {@REWARD_LEVEL_5}
+                set {_level} to 5
+            set {_checkInv} to 64 * {_amount}
+            if player doesn't have enough space for {_checkInv} of barrier:
+                close player's inventory
+                message "&c&l[ WARNING ] &r&c인벤토리에 최소 %{_amount}%개 만큼의 공간을 비워주세요!" to player
+            else:
+                close player's inventory
+                giveHalloweenReward(player, {_level}, {_amount})
+                message "%{@HW}%&b여기 멋진 선물이야!" to player
+                set {halloween::%uuid of player%.reward::%{_level}%} to true
+                onOptionalPlaySoundEvent("entity.villager.celebrate", player, 2, 2)
+                
+
+
+#> 인벤토리에 있어야 함 번들이
+function openHalloweenReward(p: player):
+    set {_gui} to addInventoryToValue(6, "%{@HW_ITEM}%&0보상 목록 &7왼쪽 종이 확인")
+    addSlotItemToValueWithName({_gui}, 0, paper, "&d&lLV.1", "%{@HW_ITEM}%&e호박 꾸러미 &7레벨 1 보상목록")
+    addSlotItemToValueWithName({_gui}, 9, paper, "&d&lLV.2", "%{@HW_ITEM}%&e호박 꾸러미 &7레벨 2 보상목록")
+    addSlotItemToValueWithName({_gui}, 18, paper, "&d&lLV.3", "%{@HW_ITEM}%&e호박 꾸러미 &7레벨 3 보상목록")
+    addSlotItemToValueWithName({_gui}, 27, paper, "&d&lLV.4", "%{@HW_ITEM}%&e호박 꾸러미 &7레벨 4 보상목록")
+    addSlotItemToValueWithName({_gui}, 36, paper, "&d&lLV.5", "%{@HW_ITEM}%&e호박 꾸러미 &7레벨 5 보상목록")
+    #> 보상 목록
+    addSlotItemToValueWithName({_gui}, 1, barrier, "&c보상 없음", "&r ")
+    set {_numList::*} to 10, 19, 28, 29, 30, 31, 32, 37
+    loop 8 times:
+        set {_lore::*} to lore of {halloweenReward::%loop-num%}
+        addSlotItemToValue({_gui}, {_numList::%loop-num%}, {halloweenReward::%loop-num%})
+    if {halloween::%uuid of {_p}%.reward::2} is true:
+        addSlotItemToValueWithName({_gui}, 17, purple concrete, "&e수령 완료", "&7이미 수령한 보상입니다")
+    else if {halloween::%uuid of {_p}%.level} >= 2:
+        addSlotItemToValueWithName({_gui}, 17, light blue concrete, "&aLV 2 수령 가능!", "&7클릭하여 보상 수령하기")
+    else:
+        addSlotItemToValueWithName({_gui}, 17, red concrete, "&c수령 불가능!", "&7꾸러미 레벨을 달성하지 못했습니다")
+    if {halloween::%uuid of {_p}%.reward::3} is true:
+        addSlotItemToValueWithName({_gui}, 26, purple concrete, "&e수령 완료", "&7이미 수령한 보상입니다")
+    else if {halloween::%uuid of {_p}%.level} >= 3:
+        addSlotItemToValueWithName({_gui}, 26, light blue concrete, "&aLV 3 수령 가능!", "&7클릭하여 보상 수령하기")
+    else:
+        addSlotItemToValueWithName({_gui}, 26, red concrete, "&c수령 불가능!", "&7꾸러미 레벨을 달성하지 못했습니다")
+    if {halloween::%uuid of {_p}%.reward::4} is true:
+        addSlotItemToValueWithName({_gui}, 35, purple concrete, "&e수령 완료", "&7이미 수령한 보상입니다")
+    else if {halloween::%uuid of {_p}%.level} >= 4:
+        addSlotItemToValueWithName({_gui}, 35, light blue concrete, "&aLV 4 수령 가능!", "&7클릭하여 보상 수령하기")
+    else:
+        addSlotItemToValueWithName({_gui}, 35, red concrete, "&c수령 불가능!", "&7꾸러미 레벨을 달성하지 못했습니다")
+    if {halloween::%uuid of {_p}%.reward::5} is true:
+        addSlotItemToValueWithName({_gui}, 44, purple concrete, "&e수령 완료", "&7이미 수령한 보상입니다")
+    else if {halloween::%uuid of {_p}%.level} >= 5:
+        addSlotItemToValueWithName({_gui}, 44, light blue concrete, "&aLV 5 수령 가능!", "&7클릭하여 보상 수령하기")
+    else:
+        addSlotItemToValueWithName({_gui}, 44, red concrete, "&c수령 불가능!", "&7꾸러미 레벨을 달성하지 못했습니다")
+    open {_gui} to {_p}
+
+
+#command /testinfisword:
+    #permission: op
+    #trigger:
+        #giveInfiniteItemToPlayerWithNbt(player, 1, diamond sword, "", "", 1)
+
+#> set {_temp} to unbreakable {_item} named {_name} with lore {_lore} with custom model data {_custom}
+#> 이거 추가하고
+#> addSlotItemToValue 이거 넣으면 됨
+
+command /testopencandy:
+    permission: op
+    trigger:
+        giveInfiniteItemToPlayerWithNbt(player, 1, diamond sword, "%{@HW_ITEM}%&b잭 스패로우의 커틀러스", " %nl%&7할로윈 기념 아이템", 1)
+        giveInfiniteItemToPlayerWithNbt(player, 1, diamond axe, "%{@HW_ITEM}%&b잭 스패로우 호의 닻", " %nl%&7할로윈 기념 아이템", 1)
+        giveItemToPlayerWithNbt(player, 1, blue dye, "%{@HW_ITEM}%&b잭 스패로우의 앵무새", "&7할로윈 기념 모자", 7)
+        giveItemToPlayerWithNbt(player, 1, blue dye, "%{@HW_ITEM}%&b잭 스패로우의 선장모", "&7할로윈 기념 모자", 8)
+        giveItemToPlayerWithNbt(player, 1, blue dye, "%{@HW_ITEM}%&b크앙 나는 상어다", "&7할로윈 기념 모자", 9)
+        giveItemToPlayerWithNbt(player, 1, blue dye, "%{@HW_ITEM}%&b파란 마녀 모자", "&7할로윈 기념 모자", 10)
+        giveItemToPlayerWithNbt(player, 1, enchanted golden apple, "%{@HW_ITEM}%&b강진주의 특제 캔디", "&7할로윈 기념 아이템", 10)
+
+
+
+
+
+#> 캔디 10번 모델
+
+on rightclick:
+    {@DO_EVENT} is true
+    player's world is {@WORLD}
+    if "%clicked entity%" contains "할로캣":
+        if {halloween::%uuid of player%.start} is not true:
+            message "%{@WN}%&c정상적이지 않은 접근입니다! 관리자에게 문의하세요" to player
+            stop
+        if {halloween::%uuid of player%.level} is 0:
+            set {halloween::%uuid of player%.level} to 1
+            onOptionalPlaySoundEvent("entity.cat.ambient", player, 2, 2)
+            message "" to player
+            message "%{@HW}%&f반갑다냥. 여기 처음 오는거냥?" to player
+            message "&f이곳 &6할로윈 마을&f은 축제 준비에 바쁘다냥, 매일이 할로윈 축제거든." to player
+            message "&f영남대학교의 시간으로는 &a지금이 할로윈 기간이라던데&f, 마을을 돌아다니면서 &a여러 사람들을 만나보라냥&f. 너의 세상만큼이나 즐거운 축제가 될 거야냥!" to player
+            message "&f참! 나에게 다시 찾아오면 &a퀘스트 진행 사항&f에 대해서 알려줄게" to player
+            message "" to player
+            wait 4 seconds
+            onOptionalPlaySoundEvent("entity.cat.ambient", player, 2, 2)
+            message "%{@HW}%&b가기 전에 잠깐!&f이거 하나 받아가라냥. 축제를 즐기려면 &a그만한 준비가 필요하다고!" to player
+            message "" to player
+            message "&7할로캣에게서 &6&l[ 할로윈 ] &r&e호박 꾸러미 LV 1&7을 획득했습니다" to player
+            message "&7NPC 축제의 요정에게서 꾸러미 레벨에 따른 보상을 획득하실 수 있습니다" to player
+            execute console command "/givehalloweenbundle %player% 1"
+        else if {halloween::%uuid of player%.level} is 5:
+            message "" to player
+            printCurrentQuestStat(player)
+            message "" to player
+            message "%{@HW}%&f수고 많았다냥! 덕분에 오늘도 즐거운 축제가 될 수 있을 거야냥!" to player
+            message "%{@HW}%&b외부 사람이 오는 건&f 정말 오랜만이였어냥. 좀 더 미뤄질 수 있었는데, 마침 왔지 뭐냥%nl%&f내가 알기로, &a영남대학교&f에서는 &b10월 31일&f만 축제날이라면서냥? 또 볼 날이 1년 뒤라니... 조금 아쉽다냥. 그래도 &b함께 한 추억&f은 줄곧 기억해줘냥!" to player
+            message "" to player
+            message "&7NPC 축제의 요정에게서 꾸러미 레벨에 따른 보상을 획득하실 수 있습니다" to player
+            onOptionalPlaySoundEvent("entity.cat.ambient", player, 2, 2)
+            wait 4 seconds
+            getch(player, 5002)
+        else:
+            message "" to player
+            message "%{@HW}%&f축제 준비가 한창이야냥! &a마을 사람들&f을 만나보라냥" to player
+            message "" to player
+            message "&7NPC 축제의 요정에게서 꾸러미 레벨에 따른 보상을 획득하실 수 있습니다" to player
+            printCurrentQuestStat(player)
+            onOptionalPlaySoundEvent("entity.cat.ambient", player, 2, 2)
+    else if "%clicked entity%" contains "축제의 요정":
+        if {halloween::%uuid of player%.start} is not true:
+            message "%{@WN}%&c정상적이지 않은 접근입니다! 관리자에게 문의하세요" to player
+            stop
+        if {halloween::%uuid of player%.level} is 0:
+            message "%{@HW}%&f옆에 있는 할로켓을 먼저 찾아가보는 건 어때?" to player
+            onOptionalPlaySoundEvent("entity.villager.celebrate", player, 2, 2)
+            stop
+        if checkOwnedBundle(player) is false:
+            message "%{@HW}%&c꾸러미를 가지고 있지 않거나 본인의 꾸러미가 아닙니다" to player
+        else:
+            message "%{@HW}%&6꾸러미&f를 가져왔구나! 축제를 제대로 즐기려면 이런 아이템은 꼭 있어야하잖아?" to player
+            onOptionalPlaySoundEvent("entity.villager.celebrate", player, 2, 2)
+            wait 2 second
+            openHalloweenReward(player)
+
+
+
+
+
+
+#>============================================================
+#>============================================================
+
+#> halloweenGame1 : 잭 오 랜턴 코드
+
+#>============================================================
+#>============================================================
+
+command /sethalloweengame1book:
+    permission: op
+    trigger:
+        set {book::halloween::1} to player's tool
+        message " 됨" to player
+
+function openHalloweenGame1Book(p: player):
+    set {_i} to {_p}'s tool
+    set {_p}'s tool to {book::halloween::1}
+    open book {book::halloween::1} to {_p}
+    set {_p}'s tool to {_i}
+
+function checkHalloweenQuest1(p: player) :: boolean:
+    if {halloween::%uuid of {_p}%.game1Npc::*} is not set:
+        return false
+    loop {halloween::%uuid of {_p}%.game1Npc::*}:
+        if loop-value is false:
+            return false
+    return true
+
+
+command /정답 <text>:
+    trigger:
+        {@DO_EVENT} is true
+        player's world is {@WORLD}
+        {halloween::%uuid of player%.game1Accept} is set
+        checkHalloweenQuest1(player) is true
+        if {halloween::%uuid of player%.game1Accept} is true:
+            message "%{@HW}%&c이미 범인을 찾은 거 같아! 왜, 의심스러운 인물이 또 있는 거야??" to player
+            onOptionalPlaySoundEvent("entity.pillager.celebrate", player, 2, 1)
+            wait 3 seconds
+            if arg 1 is "잭 오 랜턴":
+                message "%{@HW}%&f뭐? 나를 의심한다고??? 내가 뭐 혼자서 &b북치고 장구치고&f 다 했을까??!!" to player
+                onOptionalPlaySoundEvent("entity.pillager.celebrate", player, 2, 1)
+                getch(player, 5006)
+            else if arg 1 is "%{nick::%uuid of player%}%":
+                message "%{@HW}%&f네녀석이 그랬다고? 근데 어쩌나, 너가 이 마을에 오기 전에 일어난 일인데. &b자기 자신을 너무 못 믿는 거 아니야?" to player
+                onOptionalPlaySoundEvent("entity.pillager.celebrate", player, 2, 1)
+                getch(player, 5007)
+            stop
+        if player doesn't have enough space for 1 of barrier:
+            message "%{@HW}%&c인벤토리 공간 하나를 비워주세요!%nl%&7(퀘스트 클리어 실패)" to player
+            onOptionalPlaySoundEvent("entity.pillager.celebrate", player, 2, 1)
+        else if checkOwnedBundle(player) is false:
+            message "%{@HW}%&꾸러미를 가지고 있지 않거나 본인의 꾸러미가 아닙니다!%nl%&7(퀘스트 클리어 실패)" to player
+            onOptionalPlaySoundEvent("entity.pillager.celebrate", player, 2, 1)
+        else:
+            message "%{@HW}%&f잠시만 기다려봐바" to player
+            message " " to player
+            wait 2 seconds
+            if arg 1 is "잭 오 랜턴":
+                message "%{@HW}%&f뭐? 나를 의심한다고??? 내가 뭐 혼자서 &b북치고 장구치고&f 다 했을까??!!" to player
+                onOptionalPlaySoundEvent("entity.pillager.celebrate", player, 2, 1)
+                getch(player, 5006)
+            else if arg 1 is "%{nick::%uuid of player%}%":
+                message "%{@HW}%&f네녀석이 그랬다고? 근데 어쩌나, 너가 이 마을에 오기 전에 일어난 일인데. &b자기 자신을 너무 못 믿는 거 아니야?" to player
+                onOptionalPlaySoundEvent("entity.pillager.celebrate", player, 2, 1)
+                getch(player, 5007)
+            else if arg 1 is not "해피":
+                message "%{@HW}%&f아닌 거 같아... 도와줘서 고맙지만, 조금 더 신중해볼 필요가 있어!" to player
+                onOptionalPlaySoundEvent("entity.pillager.celebrate", player, 2, 1)
+            else if arg 1 is "해피":
+                message "%{@HW}%&f고맙네! 이것이 내 캔디였어!! 와서 장난치고 놀았으면 그냥 줬을 건데 왜 훔쳐갔을까 그러네??!" to player
+                levelupBundle(player, 1)
+                clearHalloweenQuest2(player)
+                set {halloween::%uuid of player%.game1Accept} to true
+                showTitleToPlayer("&a퀘스트 1 클리어", player, 2 second, 1 second, 1 second)
+                onPlaySoundEvent("entity.player.levelup", player)
+
+
+
+
+
+
+
+
+
+on rightclick:
+    {@DO_EVENT} is true
+    player's world is {@WORLD}
+    if "%clicked entity%" contains "잭 오 랜턴":
+        if {halloween::%uuid of player%.start} is not true:
+            message "%{@WN}%&c정상적이지 않은 접근입니다! 관리자에게 문의하세요" to player
+            stop
+        if {halloween::%uuid of player%.level} is 0:
+            message "%{@HW}%&f할로캣이 부르고 있다. 왜 나를 먼저 찾은 거지?" to player
+            onOptionalPlaySoundEvent("entity.pillager.celebrate", player, 2, 1)
+            stop
+        if {halloween::%uuid of player%.game1Accept} is not set:
+            message "" to player
+            message "%{@HW}%&f자넨가? 내 캔디를 훔친 도둑이?? 아.. 아닌 건가" to player
+            onOptionalPlaySoundEvent("entity.pillager.celebrate", player, 2, 1)
+            message "&6================================" to player
+            message "&b%{@QUEST_1}%" to player
+            message "&f큰일이야 큰일!!! &d할로윈은 사탕먹는 날...&f 이러면 장난밖에 못치게 된다고!!!" to player
+            message "&f분명히 &b지금 마을에 방문한 사람들 중&f에 있을 거야.. 아니? 어쩌면 &b우리 마을 주민&f일 수도 있다고!!" to player
+            message "&f분명히 누군가는 봤을 거야.. 어서 사람들을 조사해서 찾아보라고.! 뭐? &a의심하는 건 나빠?&f 내 사탕을 훔쳐간 게 더 나빠!!" to player
+            message " " to player
+            message "&a누군지 알겠으면 나를 다시 찾아오도록" to player
+            message "&6================================" to player
+            message " " to player
+            message "%{@HW}%&7단서를 제공하는 모든 인물과 대화하고 오세요. 집에 들어가 있는 사람들이 단서를 제공합니다. 총 3명이 있습니다" to player
+            set {halloween::%uuid of player%.game1Accept} to false
+            #> 모든 엔피시 다 방문했는지 검사
+            set {halloween::%uuid of player%.game1Npc::1} to false
+            set {halloween::%uuid of player%.game1Npc::2} to false
+            set {halloween::%uuid of player%.game1Npc::3} to false
+        else if {halloween::%uuid of player%.game1Accept} is false:
+            if checkHalloweenQuest1(player) is false:
+                message " " to player
+                message "%{@HW}%&f큰일이군. 캔디가 없으면 난... 난...!" to player
+                onOptionalPlaySoundEvent("entity.pillager.celebrate", player, 2, 1)
+                message " " to player
+                message "%{@HW}%&7단서를 제공하는 모든 인물과 대화하고 오세요. 집에 들어가 있는 사람들이 단서를 제공합니다. 총 3명이 있습니다" to player
+            else if checkHalloweenQuest1(player) is true:
+                message " " to player
+                message "%{@HW}%&f그래그래! 누가 범인인지 알겠나..??" to player
+                onOptionalPlaySoundEvent("entity.pillager.celebrate", player, 2, 1)
+                message " " to player
+                message "<suggest command:/정답 >&e&n[ 범인은 바로..! ]<reset>" to player
+                message "&7클릭한 후 다른 조작 없이 정확히 범인의 이름을 입력해야 합니다. %nl%&7ex) &6[NPC] &f잭 오 랜턴&7 -> /정답 잭 오 랜턴" to player
+        else if {halloween::%uuid of player%.game1Accept} is true:
+            message "%{@HW}%&f그래 그래 역시 할로윈은 단 게 최고야!!! 이제야 장난칠 맛이 나는구만" to player
+            message " " to player
+            message "<suggest command:/정답 >&e&n[ 범인은 바로..! ]<reset>" to player
+            onOptionalPlaySoundEvent("entity.pillager.celebrate", player, 2, 1)
+    else if "%clicked entity%" contains "데이데이":
+        if {halloween::%uuid of player%.start} is not true:
+            message "%{@WN}%&c정상적이지 않은 접근입니다! 관리자에게 문의하세요" to player
+            stop
+        else if {halloween::%uuid of player%.game1Accept} is false:
+            message "%{@HW}%&f뭐캔디도둑이있다고 난캔디못먹는다 캔디좋아하는인간은우리마을에서얘뿐이다 " to player
+            message "<suggest command:1110011 1010111 1011000 1000111 1100010 1101011 1001101 110000 1110100 1000010 1001001>&f1110011 1010111 1011000 1000111 1100010 1101011 1001101 110000 1110100 1000010 1001001<reset>%nl%&7(클릭 시 복사)" to player
+            onOptionalPlaySoundEvent("block.anvil.place", player, 2, 1)
+            set {halloween::%uuid of player%.game1Npc::1} to true
+        else if {halloween::%uuid of player%.game1Accept} is true:
+            message "%{@HW}%<suggest command:110001 1010100 1001111 110100 111000 1000011 1101110 1101100 110110 110110 1110111>&f110001 1010100 1001111 110100 111000 1000011 1101110 1101100 110110 110110 1110111<reset>%nl%&7(클릭 시 복사..??)" to player
+            onOptionalPlaySoundEvent("block.anvil.place", player, 2, 1)
+    else if "%clicked entity%" contains "먹깨비":
+        if {halloween::%uuid of player%.start} is not true:
+            message "%{@WN}%&c정상적이지 않은 접근입니다! 관리자에게 문의하세요" to player
+            stop
+        else if {halloween::%uuid of player%.game1Accept} is false:
+            message " " to player
+            message "%{@HW}%&b캔디 도둑??&f 나도 캔디 좋아하는데 ㅎㅎㅎ 우리 마을에 캔디 좋아하는 친구가 있거든, 그 친구 사진 볼래??%nl%&a막 만져보고 싶을 만큼 귀엽단 말이야~~" to player
+            onOptionalPlaySoundEvent("entity.villager.celebrate", player, 2, 2)
+            wait 3 seconds
+            message " " to player
+            message "　　　　■■　　　　■■　　　　" to player
+            message "　　■　　　　■■　　　　■　　" to player
+            message "■　　　　　　　　　　　　　　　■" to player
+            message "■　　■　　　　　　　　■　　■" to player
+            message "■　　　　　　　　　　　　　　　■         냥?" to player
+            message "■　　■　　　　　　<url:https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcS3ZJvMZ7mfpkfoFTgU6VCTEcRnmb5EsAjkcw&s>■<reset>　　　　■" to player
+            message "■　　　　■■■　　　　　　■" to player
+            message "　　■　　　　　　　　　　　　■　　" to player
+            message "　　■　　■　　■　　　　■　　" to player
+            message "　　　　■　　　　　　■■　　　　" to player
+            wait 2 seconds
+            message "%{@HW}%&7어딘가 만져보고 싶은 고양이 사진이다" to player
+            set {halloween::%uuid of player%.game1Npc::2} to true
+        else if {halloween::%uuid of player%.game1Accept} is true:
+            message "%{@HW}%&f어떄? 고양이 이쁘지?? ㅎㅎㅎㅎ" to player
+            onOptionalPlaySoundEvent("entity.villager.celebrate", player, 2, 2)
+    else if "%clicked entity%" contains "할로윈광대":
+        if {halloween::%uuid of player%.start} is not true:
+            message "%{@WN}%&c정상적이지 않은 접근입니다! 관리자에게 문의하세요" to player
+            stop
+        else if {halloween::%uuid of player%.game1Accept} is false:
+            message " " to player
+            message "%{@HW}%&b우리 도서관에서 캔디 쓰레기가 자주 나오긴 해요. 도서관이 어디냐고요? 에이 이래뵈도 제가 있는 이곳이 도서관이라구요! 안에 들어가서 책도 몇 권 읽어보세요! 어디 자리에만 유독 캔디 쓰레기가 나오긴 했는데.." to player
+            message "&7독서대를 잘 관찰해보자" to player
+            onOptionalPlaySoundEvent("entity.villager.ambient", player, 2, 2)
+            set {halloween::%uuid of player%.game1Npc::3} to true
+        else if {halloween::%uuid of player%.game1Accept} is true:
+            message "%{@HW}%&f자주 놀러와요! 우리 마을에 관한 책들도 있는데, 이게 또 명작이걸랑요~" to player
+            onOptionalPlaySoundEvent("entity.villager.ambient", player, 2, 2)
+    else if clicked block is lectern:
+        if {halloween::%uuid of player%.game1Accept} is set:
+            set {_tag} to nbt compound of clicked block
+            "%{_tag}%" contains "writable"
+            cancel event
+            openHalloweenGame1Book(player)
+    else if "%clicked entity%" contains "뿔뿔이":
+        if {halloween::%uuid of player%.start} is not true:
+            message "%{@WN}%&c정상적이지 않은 접근입니다! 관리자에게 문의하세요" to player
+            stop
+        message "%{@HW}% 뿔뿔이 앞에 있는 유령들이 뿔뿔이 흩어져 엌ㅋㅋㅋㅋㅋ" to player
+        onOptionalPlaySoundEvent("entity.piglin.ambient", player, 2, 1)
+    else if "%clicked entity%" contains "핼로캣":
+        if {halloween::%uuid of player%.start} is not true:
+            message "%{@WN}%&c정상적이지 않은 접근입니다! 관리자에게 문의하세요" to player
+            stop
+        onOptionalPlaySoundEvent("entity.cat.ambient", player, 2, 2)
+        message "%{@HW}%&f내 동생은 춥지도 않냥.. 옷을 홀딱 벗고 있다냥" to player
+    else if "%clicked entity%" contains "강바다":
+        if {halloween::%uuid of player%.start} is not true:
+            message "%{@WN}%&c정상적이지 않은 접근입니다! 관리자에게 문의하세요" to player
+            stop
+        onOptionalPlaySoundEvent("BLOCK_NOTE_BLOCK_BELL", player, 2, 1)
+        message "%{@HW}%&f아, 상점? 오늘은 잠깐 닫았어~ 오랜만에 진주도 보고 좋잖아?" to player
+    else if "%clicked entity%" contains "해피":
+        if {halloween::%uuid of player%.start} is not true:
+            message "%{@WN}%&c정상적이지 않은 접근입니다! 관리자에게 문의하세요" to player
+            stop
+        if "%player's tool%" contains "호박 꾸러미 LV 5":
+            {halloween::%uuid of player%.hidden::6} is not set
+            checkOwnedBundle(player) is true
+            message " " to player
+            message "%{@HW}%&f미안... 내가 욕심이 좀 많았지..? 대신에 사과의 마음으로 이거 받아주라..!" to player
+            onOptionalPlaySoundEvent("entity.villager.ambient", player, 2, 1)
+            wait 2 seconds
+            if player doesn't have enough space for 1 of barrier:
+                message "%{@HW}%&c인벤토리 공간 하나를 비워주세요!" to player
+                stop
+            {halloween::%uuid of player%.hidden::6} is not set
+            set {halloween::%uuid of player%.hidden::6} to true
+            message " " to player
+            message "&7해피에게서 %{@HW_ITEM}%&f할로윈 가구 박스&7를 획득하였습니다" to player
+            onOptionalPlaySoundEvent("BLOCK_NOTE_BLOCK_BELL", player, 2, 1)
+            getHalloweenBundle(player)
+            stop
+        onOptionalPlaySoundEvent("entity.villager.ambient", player, 2, 1)
+        message "%{@HW}%&f이거 내 꺼야! 필요하면 잭 오 랜턴 아저씨한테서 받으라구. Trick or Treat?! 헤헤헤" to player
+
+
+#>============================================================
+#>============================================================
+
+#> halloweenGame2 : 강진주 코드
+
+#>============================================================
+#>============================================================
+
+#> 강진주 세팅
+command /halloweenjinjuedit:
+    permission: op
+    trigger:
+        set {_gui} to addInventoryToValue(1, "&0강진주 세팅")
+        loop 9 times:
+            addSlotItemToValue({_gui}, loop-num - 1, {halloweenJinju::%loop-num%})
+        open {_gui} to player
+
+on inventory close:
+    if event-inventory's name is "&0강진주 세팅":
+        loop 9 times:
+            set {halloweenJinju::%loop-num%} to slot loop-num -1 of event-inventory
+        message "&d&l[ SYSTEM ] &f저장완료" to player
+
+
+function checkHalloweenQuest2(p: player) :: boolean:
+    #> 호박파이
+    set {_questItem1} to 0
+    #> 꿀병
+    set {_questItem2} to 0
+    #> 발광열매
+    set {_questItem3} to 0
+    #> 체리
+    set {_questItem4} to 0
+    #> 강사범의 월척
+    set {_questItem5} to 0
+    loop items in {_p}'s inventory:
+        if loop-item is pumpkin pie:
+            set {_dd} to "%item amount of loop-item%" parsed as integer
+            add {_dd} to {_questItem1}
+        else if loop-item is honey bottle:
+            set {_dd} to "%item amount of loop-item%" parsed as integer
+            add {_dd} to {_questItem2}
+        else if loop-item is glow berries:
+            set {_dd} to "%item amount of loop-item%" parsed as integer
+            add {_dd} to {_questItem3}
+        else if loop-item is pink dye:
+            set {_tag} to nbt compound of loop-item
+            if "%{_tag}%" contains "체리":
+                set {_dd} to "%item amount of loop-item%" parsed as integer
+            add {_dd} to {_questItem4}
+        else if loop-item is cod:
+            set {_tag} to nbt compound of loop-item
+            if "%{_tag}%" contains "강사범의 월척":
+                if "%{_tag}%" contains "소유자: %{nick::%uuid of {_p}%}%":
+                    set {_dd} to "%item amount of loop-item%" parsed as integer
+            add {_dd} to {_questItem5}
+        set {_dd} to 0
+    set {_checkSum} to 0
+    if {_questItem1} >= {@JINJU_QUEST_1}:
+        add 1 to {_checkSum}
+    if {_questItem2} >= {@JINJU_QUEST_2}:
+        add 1 to {_checkSum}
+    if {_questItem3} >= {@JINJU_QUEST_3}:
+        add 1 to {_checkSum}
+    if {_questItem4} >= {@JINJU_QUEST_4}:
+        add 1 to {_checkSum}
+    if {_questItem5} >= {@JINJU_QUEST_5}:
+        add 1 to {_checkSum}
+    if {_checkSum} is {@JINJU_QUEST_AMOUNT}:
+        return true
+    return false
+
+function clearHalloweenQuest2(p: player):
+    set {_delete1} to {@JINJU_QUEST_1}
+    set {_delete2} to {@JINJU_QUEST_2}
+    set {_delete3} to {@JINJU_QUEST_3}
+    set {_delete4} to {@JINJU_QUEST_4}
+    set {_delete5} to {@JINJU_QUEST_5}
+    loop items in {_p}'s inventory:
+        if loop-item is pumpkin pie:
+            {_delete1} is not 0
+            set {_dd} to "%item amount of loop-item%" parsed as integer
+            if {_dd} > {_delete1}:
+                set {_dd} to {_delete1}
+            remove {_dd} of loop-item from {_p}'s inventory
+            subtract {_dd} from {_delete1}
+        else if loop-item is honey bottle:
+            {_delete2} is not 0
+            set {_dd} to "%item amount of loop-item%" parsed as integer
+            if {_dd} > {_delete2}:
+                set {_dd} to {_delete2}
+            remove {_dd} of loop-item from {_p}'s inventory
+            subtract {_dd} from {_delete2}
+        else if loop-item is glow berries:
+            {_delete3} is not 0
+            set {_dd} to "%item amount of loop-item%" parsed as integer
+            if {_dd} > {_delete3}:
+                set {_dd} to {_delete3}
+            remove {_dd} of loop-item from {_p}'s inventory
+            subtract {_dd} from {_delete3}
+        else if loop-item is pink dye:
+            {_delete4} is not 0
+            set {_tag} to nbt compound of loop-item
+            "%{_tag}%" does not contain "shulker"
+            if "%{_tag}%" contains "체리":
+                set {_dd} to "%item amount of loop-item%" parsed as integer
+                if {_dd} > {_delete4}:
+                    set {_dd} to {_delete4}
+                remove {_dd} of loop-item from {_p}'s inventory
+                subtract {_dd} from {_delete4}
+        else if loop-item is cod:
+            {_delete5} is not 0
+            set {_tag} to nbt compound of loop-item
+            "%{_tag}%" does not contain "shulker"
+            if "%{_tag}%" contains "강사범의 월척":
+                "%{_tag}%" contains "소유자: %{nick::%uuid of {_p}%}%"
+                set {_dd} to "%item amount of loop-item%" parsed as integer
+                if {_dd} > {_delete5}:
+                    set {_dd} to {_delete5}
+                remove {_dd} of loop-item from {_p}'s inventory
+                subtract {_dd} from {_delete5}
+
+
+
+function openQuest2List(p: player):
+    set {_gui} to addInventoryToValue(1, "%{@HW_ITEM}%&0필요한 재료")
+    loop 9 times:
+        addSlotItemToValue({_gui}, loop-num - 1, {halloweenJinju::%loop-num%})
+    set {_test} to checkHalloweenQuest2({_p})
+    if {_test} is false:
+        addSlotItemToValueWithName({_gui}, 8, red concrete, "&c퀘스트 진행중", "&7재료 아이템을 모아오세요")
+    else if {_test} is true:
+        addSlotItemToValueWithName({_gui}, 8, light blue concrete, "&a퀘스트 완료", "&7클릭하여 완료하기")
+    open {_gui} to {_p}
+
+on rightclick:
+    {@DO_EVENT} is true
+    player's world is {@WORLD}
+    if "%clicked entity%" contains "강진주":
+        if {halloween::%uuid of player%.start} is not true:
+            message "%{@WN}%&c정상적이지 않은 접근입니다! 관리자에게 문의하세요" to player
+            stop
+        if {halloween::%uuid of player%.level} is 0:
+            message "%{@HW}%&f할로캣이 부르고 있어요! 먼저 만나보는 건 어떤가요?" to player
+            onOptionalPlaySoundEvent("entity.villager.celebrate", player, 2, 2)
+            stop
+        if {halloween::%uuid of player%.game2Accept} is not set:
+            message "" to player
+            message "%{@HW}%&f어서와요! 마침 잘 됐어요. 제 얘기를 들어주시겠어요?" to player
+            onOptionalPlaySoundEvent("entity.villager.celebrate", player, 2, 2)
+            message "&6================================" to player
+            message "&b%{@QUEST_2}%" to player
+            message "&f우와! 이곳저곳에서 많은 손님이 찾아오셨어요! 이럴 때일수록 더 멋지고 풍성한 축제가 되도록 준비해야 해요!" to player
+            message "&f이번 축제 준비를 어느정도 마쳤는데, &b아직 남은 재료가 있어요. &f다른 준비도 많이 남은 상태라 당장에 구하기가 힘들어요..." to player
+            message "&f혹시 가능하다면 도와주실 수 있을까요? 간단하게 &b재료 다섯 가지&f만 구해주시면 돼요!" to player
+            message " " to player
+            message "&7일부 재료는 영남대학교 캠퍼스 월드, 낚시월드 하늘 호수에서 얻을 수 있습니다." to player
+            message "&6================================" to player
+            set {halloween::%uuid of player%.game2Accept} to false
+            set {halloween::%uuid of player%.saboemFish} to false
+            wait 4 seconds
+            openQuest2List(player)
+        else if {halloween::%uuid of player%.game2Accept} is false:
+            message "%{@HW}%&f필요한 재료는 이렇게 있어요!" to player
+            message " " to player
+            message "&7일부 재료는 영남대학교 캠퍼스 월드, 낚시월드 하늘 호수에서 얻을 수 있습니다." to player
+            onOptionalPlaySoundEvent("entity.villager.celebrate", player, 2, 2)
+            wait 2 seconds
+            openQuest2List(player)
+        else:
+            message "%{@HW}%&f덕분에 즐겁고 풍성한 파티가 될 거예요!" to player
+            onOptionalPlaySoundEvent("entity.villager.celebrate", player, 2, 2)
+
+
+
+function checkSaboem(p: player) :: boolean:
+    set {_quest} to 0
+    loop items in {_p}'s inventory:
+        if loop-item is paper:
+            set {_tag} to nbt compound of loop-item
+            "%{_tag}%" does not contain "shulker"
+            if "%{_tag}%" contains "별빛 코인":
+                return true
+    return false
+
+function clearSaboem(p: player):
+    loop items in {_p}'s inventory:
+        if loop-item is paper:
+            set {_tag} to nbt compound of loop-item
+            "%{_tag}%" does not contain "shulker"
+            if "%{_tag}%" contains "별빛 코인":
+                remove 1 of loop-item from {_p}'s inventory
+
+
+command /okoksaboem:
+    trigger:
+        {@DO_EVENT} is true
+        player's world is "fishingspot"
+        if checkSaboem(player) is false:
+            message " " to player
+            message "%{@HW}%&f아직 &d별빛 코인&f을 준비하지 못한 거 같은데? 딱 하나만 있으면 된다고~" to player
+            onOptionalPlaySoundEvent("entity.wandering_trader.ambient", player, 2, 1)
+        else if checkSaboem(player) is true:
+            if {halloween::%uuid of player%.saboemFish} is false:
+                clearSaboem(player)
+                execute console command "/givehalloweencod %player%"
+                message " " to player
+                message "%{@HW}%&f고맙네! 자 여기, 이게 바로 나! &d강사범의 월척&f이라네! 진주에게 안부도 전해주고" to player
+                message "  &d강사범의 월척&b을 획득했습니다" to player
+                set {halloween::%uuid of player%.saboemFish} to true
+                onOptionalPlaySoundEvent("entity.wandering_trader.ambient", player, 2, 1)
+                wait 2 ticks
+                onPlaySoundEvent("entity.player.levelup", player)
+            else if {halloween::%uuid of player%.saboemFish} is true:
+                message "%{@HW}%&f하나면 충분하지 않겠는가? 어서 우리 진주에게 돌아가보게나" to player
+                onOptionalPlaySoundEvent("entity.wandering_trader.ambient", player, 2, 1)
+
+on rightclick:
+    {@DO_EVENT} is true
+    player's world is "fishingspot"
+    if "%clicked entity%" contains "강사범":
+        if {halloween::%uuid of player%.game2Accept} is false:
+            message " " to player
+            message "%{@HW}%&f어잇, 아직은 물품 준비중인데... 뭐? 우리 &b진주&f가 나를 찾았다고??%nl%&f그래 우리 조카가 무슨 일로 나를 찾았달까? 축제를 위해서 &a삼촌이 직접 잡은 월척&f이 필요하다고? 아유 그럼 우리 진주가 필요하다는데..." to player
+            onOptionalPlaySoundEvent("entity.wandering_trader.ambient", player, 2, 1)
+            wait 5 seconds
+            message " " to player
+            message "%{@HW}%&f근데,, 요즘 사정이 안 좋아. 그래도 &b조금의 여유&f를 제공해주면 내가 실한 놈으로 주도록 하마! &d별빛 코인&f을 &b1개&f를 가져다주겠나? 코인은 우리 &9하늘 호수&f의 귀염둥이 &3떼껄룩&f이 가지고 있을 거야." to player
+            message "&a&n<run command:/okoksaboem>[  여기 가져왔어요!  ]<reset>%nl%&7클릭하여 보상 수령하기" to player
+            onOptionalPlaySoundEvent("entity.wandering_trader.ambient", player, 2, 1)
+        else if {halloween::%uuid of player%.game2Accept} is true:
+            message "%{@HW}%&f우리 진주가 뭐라고 하더냐? &a축제 준비가 잘 됐다&f고?? 으하하 그거 참 좋은 소식이구만!" to player
+            onOptionalPlaySoundEvent("entity.wandering_trader.ambient", player, 2, 1)
+            wait 3 seconds
+            if {halloween::%uuid of player%.hidden::7} is not set:
+                if player doesn't have enough space for 1 of barrier:
+                    message "%{@HW}%&c인벤토리 공간 하나를 비워주세요!" to player
+                    stop
+                message "%{@HW}%&f그리고 자, &d별빛 코인&f이다. 뭐해 안 받고? 우리 진주를 위한 건데 내가 돈을 받을까? 허허허" to player
+                message " " to player
+                message "&7강사범에게서 &d별빛 코인&7을 획득하였습니다." to player
+                onOptionalPlaySoundEvent("entity.wandering_trader.ambient", player, 2, 1)
+                getHalloweenCoin(player)
+
+
+on inventory click:
+    {@DO_EVENT} is true
+    player's world is {@WORLD}
+    if clicked item is light blue concrete named "&a퀘스트 완료":
+        if name of current inventory contains "%{@HW_ITEM}%&0필요한 재료":
+            close player's inventory
+            if player doesn't have enough space for 1 of barrier:
+                message "%{@HW}%&c인벤토리 공간 하나를 비워주세요!%nl%&7(퀘스트 클리어 실패)" to player
+                onOptionalPlaySoundEvent("entity.villager.celebrate", player, 2, 2)
+            else if checkOwnedBundle(player) is false:
+                message "%{@HW}%&꾸러미를 가지고 있지 않거나 본인의 꾸러미가 아닙니다!%nl%&7(퀘스트 클리어 실패)" to player
+                onOptionalPlaySoundEvent("entity.villager.celebrate", player, 2, 2)
+            else:
+                message "%{@HW}%&f고마워요! 준비를 비로소 마무리할 수 있게 됐어요" to player
+                levelupBundle(player, 2)
+                clearHalloweenQuest2(player)
+                set {halloween::%uuid of player%.game2Accept} to true
+                showTitleToPlayer("&a퀘스트 2 클리어", player, 2 second, 1 second, 1 second)
+                onPlaySoundEvent("entity.player.levelup", player)
+
+
+
+
+
+
+
+
+
+#>============================================================
+#>============================================================
+
+#> halloweenGame3 : 해적선 미니 게임 코드
+
+#>============================================================
+#>============================================================
+
+
+
+function blackSlotRotate(p: player, i: integer):
+    set {_black} to {_i}
+    loop 9 times:
+        addSlotItem({_black}, {_p}, black stained glass pane, " ", " ")
+        if {_black} is not {_i}:
+            addSlotItem({_black} - 1, {_p}, white stained glass pane, " ", " ")
+        add 1 to {_black}
+        wait 3 ticks
+    set {_black} to {_i} + 7
+    loop 8 times:
+        addSlotItem({_black}, {_p}, black stained glass pane, " ", " ")
+        if {_black} is not {_i} + 8:
+            addSlotItem({_black} + 1, {_p}, white stained glass pane, " ", " ")
+        subtract 1 from {_black}
+        wait 3 ticks
+
+
+function halloweenGame3(p: player):
+    addInventory(4, {_p}, "%{@HW_ITEM}%&0해적선 수리하기")
+    addSlotItem(31, {_p}, emerald block, "&a수리하기!", "&7검은색 바를 초록색 칸에 맞춰 눌러요!")
+    set {_index} to 9
+    loop 18 times:
+        addSlotItem({_index}, {_p}, white stained glass pane, " ", " ")
+        add 1 to {_index}
+    set {halloweenGame3Point.%uuid of {_p}%} to random integer between 0 and 8
+    addSlotItem({halloweenGame3Point.%uuid of {_p}%}, {_p}, lime stained glass pane, " ", " ")
+    loop 10 times:
+        blackSlotRotate({_p}, 9)
+        blackSlotRotate({_p}, 18)
+        wait 48 ticks
+    delete {halloweenGame3Point.%uuid of {_p}%}
+    if name of {_p}'s inventory contains "%{@HW_ITEM}%&0해적선 수리하기":
+        close {_p}'s inventory
+        message "%{@HW}%&c시간이 오래 지나 수리하지 못했어요.." to {_p}
+
+
+function checkHalloweenQuest3(p: player) :: boolean:
+    if {halloween::%uuid of {_p}%.game3::*} is not set:
+        return false
+    loop {halloween::%uuid of {_p}%.game3::*}:
+        if loop-value is false:
+            return false
+    return true
+
+function checkHalloweenGame3Clear(p: player, index: integer):
+    add 9 to {_index}
+    if slot {_index} of current inventory of {_p} is black stained glass pane:
+        set {halloween::%uuid of {_p}%.game3::%{halloweenGame3Level::%uuid of {_p}%}%} to true
+        add 1 to {halloween::%uuid of {_p}%.game3Accept}
+        close {_p}'s inventory
+        message "%{@HW}%&e좋았어! 수리를 완료했어. 남은 곳도 도와줘!" to {_p}
+        onOptionalPlaySoundEvent("entity.player.levelup", {_p}, 1, 2)
+        message "&7해결된 선원 : %{halloween::%uuid of {_p}%.game3Accept}%/6" to {_p}
+        delete {halloweenGame3Level::%uuid of {_p}%}
+        wait 2 seconds
+        if checkHalloweenQuest3({_p}) is true:
+            message "%{@HW}%&6잭 스패로우에게 돌아가보자" to {_p}
+            onOptionalPlaySoundEvent("entity.player.levelup", {_p}, 1, 2)
+
+#> 필수 : 340틱의 쿨타임 걸어두셈
+command /halloweengame3start:
+    cooldown: 530 ticks
+    cooldown message: %{@HW}%&c조금 기다렸다가 다시 시도해주세요!
+    trigger:
+        {@DO_EVENT} is true
+        player's world is {@WORLD}
+        halloweenGame3(player)
+
+
+on inventory click:
+    {@DO_EVENT} is true
+    player's world is {@WORLD}
+    if name of current inventory contains {@HW_ITEM}:
+        cancel event
+        if clicked item is emerald block named "&a수리하기!":
+            checkHalloweenGame3Clear(player, {halloweenGame3Point.%uuid of player%})
+
+
+
+
+
+on rightclick:
+    {@DO_EVENT} is true
+    player's world is {@WORLD}
+    if "%clicked entity%" contains "잭 스패로우":
+        if {halloween::%uuid of player%.start} is not true:
+            message "%{@WN}%&c정상적이지 않은 접근입니다! 관리자에게 문의하세요" to player
+            stop
+        if {halloween::%uuid of player%.level} is 0:
+            message "%{@HW}%&f할로캣을 만나고 오지 않은 건가? 너무 앞서나간다고 생각하는데" to player
+            onOptionalPlaySoundEvent("entity.villager.trade", player, 1, 0.5)
+            stop
+        #> 체크한 거와 상관없이 잭스패로우 클릭 시 소리 출력되게
+        #> 밑에 quest3변수 체크하는 거는 true일 경우만 소리 출력되게. 아니면 클리어 소리랑 겹침
+        if {halloween::%uuid of player%::quest3} is true:
+            message "%{@HW}%&f으하하! 이게 바로 우주 최강의 해적선이지! 뭐, 자네의 공도 어느정도 있지만 말이야" to player
+            onOptionalPlaySoundEvent("entity.villager.trade", player, 1, 0.5)
+        else if checkHalloweenQuest3(player) is false:
+            if {halloween::%uuid of player%.game3Accept} is not set:
+                message "" to player
+                message "%{@HW}%&f어이 자네, 날 도와줄 수 있겠나?!" to player
+                message "&6================================" to player
+                message "&b%{@QUEST_3}%" to player
+                message "&f자네는 우리 &f하늘 호수&f에서 봤던 그친구 아닌가? 내가 만든 &d동진 쿠키&f는 어땠어?" to player
+                message "&f그것보다 큰일이야. &b우리 배가 말썽을 부리고 있다지. &f지금 선원들이 고치고는 있다만 역부족이야... 이러다간 다시 하늘 호수로 돌아가지 못한다고!" to player
+                message "&f뭐하러 왔냐고? 여기가 &a낚시왕의 단서&f가 있다고 들었지. 뭐,, 해적의 마음을 너가 알겠나!" to player
+                message "&f잡소리는 집어치우고! &b우리 선원 6명이 열심히 수리하고 있어. &f자네의 능력이면 빠르게 수리할 수 있다고 믿는다고! 자 어서!!" to player
+                message "&6================================" to player
+                onOptionalPlaySoundEvent("entity.villager.trade", player, 1, 0.5)
+                set {halloween::%uuid of player%.game3Accept} to 0
+                set {halloween::%uuid of player%.game3::1} to false
+                set {halloween::%uuid of player%.game3::2} to false
+                set {halloween::%uuid of player%.game3::3} to false
+                set {halloween::%uuid of player%.game3::4} to false
+                set {halloween::%uuid of player%.game3::5} to false
+                set {halloween::%uuid of player%.game3::6} to false
+            else if {halloween::%uuid of player%.game3Accept} is set:
+                message "%{@HW}%&f서두르게! 이러다간 제시간에 돌아가지 못하겠어" to player
+                onOptionalPlaySoundEvent("entity.villager.trade", player, 1, 0.5)
+        else if checkHalloweenQuest3(player) is true:
+            message "%{@HW}%&f고맙네! 덕분에 다시 하늘 호수로 돌아갈 수 있게 됐어!" to player
+            onOptionalPlaySoundEvent("entity.villager.trade", player, 1, 0.5)
+            if {halloween::%uuid of player%::quest3} is false:
+                if player doesn't have enough space for 1 of barrier:
+                    message "%{@HW}%&c인벤토리 공간 하나를 비워주세요!%nl%&7(퀘스트 클리어 실패)" to player
+                else if checkOwnedBundle(player) is false:
+                    message "%{@HW}%&꾸러미를 가지고 있지 않거나 본인의 꾸러미가 아닙니다!%nl%&7(퀘스트 클리어 실패)" to player
+                else:
+                    levelupBundle(player, 3)
+                    showTitleToPlayer("&a퀘스트 3 클리어", player, 2 second, 1 second, 1 second)
+                    onPlaySoundEvent("entity.player.levelup", player)
+    #> 해적단원 1, 해적단원 2 이런 식으로 저장해서 split 공백 단위로 떄려서 단계 분리
+    else if "%clicked entity%" contains "해적단원":
+        if {halloween::%uuid of player%.start} is not true:
+            message "%{@WN}%&c정상적이지 않은 접근입니다! 관리자에게 문의하세요" to player
+            stop
+        set {_nameData::*} to split name of clicked entity at " "
+        set {halloweenGame3Level::%uuid of player%} to "%{_nameData::2}%" parsed as integer
+        if {halloween::%uuid of player%::quest3} is true:
+            message "%{@HW}%이게바로 우리 잭 스패로우 선장님의 최강 해적선이지!!" to player
+            onOptionalPlaySoundEvent("entity.sniffer.happy", player, 1, 2)
+        else if {halloween::%uuid of player%.game3::%{halloweenGame3Level::%uuid of player%}%} is not set:
+            message "%{@HW}%잭 스패로우 단장님을 만나고 와" to player
+            onOptionalPlaySoundEvent("entity.sniffer.happy", player, 1, 2)
+        else if {halloween::%uuid of player%.game3::%{halloweenGame3Level::%uuid of player%}%} is false:
+            #> TODO: 게임 설명 추가
+            message "%{@HW}%도와줘! 배에 문제가 생겼는데 너의 도움이 필요할 거 같아" to player
+            message "" to player
+            message "%{@HW}%&f좌우로 움직이는 검은색 바를 상단의 &a초록색 판&f에 맞는 순간 &a수리하기! &f버튼을 클릭하여 수리하자" to player
+            message "" to player
+            onOptionalPlaySoundEvent("entity.sniffer.happy", player, 1, 2)
+            wait 5 seconds
+            execute player command "/halloweengame3start"
+        else if {halloween::%uuid of player%.game3::%{halloweenGame3Level::%uuid of player%}%} is true:
+            message "%{@HW}%이곳은 덕분에 무사해! 다른 곳을 도와줘." to player
+            onOptionalPlaySoundEvent("entity.sniffer.happy", player, 1, 2)
+
+
+
+
+
+
+
+#>============================================================
+#>============================================================
+
+#> halloweenGame4 : 저주 코드
+
+#>============================================================
+#>============================================================
+
+
+command /sethalloweengame4book:
+    permission: op
+    trigger:
+        set {book::halloween::4} to player's tool
+        message " 됨" to player
+
+function openHalloweenGame4Book(p: player):
+    set {_i} to {_p}'s tool
+    set {_p}'s tool to {book::halloween::4}
+    open book {book::halloween::4} to {_p}
+    set {_p}'s tool to {_i}
+
+
+#> 해당 인벤토리에 레시피 저장되어 있음
+#> 만들 재료, 2번칸부터 10칸까지 조합대 순서
+
+
+command /makeHalloweengame4recipe:
+    permission: op
+    trigger:
+        set {_gui} to addInventoryToValue(2, "&0금서 세팅")
+        loop 10 times:
+            addSlotItemToValue({_gui}, loop-num - 1, {halloweenBook::%loop-num%})
+        open {_gui} to player
+
+on inventory close:
+    if event-inventory's name is "&0금서 세팅":
+        loop 10 times:
+            set {halloweenBook::%loop-num%} to slot loop-num -1 of event-inventory
+        message "&d&l[ SYSTEM ] &f저장완료" to player
+        subAdditionalRecipe("halloween_book")
+        wait 3 ticks
+        addAdditionalRecipe(1, {halloweenBook::1}, "halloween_book", {halloweenBook::2}, {halloweenBook::3}, {halloweenBook::4}, {halloweenBook::5}, {halloweenBook::6}, {halloweenBook::7}, {halloweenBook::8}, {halloweenBook::9}, {halloweenBook::10})
+        message "&d&l[ SYSTEM ] &f레시피 생성 완료" to player
+
+on load:
+    {@DO_EVENT} is false
+    subAdditionalRecipe("halloween_book")
+
+on region enter:
+    wait 3 ticks
+    {@DO_EVENT} is true
+    player's world is {@WORLD}
+    if "%region at player%" contains {@QEUST4_REGION}:
+        if {halloween::%uuid of player%.start} is not true:
+            message "%{@WN}%&c정상적이지 않은 접근입니다! 관리자에게 문의하세요" to player
+            execute console command "/warp %{@QUEST4_ENTER}% %player%"
+            stop
+        if {halloween::%uuid of player%.level} is 0:
+            message "%{@HW}%&f아...." to player
+            execute console command "/warp %{@QUEST4_ENTER}% %player%"
+            onOptionalPlaySoundEvent("entity.allay.item_given", player, 2, 1)
+            stop
+        if {halloween::%uuid of player%.game4Accept} is not set:
+            if player doesn't have enough space for 1 of barrier:
+                execute console command "/warp %{@QUEST4_ENTER}% %player%"
+                message "%{@HW}%&c퀘스트 진행을 위해 인벤토리 공간 하나를 비워주세요!" to player
+                stop
+            execute console command "/warp %{@QUEST4_ENTER}% %player%"
+            message "" to player
+            message "%{@HW}%&f어떡해..! 저를 구해주세요!!" to player
+            onOptionalPlaySoundEvent("entity.allay.item_given", player, 2, 1)
+            message "&6================================" to player
+            message "&b%{@QUEST_4}%" to player
+            message "&f오늘 이곳저곳에서 할로윈 파티를 즐기려고 오셨어요." to player
+            message "&f그런데 어디에서 엮였는지, &b마녀가 찾아와 저에게 저주를 걸었어요..!" to player
+            message "&f영남대학교? 그쪽 세상은 아닐 거예요. 그러면 &b하늘 호수&f인가..?" to player
+            message "&f생각은 나중에 하고, 언젠가 일어날 일이라 생각해 마을 사람들이" to player
+            message "&b저주를 푸는 주문서&f를 연구했어요!" to player
+            message " " to player
+            message "&f여기 &a특수 염료&f를 드릴게요. 이걸 가지고 &d저주를 푸는 아이템을 만들어주세요!" to player
+            message "&6================================" to player
+            message " " to player
+            message "&7조합법이 적힌 책을 찾아야할 거 같다. 책장? 책더미? 어디든 뒤져보자" to player
+            wait 2 ticks
+            execute console command "/givehalloweendye %player%"
+            set {halloween::%uuid of player%.game4Accept} to false
+            set {halloween::%uuid of player%.curse} to true
+        else if {halloween::%uuid of player%.curse} is true:
+            if "%player's tool%" contains "호수의 저주":
+                message "" to player
+                message "%{@HW}%&9호수의 저주 &0금서&f를 잃었습니다." to player 
+                onOptionalPlaySoundEvent("entity.ender_dragon.ambient", player, 1, 0.5)
+                message " " to player
+                message "%{@HW}%&7봉인이 해제된 거 같다." to player
+                set {halloween::%uuid of player%.curse} to false
+                set {_p} to player's tool
+                remove 1 of {_p} from player's inventory
+            else:
+                message "" to player
+                message "%{@HW}%&f부탁이예요.. 저주를 풀어주세요!" to player
+                message "&7조합법이 적힌 책을 찾아야할 거 같다. 책장? 책더미? 어디든 뒤져보자" to player
+                onOptionalPlaySoundEvent("entity.allay.item_given", player, 2, 1)
+                execute console command "/warp %{@QUEST4_ENTER}% %player%"
+
+
+
+on rightclick:
+    {@DO_EVENT} is true
+    player's world is {@WORLD}
+    if "%clicked entity%" contains "할리데이":
+        if {halloween::%uuid of player%.start} is not true:
+            message "%{@WN}%&c정상적이지 않은 접근입니다! 관리자에게 문의하세요" to player
+            stop
+        if {halloween::%uuid of player%.level} is 0:
+            message "%{@HW}%&f아...." to player
+            onOptionalPlaySoundEvent("entity.allay.item_given", player, 2, 1)
+            stop
+        if {halloween::%uuid of player%.game4Accept} is true:
+            message "%{@HW}%&f고마워요...! 갑자기 생긴 저주에 너무 괴로웠는데 덕분에 ..." to player
+            onOptionalPlaySoundEvent("entity.allay.item_given", player, 2, 1)
+        else if {halloween::%uuid of player%.curse} is true:
+            message "%{@HW}%&f적법하지 않은 방법으로 온 자는 엄벌에 처할지어니!!!" to player
+            onOptionalPlaySoundEvent("entity.ender_dragon.ambient", player, 1, 0.5)
+            message " " to player
+            message "%{@HW}%&7봉인이 다시 생긴 거 같다." to player
+            #> 플레이어 킬
+            execute console command "/warp %{@QUEST4_ENTER}% %player%"
+            set {halloween::%uuid of player%.curse} to true
+        else if {halloween::%uuid of player%.curse} is false:
+            if player doesn't have enough space for 1 of barrier:
+                message "%{@HW}%&c인벤토리 공간 하나를 비워주세요!%nl%&7(퀘스트 클리어 실패)" to player
+            else if checkOwnedBundle(player) is false:
+                message "%{@HW}%&꾸러미를 가지고 있지 않거나 본인의 꾸러미가 아닙니다!%nl%&7(퀘스트 클리어 실패)" to player
+            else:
+                message "%{@HW}%&f고마워요...! 갑자기 생긴 저주에 너무 괴로웠는데 덕분에 ..." to player
+                set {halloween::%uuid of player%.game4Accept} to true
+                levelupBundle(player, 4)
+                showTitleToPlayer("&a퀘스트 4 클리어", player, 2 second, 1 second, 1 second)
+                onPlaySoundEvent("entity.player.levelup", player)
+    else if event-block is skull:
+        if {halloween::%uuid of player%.start} is not true:
+            message "%{@WN}%&c정상적이지 않은 접근입니다! 관리자에게 문의하세요" to player
+            stop
+        if {halloween::%uuid of player%.game4Accept} is set:
+            set {_tag} to nbt compound of clicked block
+            "%{_tag}%" contains "1185904418"
+            cancel event
+            openHalloweenGame4Book(player)
+
+
+
+
+
+on command "/tpc":
+    {@DO_EVENT} is true
+    set {_test} to true
+    if {halloween::%uuid of player%.start} is not set:
+        set {_test} to false
+    set {_u} to HangulToUUID(arg 1)
+    set {_p} to uuidToUsername({_u})
+    if {halloween::%{_u}%.start} is not set:
+        set {_test} to false
+    if player's world is {@WORLD}:
+        if {_test} is false:
+            cancel event
+            message "%{@WN}%&c할로윈 맵 TPC이동 중, 요청하신 유저가 할로윈 퀘스트를 받지 않았거나 현재 자신이 퀘스트를 받지 않은 상태입니다!" to player
+    else if {_p}'s world is {@WORLD}:
+        if {_test} is false:
+            cancel event
+            message "%{@WN}%&c할로윈 맵 TPC이동 중, 요청하신 유저가 할로윈 퀘스트를 받지 않았거나 현재 자신이 퀘스트를 받지 않은 상태입니다!" to player
+
+
+on damage:
+    {@DO_EVENT} is true
+    victim's world is {@WORLD}
+    victim is a player
+    damage cause is fall
+    cancel event
+
+on rightclick:
+    player's world is {@WORLD}
+    if "%player's tool%" contains "rod":
+        cancel event
+
+
+
+#>============================================================
+#>============================================================
+
+#> 이스터에그
+
+#>============================================================
+#>============================================================
+
+
+command /resethalloweenegg <player>:
+    permission: op
+    trigger:
+        delete {halloween::%uuid of arg 1%.hidden::1}
+        delete {halloween::%uuid of arg 1%.hidden::6}
+        delete {halloween::%uuid of arg 1%.hidden::7}
+        message "에그 초기화됨" to player
+
+
+#> 1. 잭 스패로우 배에서 보물 저장창고의 특정 구간 쉬프트 연타 시 칭호 획득 (탐욕스러운)
+on sneak toggle:
+    {@DO_EVENT} is true
+    player's world is {@WORLD}
+    if player is not sneaking:
+        if "%block under player%" contains "raw gold block":
+            add 1 to {halloween::%uuid of player%.hidden::1}
+            if {halloween::%uuid of player%.hidden::1} is 10:
+                message " " to player
+                message "%{@HW}%&f자네 아무리 나에게 도움을 줬다지만, 나의 것을 탐내는 건 용서가 안 된다고??" to player
+                getch(player, 5003)
+
+
+#> 2. 잭 스패로우 배의 선원 중 망원경 끼고 있는 친구 구간으로 다가가면 하늘 호수로 티피됨
+on region enter:
+    wait 3 ticks
+    {@DO_EVENT} is true
+    player's world is {@WORLD}
+    if "%region at player%" contains {@EGG_REGION}:
+        execute console command "/mv tp %player% fishingspot"
+
+#> 3. 침몰된 배의 특정 블록을 우클릭할 시 낚시왕에 대한 책이 나옴
+
+command /sethalloweenshipbook:
+    permission: op
+    trigger:
+        set {book::halloween::2} to player's tool
+        message " 됨" to player
+
+function openHalloweenShipBook(p: player):
+    set {_i} to {_p}'s tool
+    set {_p}'s tool to {book::halloween::2}
+    open book {book::halloween::2} to {_p}
+    set {_p}'s tool to {_i}
+
+on sneak toggle:
+    {@DO_EVENT} is true
+    player's world is {@WORLD}
+    if player is not sneaking:
+        if "%block under player%" contains "deepslate":
+            wait 2 ticks
+            openHalloweenShipBook(player)
+
+
+#> 4. 저주가 풀린 상태에서 마녀 모자 끼고 다시 방문 시 봉인 목소리가 나옴과 함께 칭호 획득 (근원의)
+
+on region enter:
+    wait 3 ticks
+    {@DO_EVENT} is true
+    player's world is {@WORLD}
+    if "%region at player%" contains {@QEUST4_REGION}:
+        if {halloween::%uuid of player%::quest4} is true:
+            if "%player's helmet%" contains "파란 마녀 모자":
+                message "" to player
+                message "%{@HW}%&8드디어 미쳐서 뻔뻔해졌구나! 여기가 어디라고 감히 발을 들이는가 마녀!!!" to player 
+                onOptionalPlaySoundEvent("entity.ender_dragon.ambient", player, 1, 0.5)
+                getch(player, 5004)
+
+
+#> 5. 마녀 모자를 끼고 하늘 호수의 마녀를 찾아가면 검은 고양이 모자(기존에 팔던 거)와 함께 칭호를 줌 (=^._.^=)
+on rightclick:
+    {@DO_EVENT} is true
+    player's world is "fishingspot"
+    clicked entity is witch
+    if "%player's helmet%" contains "파란 마녀 모자":
+        message "" to player
+        message "%{@HW}%&f귀여운 모자를 썼구나. 어디 &b즐거운 축제&f에 다녀왔나보네. 나도 한 때는 우리 고양이랑 함께 전국 곳곳을 돌아다녔는데.." to player 
+        onOptionalPlaySoundEvent("entity.witch.celebrate", player, 1, 1)
+        wait 2 seconds
+        getch(player, 5005)
+
+
+#> 6. 바구니 5레벨을 소지한 상태로 해피에게 말을 걸 시 훔쳐서 미안하다며 바구니 1~5레벨까지 가구 세트를 줌(셜커 상자에 넣어서 주도록)
+
+#> ㅇ위에 해피랑 같이 둠
+#> {halloween::%uuid of arg 1%.hidden::6}
+
+command /sethalloweenegg6:
+    permission: op
+    trigger:
+        set {halloween::hidden6} to player's tool
+        message "됨" to player
+
+function getHalloweenBundle(p: player):
+    give 1 of {halloween::hidden6} to {_p}
+
+
+#> 7. 진주 퀘스트를 깬 상태에서 다시 강사범에게 찾아갈 시 고맙다며 답례로 별빛 코인 1개 획득 (페이백 느낌)
+
+command /sethalloweenegg7:
+    permission: op
+    trigger:
+        set {halloween::hidden7} to player's tool
+        message "됨" to player
+
+function getHalloweenCoin(p: player):
+    give 1 of {halloween::hidden7} to {_p}
+    set {halloween::%uuid of {_p}%.hidden::7} to true
+
+#> 8. 잭 오 랜턴 정답 입력 중에 내가 자동 입력으로 "잭 오 랜턴" 이거 넣을건데 실제로 그거 입력하면 나를 의심한다고??!!! 이자식 이런 투의 출력을 하고 칭호 획득 (북치고 장구치고)
+
+#> 9. 범인 이름에 본인 이름 입력하면 칭호 획득 (난가..?)

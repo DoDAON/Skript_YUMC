@@ -1,0 +1,47 @@
+options:
+    ID: LEVEL
+    LEVEL_STEP_0: 100
+    LEVEL_STEP_1: 100000
+    LEVEL_STEP_2: 100000
+    LEVEL_STEP_3: 100000
+    LEVEL_STEP_4: 100000
+
+    QUEST: "levelQuest"
+
+
+#> 0 시작 전
+#> 1~4 학년
+#> 5는 석사? 6은 박사?
+
+command /setlevelprefix:
+    permission: op
+    trigger:
+        set {levelPrefix::10} to "&rሀ"
+        set {levelPrefix::11} to "&rሂ"
+        message "설정 완료" to player
+
+
+on load:
+    loop all players:
+        if {level::step::%uuid of loop-player%} is not set:
+            set {level::step::%uuid of loop-player%} to 0
+        if {level::exp::%uuid of loop-player%} is not set:
+            set {level::exp::%uuid of loop-player%} to 0
+        if {level::expMax::%uuid of loop-player%} is not set:
+            set {level::expMax::%uuid of loop-player%} to {@LEVEL_STEP_0}
+
+on join:
+    if {level::step::%uuid of player%} is not set:
+        set {level::step::%uuid of player%} to 0
+    if {level::exp::%uuid of player%} is not set:
+        set {level::exp::%uuid of player%} to 0
+    if {level::expMax::%uuid of player%} is not set:
+        set {level::expMax::%uuid of player%} to {@LEVEL_STEP_0}
+
+
+
+
+#> 입학전 퀘스트 : 가장 기본적으로 할 수 있는 것들로
+#> 1. SHIFT + F 눌러서 상태창 열기
+#> 2. 중앙도서관의 천마은행에서 개인 금고 열기
+#> 3. 

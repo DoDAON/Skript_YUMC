@@ -1,0 +1,105 @@
+options:
+    SPECIAL_START: 5000
+    SPECAIL_CONTENT: "SPESPESPE"
+    MODE_NOM: "normal"
+    MODE_SPE: "special"
+
+
+function openUserStyleListPage(p: player, user: offline player, page: integer, mode: text):
+    close {_p}'s inventory
+    set {_startIndex} to 0
+    if {_mode} is {@MODE_SPE}:
+        addInventory(6, {_p}, "&a&l[칭호 열람] &r&0%{nick::%uuid of {_user}%}%의 칭호/특수/%{_page}%")
+    else:
+        addInventory(6, {_p}, "&a&l[칭호 열람] &r&0%{nick::%uuid of {_user}%}%의 칭호/일반/%{_page}%")
+    wait 1 tick
+    if {_mode} is {@MODE_NOM}:
+        set {_startIndex} to {_page} * 44 - 44 + {_page}
+    else if {_mode} is {@MODE_SPE}:
+        set {_startIndex} to {_page} * 44 - 44 + {_page} + {@SPECIAL_START}
+    loop 45 times:
+        if {style.name::%{_startIndex}%} is not set:
+            exit loop
+        if {styleDate.%uuid of {_user}%::%{_startIndex}%} is set:
+            addSlotItem(loop-num - 1, {_p}, lime dye, "&b%{style.name::%{_startIndex}%}%", "&b획득한 칭호 (%{styleDate.%uuid of {_user}%::%{_startIndex}%}%)%nl%&7%{style.lore::%{_startIndex}%}%")
+        else:
+            addSlotItem(loop-num - 1, {_p}, gray dye, "&b%{style.name::%{_startIndex}%}%", "&c미획득 칭호%nl%&7%{style.lore::%{_startIndex}%}%")
+        add 1 to {_startIndex}
+    if {styleCur::%uuid of {_user}%} is set:
+        addSlotItem(49, {_p}, skull of {_user}, "&d현재 장착 중인 칭호", "&e&l%{styleCur::%uuid of {_user}%}%")
+    else:
+        addSlotItem(49, {_p}, skull of {_user}, "&d현재 장착 중인 칭호", "&c&l없음")
+    if {_mode} is {@MODE_NOM}:
+        addSlotItem(47, {_p}, ender eye, "&a특수 칭호 목록 보기", "&7클릭 시 페이지로 넘어갑니다.")
+    else if {_mode} is {@MODE_SPE}:
+        addSlotItem(47, {_p}, ender pearl, "&a일반 칭호 목록 보기", "&7클릭 시 페이지로 넘어갑니다.")
+    if {_page} > 1:
+        addSlotItem(45, {_p}, arrow, "&r&l이전으로", "&7%{_page} - 1%페이지")
+    if {_mode} is {@MODE_NOM}:
+        set {_styleIndex} to {_page} * 44 + {_page} + 1
+    else if {_mode} is {@MODE_SPE}:
+        set {_styleIndex} to {_page} * 44 + {_page} + 1 + {@SPECIAL_START}
+    if {style.name::%{_styleIndex}%} is set:
+        addSlotItem(53, {_p}, arrow, "&r&l다음으로", "&7%{_page} + 1%페이지")
+
+command /openuserch:
+    trigger:
+        if {styleInfoUser::%uuid of player%} is not set:
+            message "&c&l[ WARNING ] &r&c/userinfo 명령어를 통해 이용해주세요!" to player
+        else:
+            openUserStyleListPage(player, {styleInfoUser::%uuid of player%}, 1, {@MODE_NOM})
+
+
+
+local function checkAllStyleList(p: player) :: integer:
+    set {_index} to 1
+    loop {styleNameAllClear::*}:
+        if loop-value is {nick::%uuid of {_p}%}:
+            return {_index}
+        add 1 to {_index}
+    return -1
+
+command /userinfo <text>:
+    usage: &d&l[ SYSTEM ] &r&f사용법 : /userinfo <유저닉네임>
+    aliases: /유저정보
+    trigger:
+        set {_uuid} to HangulToUUID(arg 1)
+        set {_user} to uuidToUsername({_uuid})
+        if arg 1 is not set:
+            message "&d&l[ SYSTEM ] &r&f사용법 : /userinfo <유저닉네임>" to player
+        else if {_user} is not set:
+            message "&c&l[ WARNING ] &r&c없는 유저입니다. 다시 한 번 확인해주세요" to player
+        else:
+            set {styleInfoUser::%uuid of player%} to {_user}
+            set {_land} to checkUserLandAmount({_user})
+            message " " to player
+            message " &a&l==== USER INFORMATION ====" to player
+            message "&a&l[ USER ] &r&e&l%arg 1% &r&7(%{_user}%)" to player
+            message " " to player
+            set {_index} to checkAllStyleList({_user})
+            if {_index} is not -1:
+                message "&b%{_index}%번째로 모든 칭호 획득!" to player
+            message "<run command:/openuserch>&a&n[ 칭호 열람 ]<reset>" to player
+            message "&a땅 개수 : &f%{_land}%개" to player
+            execute player command "/접속일 %arg 1%"
+            message " " to player
+            message "&7추후 필요에 따라 정보가 추가될 수 있습니다" to player
+            message " " to player
+
+on quit:
+    delete {styleInfoUser::%uuid of player%}
+
+
+on inventory click:
+    if name of current inventory contains "[칭호 열람]":
+        cancel event
+        set {_pagedata::*} to split name of current inventory at "/"
+        set {_pageNum} to "%{_pagedata::3}%" parsed as integer
+        if clicked item is arrow named "&r&l다음으로":
+            openUserStyleListPage(player, {styleInfoUser::%uuid of player%}, {_pageNum} + 1, {@MODE_NOM})
+        else if clicked item is arrow named "&r&l이전으로":
+            openUserStyleListPage(player, {styleInfoUser::%uuid of player%}, {_pageNum} - 1, {@MODE_NOM})
+        else if clicked item is ender eye named "&a특수 칭호 목록 보기":
+            openUserStyleListPage(player, {styleInfoUser::%uuid of player%}, 1, {@MODE_SPE})
+        else if clicked item is ender pearl named "&a일반 칭호 목록 보기":
+            openUserStyleListPage(player, {styleInfoUser::%uuid of player%}, 1, {@MODE_NOM})

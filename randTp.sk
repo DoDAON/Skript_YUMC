@@ -1,0 +1,143 @@
+function randomLocation(p: player):
+    set {_loc::new} to location(random number between -3296 and 4296, 0, random number between -3695 and 4695, world "world")
+    set {chunk::%{_p}%} to chunk at {_loc::new}
+    set {location::%{_p}%} to {_loc::new}
+
+
+function warpSpawnPoint(player: player, spawn: text, name: text):
+    execute console command "/warp %{_spawn}% %{_player}%"
+    message "&d&l[ SYSTEM ] &a%{_name}%&6(으)로 이동했습니다" to {_player}
+
+options:
+    spawn1: 동화
+    spawn2: 하양
+    spawn3: 도담
+    spawn4: 누리
+    spawn5: 나비
+    spawn6: 우정
+    spawn7: 새벽
+    spawn8: 별하
+    spawn9: 윤슬
+    icon1: "_Forgetmenot"
+    icon2: "appletree257"
+    icon3: "Palgong"
+    icon4: "sykim1352"
+    icon5: "DoDAON"
+    icon6: "Dj__3"
+    icon7: "Ilovehardpeach"
+
+on rightclick:
+    if "%clicked entity%" contains "자원월드":
+        set {_loc::old} to player's location
+        while player's location is {_loc::old}:
+            set {_loc::new} to location(random number between -10000 and 10000, 0, random number between -10000 and 10000, world "recourcemyland")
+            set {location::%player%} to {_loc::new}
+            loop blocks above {location::%player%}:
+                if loop-block and block above loop-block and block 30 above loop-block are air:
+                    if block under loop-block is not air:
+                        set {location::%player%} to location of loop-block
+                        teleport player to {location::%player%}
+                        delete {chunk::%player%}
+                        
+                        wait 1 ticks
+                        stop loop
+        wait 1 tick
+        loop all players:
+            if "%region at loop-player%" contains "resourceland":
+                teleport loop-player to {location::%player%}
+        delete {location::%player%}
+
+
+#> 과거의 유산
+#> 랜덤 스폰
+on region enter:
+    if player's world is "campus":
+        wait 2 ticks
+        if "%region at player%" contains "dokdo":
+            set {_loc::old} to player's location
+            while player's location is {_loc::old}:
+                randomLocation(player)
+                if {owned_chunk::%{chunk::%player%}%} is not set:
+                    loop blocks above {location::%player%}:
+                        if loop-block and block above loop-block and block 30 above loop-block are air:
+                            if block under loop-block is not air:
+                                set {location::%player%} to location of loop-block
+                                teleport player to {location::%player%}
+                                delete {chunk::%player%}
+                                delete {location::%player%}
+                                wait 1 ticks
+                                stop loop
+
+
+
+on region enter:
+    player's world is "campus"
+    wait 2 ticks
+    if "%region at player%" contains "yasaeng":
+        execute console command "/worldSpawnSelect %player%"
+
+on inventory click:
+    name of current inventory contains "&0&0&0&8&r"
+    cancel event
+    if "%clicked item%" contains "{@spawn1}":
+        warpSpawnPoint(player, "worldspawn1", "동화")
+    else if "%clicked item%" contains "{@spawn2}":
+        warpSpawnPoint(player, "worldspawn2", "하양")
+    else if "%clicked item%" contains "{@spawn3}":
+        warpSpawnPoint(player, "worldspawn3", "도담")
+    else if "%clicked item%" contains "{@spawn4}":
+        warpSpawnPoint(player, "worldspawn4", "누리")
+    else if "%clicked item%" contains "{@spawn5}":
+        warpSpawnPoint(player, "worldspawn5", "나비")
+    else if "%clicked item%" contains "{@spawn6}":
+        warpSpawnPoint(player, "worldspawn6", "우정")
+    else if "%clicked item%" contains "{@spawn7}":
+        warpSpawnPoint(player, "worldspawn7", "새벽")
+    else if "%clicked item%" contains "{@spawn8}":
+        warpSpawnPoint(player, "worldspawn8", "별하")
+    else if "%clicked item%" contains "{@spawn9}":
+        warpSpawnPoint(player, "worldspawn9", "윤슬")
+
+command /worldSpawnSelect <player>:
+    description: 9개의 야생월드 스폰지역 중 하나를 선택합니다.
+    permission: op
+    trigger:
+        teleport arg 1 to location(271.5, 30, 282.5, "campus", 180)
+        set {_player1} to {@icon1} parsed as offline player
+        set {_player2} to {@icon2} parsed as offline player
+        set {_player3} to {@icon3} parsed as offline player
+        set {_player4} to {@icon4} parsed as offline player
+        set {_player5} to {@icon5} parsed as offline player
+        set {_player6} to {@icon6} parsed as offline player
+        set {_player7} to {@icon7} parsed as offline player
+        addInventory(3, arg 1, "&0&0&0&8&r&0야생월드 스폰선택")
+        addSlotItem(3, arg 1, skull of {_player1}, "&0&0&0&8&r&e{@spawn1}", "&f동화&7스폰으로 이동합니다.")
+        addSlotItem(4, arg 1, skull of {_player4}, "&0&0&0&8&r&e{@spawn2}", "&f하양&7스폰으로 이동합니다.")
+        addSlotItem(5, arg 1, skull of {_player5}, "&0&0&0&8&r&e{@spawn3}", "&f도담&7스폰으로 이동합니다.")
+        addSlotItem(12, arg 1, red glazed terracotta, "&0&0&0&8&r&e{@spawn4}", "&f누리&7스폰으로 이동합니다.")
+        addSlotItem(13, arg 1, skull of {_player2}, "&0&0&0&8&r&e{@spawn5}", "&f나비&7스폰으로 이동합니다.")
+        addSlotItem(14, arg 1, skull of {_player7}, "&0&0&0&8&r&e{@spawn6}", "&f우정&7스폰으로 이동합니다.")
+        addSlotItem(21, arg 1, skull of {_player3}, "&0&0&0&8&r&e{@spawn7}", "&f새벽&7스폰으로 이동합니다.")
+        addSlotItem(22, arg 1, red glazed terracotta, "&0&0&0&8&r&e{@spawn8}", "&f별하&7스폰으로 이동합니다.")
+        addSlotItem(23, arg 1, skull of {_player6}, "&0&0&0&8&r&e{@spawn9}", "&f윤슬&7스폰으로 이동합니다.")
+
+
+on rightclick:
+    if "%clicked entity%" contains "{@spawn1}":
+        warpSpawnPoint(player, "worldspawn1", "동화")
+    else if "%clicked entity%" contains "{@spawn2}":
+        warpSpawnPoint(player, "worldspawn2", "하양")
+    else if "%clicked entity%" contains "{@spawn3}":
+        warpSpawnPoint(player, "worldspawn3", "도담")
+    else if "%clicked entity%" contains "{@spawn4}":
+        warpSpawnPoint(player, "worldspawn4", "누리")
+    else if "%clicked entity%" contains "{@spawn5}":
+        warpSpawnPoint(player, "worldspawn5", "나비")
+    else if "%clicked entity%" contains "{@spawn6}":
+        warpSpawnPoint(player, "worldspawn6", "우정")
+    else if "%clicked entity%" contains "{@spawn7}":
+        warpSpawnPoint(player, "worldspawn7", "새벽")
+    else if "%clicked entity%" contains "{@spawn8}":
+        warpSpawnPoint(player, "worldspawn8", "별하")
+    else if "%clicked entity%" contains "{@spawn9}":
+        warpSpawnPoint(player, "worldspawn9", "윤슬")

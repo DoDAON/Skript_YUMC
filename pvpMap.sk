@@ -1,0 +1,55 @@
+options:
+    WORLD: "playWorld"
+    TAB: "  "
+    DENY_SPAWN: "zombie, skeleton, creeper, spider, witch, bat, zombie_villager, villager, phantom, cow, sheep, pig, chicken, slime, magma_cube, enderman, pillager, vindicator, ghast, zombified_piglin, piglin, drowned, endermite, wither_skeleton"
+
+
+
+on rightclick:
+    player's world is {@WORLD}
+    event-block is dried kelp block
+    push player up at speed 0.7
+
+
+on death:
+    victim's world is {@WORLD}
+    attacker is a player
+    drop 1 of skull of victim at victim
+
+
+on rightclick:
+    player's world is {@WORLD}
+    if "%clicked entity%" contains "달의요정":
+        onPlaySoundEvent("entity.allay.ambient_without_item", player)
+        message "%{@TAB}%&d&l[ 달의 요정 ] &r&f : 어떻게 찾았찌" to player
+
+on rightclick:
+    player's world is "campus"
+    if "%clicked entity%" contains "결투장":
+        execute console command "/mv tp %player% %{@WORLD}%"
+
+on rightclick:
+    player's world is {@WORLD}
+    if "%player's held item%" contains "boat":
+        cancel event
+
+
+
+
+on break:
+    player's world is {@WORLD}
+    player is not op
+    event-block is not barrel
+    cancel event
+
+on place:
+    player's world is {@WORLD}
+    player is not op
+    cancel event
+
+
+command /pvpadenyspawn:
+    permission: op
+    trigger:
+        execute player command "/rg flag -w ""%{@WORLD}%"" __global__ deny-spawn %{@DENY_SPAWN}%"
+

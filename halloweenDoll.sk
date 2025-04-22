@@ -1,0 +1,70 @@
+
+
+
+options:
+    d1: "HEDO90"
+    d2: "Hoho_box"
+    d3: "JIKIKI"
+    d4: "ro3o"
+    d5: "_Forgetmenot"
+    d6: "EXAGI"
+    d7: "yjhpi2462"
+    d8: "IamHoya"
+    d9: "sykim1352"
+    d10: "Dancar0329"
+
+
+
+#> 플레이어가 맞는지 확인
+
+local function checkDoll(p: text) :: integer:
+    set {_result} to 10021
+    set {_dollName::*} to {@d1}, {@d2}, {@d3}, {@d4}, {@d5}, {@d6}, {@d7}, {@d8}, {@d9} and {@d10}
+    loop 10 times:
+        # message "%{_dollName::%loop-num%}%" to {_p}
+        if {_dollName::%loop-num%} is {_p}:
+            return {_result}
+        add 1 to {_result}
+    return -1
+
+
+on rightclick:
+    player's world is "campus"
+    if "%clicked entity%" contains "인형 받기":
+        set {_dollName::*} to {@d1}, {@d2}, {@d3}, {@d4}, {@d5}, {@d6}, {@d7}, {@d8}, {@d9} and {@d10}
+        set {_custom} to checkDoll("%player%")
+        if {_custom} is -1:
+            message "&b&l[ EVENT ] &r&f이벤트 대상이 아닙니다!" to player
+            onOptionalPlaySoundEvent("BLOCK_NOTE_BLOCK_BELL", player, 2, 1)
+        else if {halloween::doll::%uuid of player%} is true:
+            message "&b&l[ EVENT ] &r&f이미 이벤트 보상을 수령하였습니다!" to player
+            onOptionalPlaySoundEvent("BLOCK_NOTE_BLOCK_BELL", player, 2, 1)
+        else if {_custom} > 10020:
+            if player doesn't have enough space for 1 of barrier:
+                message "&c&l[ WARNING ] &r&c인벤토리에 공간이 부족합니다!" to player
+                onOptionalPlaySoundEvent("BLOCK_NOTE_BLOCK_BELL", player, 2, 1)
+            else:
+                give player 10 of lime dye with lore "&a%{nick::%uuid of player%}%&f의 인형" with custom model data {_custom}
+                set {halloween::doll::%uuid of player%} to true
+                message "&b&l[ EVENT ] &r&f이벤트 보상이 지급되었습니다!" to player
+                onOptionalPlaySoundEvent("BLOCK_NOTE_BLOCK_BELL", player, 2, 1)
+
+
+
+command /dolllist:
+    permission: op
+    trigger:
+        set {_dollName::*} to {@d1}, {@d2}, {@d3}, {@d4}, {@d5}, {@d6}, {@d7}, {@d8}, {@d9} and {@d10}
+        # if checkDoll("%player%") is -1:
+        #     message "나가" to player
+        #     stop
+        addInventory(2, player, "할로윈 경품 인형")
+        loop 10 times:
+            set {_index} to loop-num - 1
+            set {_custom} to 10020 + loop-num
+            #> addSlotNbtItem(loop-num - 1, player, lime dye, "&f인형", "&7인형임", 10020 + loop-num)
+            set {_player} to {_dollName::%loop-num%} parsed as offline player
+            set slot {_index} of current inventory of player to 10 of lime dye with lore "&a%{nick::%uuid of {_player}%}%&f의 인형" with custom model data {_custom}
+
+
+#> 우클릭 했을 때 checkDoll 검사하고 인덱스 번호 반환하셈. 그리고 인벤 한 칸 빈 거 확인하고 그 인덱스의 dollName 변수에서 값 추출.

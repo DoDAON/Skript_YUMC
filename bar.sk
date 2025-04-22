@@ -1,0 +1,134 @@
+every 10 ticks:
+    remove bossbar "topbar"
+    loop all players:
+        set {_chunk} to chunk at loop-player
+        set {_player} to uuid of loop-player
+        remove bossbar "infobar%loop-player%"
+        remove bossbar "zdokdoBar%loop-player%"
+        set {_time} to now formatted as "HH시 mm분"
+        if loop-player is op:
+            set {_haknyeun} to "%{level::step::%uuid of loop-player%}%학년"
+            if {level::step::%uuid of loop-player%} is 0:
+                set {_haknyeun} to "입학전"
+            set {_bartitle} to "&b이름   &f%{nick::%{_player}%}%        &b보유 페가  &f%{pega::%{_player}%}% / %{pegaLimit}%     &b⌚  &f%{_time}%     &b%{_haknyeun}%  &f%{level::exp::%uuid of loop-player%}%/% {level::expMax::%uuid of loop-player%} %"
+        else :
+            set {_bartitle} to "&b이름  &f%{nick::%{_player}%}%          &b보유 페가  &f%{pega::%{_player}%}% / %{pegaLimit}%       &b⌚ &f%{_time}%"
+        create bossbar titled "%{_bartitle}%" and id "infobar%loop-player%" for loop-player with progress 100 with colors white
+        if loop-player's world is "world":
+            if {owned_chunk::%{_chunk}%} is set:
+                set {_username} to {owned_chunk::%{_chunk}%} parsed as offline player
+                remove bossbar "topbar%loop-player%"
+                remove bossbar "zdokdoBar%loop-player%"
+                set {_chunk.data} to "%chunk at loop-player%"
+                replace all "chunk (" with "" in {_chunk.data}
+                replace all ") of " with "," in {_chunk.data}
+                set {_bartitle} to "&a 위치 : &e%{nick::%{owned_chunk::%{_chunk}%}%}%&e님의 땅 &f(%{_chunk.data}%)"
+                create bossbar titled "%{_bartitle}%" and id "topbar%loop-player%" for loop-player with progress 100 with colors white
+
+            else:
+                remove bossbar "topbar%loop-player%"
+                remove bossbar "zdokdoBar%loop-player%"
+                set {_chunk.data} to "%chunk at loop-player%"
+                replace all "chunk (" with "" in {_chunk.data}
+                replace all ") of " with "," in {_chunk.data}
+                set {_bartitle} to "&a 위치 : &7주인 없는 땅 &e&f(%{_chunk.data}%)"
+                create bossbar titled "%{_bartitle}%" and id "topbar%loop-player%" for loop-player with progress 100 with colors white
+        else if loop-player's world is "campus":
+            remove bossbar "topbar%loop-player%"
+            remove bossbar "zdokdoBar%loop-player%"
+            set {_bartitle} to "&a 위치 : &b영남대학교 캠퍼스"
+            create bossbar titled "%{_bartitle}%" and id "topbar%loop-player%" for loop-player with progress 100 with colors white
+
+            #> 독도 월드를 위한 안내 보스바
+            set {_bartitle} to "&a■칭호 시스템 도입! &b/ch, /칭호 &f명령어로 이용해봐요"
+            create bossbar titled "%{_bartitle}%" and id "zdokdoBar%loop-player%" for loop-player with progress 100 with colors white
+
+        else if loop-player's world is "Testdokkdo":
+            remove bossbar "topbar%loop-player%"
+            #> 독도 월드를 위한 안내 보스바
+            remove bossbar "zdokdoBar%loop-player%"
+            set {_bartitle} to "&a■독도 월드 &f: &bSHIFT + F&r&f로 이동해봐요"
+            create bossbar titled "%{_bartitle}%" and id "zdokdoBar%loop-player%" for loop-player with progress 100 with colors white
+        else if loop-player's world is "halloween1":
+            remove bossbar "topbar%loop-player%"
+            remove bossbar "zdokdoBar%loop-player%"
+            set {_bartitle} to "&b디스코드 채널&f에서 자세한 안내 페이지를 열람해요!"
+            create bossbar titled "%{_bartitle}%" and id "zdokdoBar%loop-player%" for loop-player with progress 100 with colors white
+
+
+        else if  loop-player's world is "recourcemyland":
+            remove bossbar "topbar%loop-player%"
+            remove bossbar "zdokdoBar%loop-player%"
+            set {_bartitle} to "&a 위치 : &b자원 월드"
+            create bossbar titled "%{_bartitle}%" and id "topbar%loop-player%" for loop-player with progress 100 with colors white
+        else if loop-player's world is "fishingspot":
+            remove bossbar "topbar%loop-player%"
+            remove bossbar "zdokdoBar%loop-player%"
+            if "%region at loop-player%" contains "fishingspotskyisland":
+                set {_bartitle} to "&a 위치 : &9&l하늘 정원(Sky Garden)"
+            else:
+                set {_bartitle} to "&a 위치 : &9&l하늘 호수(Sky Lake)"
+            create bossbar titled "%{_bartitle}%" and id "topbar%loop-player%" for loop-player with progress 100 with colors white
+        else if loop-player's world is "playWorld":
+            remove bossbar "topbar%loop-player%"
+            remove bossbar "zdokdoBar%loop-player%"
+            set {_bartitle} to "&a 위치 : &a&l결투장"
+            create bossbar titled "%{_bartitle}%" and id "topbar%loop-player%" for loop-player with progress 100 with colors white
+        else if loop-player's world is "HideAndSeek":
+            if "%region at location of loop-player%" contains "minigame_region_1":
+                remove bossbar "hasbar%loop-player%"
+                set {_bartitle} to "&a숨바꼭질 남은 시간 &b%{has::duration::1}%초"
+                if {has::duration::1} > 0:
+                    set {_dur} to 100 * {has::duration::1} / 480
+                else:
+                    set {_dur} to 0
+                if {has::duration::1} is set:
+                    create bossbar titled "%{_bartitle}%" and id "topbar%loop-player%" for loop-player with progress {_dur} with colors blue
+        else:
+            
+            remove bossbar "topbar%loop-player%"
+            set {_bartitle} to " "
+            create bossbar titled "%{_bartitle}%" and id "topbar" for loop-player with progress 100 with colors white
+
+
+
+
+# topbar이름 : 위치 정보, 이름 정보
+
+
+
+every 3 seconds:
+    loop all players:
+        if "%loop-player's world%" is "campus":
+            set {_jxjx} to "&9🏫영남대"
+        else if loop-player's world is "world":
+            set {_jxjx} to "&2🌄야생"
+        else if loop-player's world is "world_nether":
+            set {_jxjx} to "&4🔥지옥"
+        else if loop-player's world is "recourcemyland":
+            set {_jxjx} to "&6⛏자원월드"
+        else if loop-player's world is "fishingspot":
+            if "%region at loop-player%" contains "fishingspotskyisland":
+                set {_jxjx} to "&b🐬하늘정원"
+            else:
+                set {_jxjx} to "&b🎣하늘호수"
+        else if loop-player's world is "pvpArena":
+            set {_jxjx} to "&c👾보스아레나"
+        else if loop-player's world is "Testdokkdo":
+            set {_jxjx} to "&3독도"
+        else if loop-player's world is "world_the_end":
+            set {_jxjx} to "&5👁엔더월드"
+        else if loop-player's world is "playWorld":
+            set {_jxjx} to "&3⚔결투장"
+        else if loop-player's world is "halloween1":
+            set {_jxjx} to "&6🎃할로윈"
+        else:
+            set {_jxjx} to "&0미지의공간"
+        if {jiyeok::%uuid of loop-player%} is not set:
+            set {jiyeok::%uuid of loop-player%} to "Start"
+        if {jiyeok::%uuid of loop-player%} is not {_jxjx}:
+            set {jiyeok::%uuid of loop-player%} to {_jxjx}
+            execute console command "/luckperms user %loop-player% meta set wichi %{jiyeok::%uuid of loop-player%}%"
+
+#> 안 쓴 색들
+#> &1&5&7&8&0&a&d&f&e

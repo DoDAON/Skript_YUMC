@@ -1,0 +1,33 @@
+
+#> 엔빌 쓴다는 가정
+#> 1. 앞에 NPC 놔둠. 인증 절차를 확인해주는 NPC
+#> 2. NPC 클릭하면 앤빌 열림. 거기에 아이디를 입력해주세요 
+#> 3. 입력하고 오른쪽 버튼 클릭하면 닫히고 2틱 뒤에 새로 엔빌 열림, 거기에 비밀번호를 입력해주세요
+#> 4. 비밀번호까지 입력 다 했으면 검증을 함. 뭐 8자가 되는지 아닌지만 해도 되고
+#> 5. get요청을 시도함. 반환값이 200이 아니면 로그인에 실패.
+#> 6. 로그인이 되었다면 다음으로 사용할 한글 닉네임 설정
+#> 7. 완료가 
+
+
+#> <run command:/yes>1. 응! 당연하지~<reset>
+
+#> date 만드는 거
+command /testtime:
+    permission: op
+    trigger:
+        set {_time} to now formatted as "HH:mm"
+        set {_date} to now formatted as "yyyy/MM/dd"
+        set {_times::*} to {_time} split at ":"
+        set {_dates::*} to {_date} split at "/"
+        set {_result} to ""
+        set {_tmp} to 1
+        loop 3 times:
+            set {_result} to "%{_result}%%{_dates::%{_tmp}%}%"
+            add 1 to {_tmp}
+        set {_tmp} to 1
+        loop 2 times:
+            set {_result} to "%{_result}%%{_times::%{_tmp}%}%"
+            add 1 to {_tmp}
+        message "%{_result}%" to player
+
+

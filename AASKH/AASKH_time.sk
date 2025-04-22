@@ -1,0 +1,23 @@
+# Skript Header File
+# About Time Functions
+
+
+
+#> all of time value type like {times::day::%value name%} : is day
+
+function setTimeValueDay(value: text):
+    set {_date} to now formatted as "yyyy/MM/dd"
+    set {_dates::*} to split {_date} at "/"
+    set {_naljja} to {_dates::3}
+    set {times::day::%{_value}%} to {_naljja}
+
+
+function checkTimeDay(value: text) :: boolean:
+    set {_date} to now formatted as "yyyy/MM/dd"
+    set {_dates::*} to split {_date} at "/"
+    set {_naljja} to {_dates::3}
+    if {_naljja} is {times::day::%{_value}%}:
+        return true
+    else:
+        return false
+

@@ -1,0 +1,131 @@
+#> 입장 세팅 부여
+on join:
+    set {_ismember} to text from "http://mc.yu.ac.kr/ismember.php?uuid=%uuid of player%"
+    if "%{_ismember}%" contains "YESYESYES":
+        if {setting::spawnHouse::%uuid of player%} is not set:
+            set {setting::spawnHouse::%uuid of player%} to "0"
+
+
+
+#> 테스트
+#> ----------------------------------------------------------------
+command /testSetSapwn:
+    permission: op
+    trigger:
+        loop all players:
+            set {setting::spawnHouse::%uuid of player%} to "0"
+
+command /testShowSapwn <player>:
+    permission: op
+    trigger:
+        message "%{setting::spawnHouse::%uuid of arg 1%}%" to player
+
+#> ----------------------------------------------------------------
+
+
+#> GUI 오픈
+on swap hand items:
+    if player is sneaking:
+        set {_ismember} to text from "http://mc.yu.ac.kr/ismember.php?uuid=%uuid of player%"
+        if "%{_ismember}%" contains "YESYESYES":
+            cancel event
+            set {_uuid} to uuid of player
+            play sound "BLOCK_NOTE_BLOCK_BELL" with volume 1 with pitch 1 to player
+            addInventory(3, player, "&1&1&2&1&r&0워프 메뉴")
+            addSlotItem(4, player, skull of player, "&1&1&2&1&r&b%{nick::%{_uuid}%}%", "")
+            addSlotItem(0, player, light blue concrete, "&1&1&2&1&r&9영남대학교 캠퍼스", "&e메타버스&f로 구현된 영남대학교 캠퍼스로!")
+            addSlotItem(1, player, lime bed, "&1&1&2&1&r&9홈으로", "&f클릭 시 &e홈 설정창&f을 엽니다.")
+            addSlotItem(6, player, book, "&1&1&2&1&r&a파티", "&f파티 설정 창을 엽니다")
+            addSlotItem(7, player, name tag, "&1&1&2&1&r&a칭호", "&f칭호 목록 창을 엽니다")
+            if {setting::spawnHouse::%uuid of player%} is "0":
+                addSlotItem(8, player, enchanting table, "&1&1&2&1&r&a중앙도서관 리스폰", "&f클릭 시 다른 모드로 바뀝니다.")
+            else if {setting::spawnHouse::%uuid of player%} is "1":
+                addSlotItem(8, player, red bed, "&1&1&2&1&r&aHome 1 리스폰", "&f클릭 시 다른 모드로 바뀝니다.")
+            else if {setting::spawnHouse::%uuid of player%} is "2":
+                addSlotItem(8, player, blue bed, "&1&1&2&1&r&aHome 2 리스폰", "&f클릭 시 다른 모드로 바뀝니다.")
+            addSlotItem(9, player, fishing rod, "&1&1&2&1&r&b물고기 판매", "&f낚시로 얻은 물고기를 팔아봐요%nl%&c임시 공사중. /sellfish 를 이용해주세요")
+            addSlotItem(10, player, grass block, "&1&1&2&1&r&b토지 설정", "&f토지 설정창을 엽니다")
+            addSlotItem(13, player, lodestone, "&1&1&2&1&r&c금고 1", "&f개인 금고를 원격으로 오픈합니다%nl%&7(비용 : 100페가)")
+            addSlotItem(26, player, grass block, "&1&1&2&1&r&a독도 월드", "&f자랑스러운 &e우리 땅 독도&f에 방문해봐요!")
+
+
+#> 리스폰 토글
+on inventory click:
+    if name of current inventory contains "&1&1&2&1":
+        if clicked item is enchanting table named "&1&1&2&1&r&a중앙도서관 리스폰":
+            set {setting::spawnHouse::%uuid of player%} to "1"
+            addSlotItem(8, player, red bed, "&1&1&2&1&r&aHome 1 리스폰", "&f클릭 시 다른 모드로 바뀝니다.")
+        else if clicked item is red bed named "&1&1&2&1&r&aHome 1 리스폰":
+            set {setting::spawnHouse::%uuid of player%} to "2"
+            addSlotItem(8, player, blue bed, "&1&1&2&1&r&aHome 2 리스폰", "&f클릭 시 다른 모드로 바뀝니다.")
+        else if clicked item is blue bed named "&1&1&2&1&r&aHome 2 리스폰":
+            set {setting::spawnHouse::%uuid of player%} to "0"
+            addSlotItem(8, player, enchanting table, "&1&1&2&1&r&a중앙도서관 리스폰", "&f클릭 시 다른 모드로 바뀝니다.")
+        else if clicked item is book named "&1&1&2&1&r&a파티":
+            execute player command "/togglePartyUi"
+        else if clicked item is fishing rod named "&1&1&2&1&r&b물고기 판매":
+            execute player command "/sellfish"
+        else if clicked item is grass block named "&1&1&2&1&r&b토지 설정":
+            execute player command "/landsetting"
+        else if clicked item is name tag named "&1&1&2&1&r&a칭호":
+            close player's inventory
+            execute player command "/ch"
+
+
+#> 홈 인터랙트
+on inventory click:
+    if name of current inventory contains "&1&1&2&1":
+        if clicked item is lime bed named "&1&1&2&1&r&9홈으로":
+            close player's inventory
+            execute player command "/settingHome"
+        else if clicked item is red bed named "&1&1&2&1&r&a홈 1":
+            execute player command "/h"
+        else if clicked item is blue bed named "&1&1&2&1&r&a홈 2":
+            execute player command "/hh"
+        else if clicked item is lime bed named "&1&1&2&1&r&a홈 3":
+            execute player command "/hhh"
+        else if clicked item is lodestone named "&1&1&2&1&r&c금고 1":
+            close player's inventory
+            if {pega::%uuid of player%} < 100:
+                message "&c&l[ WARNING ] &r&c페가가 부족합니다!" to player
+                stop
+            message "&d&l[ SYSTEM ] &r&b100 페가&f를 지불하여 1번 개인 금고를 이용합니다" to player
+            subtract 100 from {pega::%uuid of player%}
+            wait 10 ticks
+            execute console command "/vaultOpen1 %player%"
+            set {pegaName::%uuid of player%} to "%{nick::%uuid of player%}%//%{pega::%uuid of player%}%"
+
+
+#> 변수
+#> {setting::spawnHouse::%uuid of player%}
+
+command /settingHome:
+    trigger:
+        addInventory(1, player, "&1&1&2&1&r&0홈으로 이동")
+        if {home::%uuid of player%} is set:
+            addSlotItem(0, player, red bed, "&1&1&2&1&r&a홈 1", "&7클릭 시 첫 번째 홈으로 이동합니다.")
+        else:
+            addSlotItem(0, player, barrier, "&1&1&2&1&r&f홈 1", "&7/sh 1 명령어를 통해 홈을 설정해주세요.")
+        if {home2::%uuid of player%} is set:
+            addSlotItem(1, player, blue bed, "&1&1&2&1&r&a홈 2", "&7클릭 시 두 번째 홈으로 이동합니다.")
+        else:
+            addSlotItem(1, player, barrier, "&1&1&2&1&r&f홈 2", "&7/sh 2 명령어를 통해 홈을 설정해주세요.")
+        if {home3::%uuid of player%} is set:
+            addSlotItem(2, player, lime bed, "&1&1&2&1&r&a홈 3", "&7클릭 시 세 번째 홈으로 이동합니다.")
+        else:
+            addSlotItem(2, player, barrier, "&1&1&2&1&r&f홈 3", "&7/sh 3 명령어를 통해 홈을 설정해주세요.")
+
+
+
+
+#> 리스폰
+on respawn:
+    wait 1 tick
+    if {setting::spawnHouse::%uuid of player%} is "1":
+        if {home::%uuid of player%} is set:
+            wait 1 tick
+            execute player command "/h"
+    else if {setting::spawnHouse::%uuid of player%} is "2":
+        if {home2::%uuid of player%} is set:
+            wait 1 tick
+            execute player command "/hh"

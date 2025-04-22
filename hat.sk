@@ -1,0 +1,422 @@
+#> 이름 / 설명 / 페가
+#> &a 일반 200 / &9 희귀 500 / &d 고급 2500 / &c 신화 7500
+
+options:
+    LOAD_CHECK: false
+
+on load:
+    if {@LOAD_CHECK} is true:
+        #> 악마의 뿔, 악마의뿔
+        set {hatDataLoad::155} to "&a&l악마의 뿔/&b크큭 나는 앙마다..!!/200"
+        #> 달린단 말이야, 달린단말이야
+        set {hatDataLoad::178} to "&9&l달린단 말이야/&b이히히이잉~~/500"
+        #> 잠만자는 잠만보, 잠만자는잠만보
+        set {hatDataLoad::76} to "&c&l잠만자는 잠만보/&bZzz.../7500"
+        #> 김삿갓삿갓
+        set {hatDataLoad::98} to "&a&l김삿갓삿갓/&b수염은 없는 건가/200"
+        #> 우주인 42, 우주인42, 우주인사십이
+        set {hatDataLoad::174} to "&a&l우주인 42/&b삶, 우주, 모든 것/200"
+        #> 우리집 토토로, 우리집토토로
+        set {hatDataLoad::119} to "&c&l우리집 토토로/&b해치지 않아요/7500"
+        #> 가오나시
+        set {hatDataLoad::139} to "&c&l가오나시/&b어.../7500"
+
+        #> 빨간 신사 모자, 빨간신사모자
+        set {hatDataLoad::19} to "&a&l빨간 신사 모자/&b신사는 항상 품위를/200"
+        #> 주황 신사 모자, 주황신사모자
+        set {hatDataLoad::6} to "&a&l주황 신사 모자/&b신사는 항상 품위를/200"
+        #> 파란 신사 모자, 파란신사모자
+        set {hatDataLoad::8} to "&a&l파란 신사 모자/&b신사는 항상 품위를/200"
+        #> 하얀 신사 모자, 하얀신사모자
+        set {hatDataLoad::5} to "&a&l하얀 신사 모자/&b신사는 항상 품위를/200"
+        #> 무지개 신사 모자, 무지개신사모자
+        set {hatDataLoad::21} to "&9&l무지개 신사 모자/&c신사&6는 &e항상 &a품위&b를/500"
+
+        #> 깜찍이
+        set {hatDataLoad::68} to "&a&l깜찍이/&b나 상큼해?/200"
+        #> 상큼이
+        set {hatDataLoad::69} to "&a&l상큼이/&b나 깜찍해?/200"
+
+        #> 빙빙
+        set {hatDataLoad::146} to "&9&l빙빙/&b돌아가는 나의 머리/500"
+
+        #> 우산 토토로, 우산토토로
+        set {hatDataLoad::121} to "&d&l우산 토토로/&b비가 내리고~ 음악이/2500"
+        #> 아기 토토로, 아기토토로
+        set {hatDataLoad::133} to "&d&l아기 토토로/&b크앙 잡아먹을거다!/2500"
+        #> 미니 토토로, 미니토토로
+        set {hatDataLoad::134} to "&d&l미니 토토로/&b크앙 잡아먹을거다!/2500"
+        #> 파닥파닥 보우, 파닥파닥보우
+        set {hatDataLoad::129} to "&d&l파닥파닥 보우/&bㅇ.ㅇ/2500"
+
+        #> 얼룩 누룽지, 얼룩누룽지
+        set {hatDataLoad::30} to "&9&l얼룩 누룽지/&b뭘 보냥/500"
+        #> 먼지 꾸댕이, 먼지꾸댕이
+        set {hatDataLoad::26} to "&9&l먼지 꾸댕이/&b안 더럽다냥/500"
+        #> 복슬 고양이, 복슬고양이
+        set {hatDataLoad::28} to "&9&l복슬 고양이/&b쓰다듬어달라냥/500"
+        #> 깜짝 오셀롯, 깜짝오셀롯
+        set {hatDataLoad::24} to "&9&l깜짝 오셀롯/&b난 고양이다냥/500"
+
+        #> 쫑긋 토끼, 쫑긋토끼
+        set {hatDataLoad::71} to "&a&l쫑긋 토끼/&b난 오이가 좋다/200"
+        #> 쫑긋 고양이, 쫑긋고양이
+        set {hatDataLoad::102} to "&a&l쫑긋 고양이/&b우리집 고양이 볼래?/200"
+
+        #> 라바콘
+        set {hatDataLoad::70} to "&a&l라바콘/&b멈춰~주세요/200"
+        #> 신사의 품격, 신사의품격
+        set {hatDataLoad::22} to "&a&l신사의 품격/&b어서오시죠/200"
+        #> 오징오징
+        set {hatDataLoad::2} to "&9&l오징오징/&b나 문어 아니다/500"
+        #> 대 악 마, 대악마
+        set {hatDataLoad::156} to "&9&l대 악 마/&b크크큭.. 꿇어라/500"
+
+        #> 레인보우 광대, 레인보우광대
+        set {hatDataLoad::176} to "&d&l레인보우 광대/&c마술 &6하나 &e보여&a줄까&b??/2500"
+
+        #> 빨간 털모자, 빨간털모자
+        set {hatDataLoad::166} to "&9&l빨간 털모자/&b올 겨울은 따뜻하게/500"
+        #> 파란 털모자, 파란털모자
+        set {hatDataLoad::165} to "&9&l파란 털모자/&b올 겨울은 따뜻하게/500"
+        #> 분홍 털모자, 분홍털모자
+        set {hatDataLoad::167} to "&9&l분홍 털모자/&b올 겨울은 따뜻하게/500"
+        #> 하얀 털모자
+        set {hatDataLoad::169} to "&9&l하얀 털모자/&b올 겨울은 따뜻하게/500"
+
+        #> 내친구 판다, 내친구판다
+        set {hatDataLoad::181} to "&9&l내친구 판다/&f앞으로 잘 부탁해/500"
+        #> 내친구 코알라, 내친구코알라
+        set {hatDataLoad::180} to "&9&l내친구 코알라/&7앞으로 잘 부탁해/500"
+        #> 내친구 슈렉, 내친구슈렉
+        set {hatDataLoad::183} to "&9&l내친구 슈렉/&a앞으로 잘 부탁해/500"
+        #> 내친구 펭귄, 내친구펭귄
+        set {hatDataLoad::182} to "&9&l내친구 펭귄/&6앞으로 잘 부탁해/500"
+
+
+        #> 이스터에그 : 추후에 넣도록
+        #> 들판
+        set {hatDataLoad::138} to "&a&l들판/&b잊을 수 없는 눈동자/200"
+        #> 체리
+        set {hatDataLoad::9052} to "&a&l체리/&b정신을 체리자/200"
+        #> 루돌프와 함께, 루돌프와함께
+        set {hatDataLoad::9057} to "&a&l루돌프와 함께/&b산타가 월급을 안 줘/200"
+
+        #> 포도대장모자
+        set {hatDataLoad::101} to "&9&l포도대장모자/&b거 누구 없느냐/500"
+        #> 종이박스
+        set {hatDataLoad::106} to "&a&l종이박스/&b보인다...!!/200"
+        #> 크앙 공룡, 크앙공룡
+        set {hatDataLoad::184} to "&d&l크앙 공룡/&b난 사실 초식이다..!/2500"
+    #> 멋쟁이 수염, 멋쟁이수염
+    set {hatDataLoad::128} to "&a&l멋쟁이 수염/&b밥 먹을 땐 건드리지 마요/200"
+
+#>TODO: 모델 1번은 튜토리얼 퀘스트 완료 보상으로
+    
+
+
+#> hatBuy : 구매하고자 하는 모자 NPC 이름 (ex: 모자/155), 숫자는 모델 데이터 번호
+
+on rightclick:
+    player's world is "campus"
+    "%clicked entity%" contains "모자/"
+    message "&d&l[ HAT ] &r&b자신의 스킨으로 변경하였습니다." to player
+    set {hatBuy::%uuid of player%} to "%clicked entity%"
+    #> 모델 데이터 번호 불러오기
+    set {_hatdata1} to "%{hatBuy::%uuid of player%}%"
+    #> 분리 후 _hatdata::2 에서 모델 데이터 로드
+    set {_hatdata::*} to split {_hatdata1} at "/"
+    #> 모델 데이터 기반으로 모자 정보 데이터 불러오기
+    set {_hatNameLore::*} to split {hatDataLoad::%{_hatdata::2}%} at "/"
+    #> 페가 로드
+    set {_pega} to "%{_hatNameLore::3}%" parsed as integer
+    message "&b가격 : %{_pega}%페가. &n<run command:/buyhat>[  구매한다  ]<reset>" to player
+    execute console command "/npc select %clicked entity%"
+    execute console command "/npc skin %player%"
+
+
+on quit:
+    if {hatBuy::%uuid of player%} is set:
+        delete {hatBuy::%uuid of player%}
+    if {hatBuyName::%uuid of player%} is set:
+        delete {hatBuyName::%uuid of player%}
+
+
+
+
+command /buyhat:
+    trigger:
+        player's world is "campus"
+        if {hatBuy::%uuid of player%} is not set:
+            message "&c&l[ WARNING ] &r&cnpc를 골라주세요!"
+        else if {hatBuy::%uuid of player%} is set:
+            if "%{hatBuy::%uuid of player%}%" contains "모자/":
+                #> 모델 데이터 번호 불러오기
+                set {_hatdata1} to "%{hatBuy::%uuid of player%}%"
+                #> 분리 후 _hatdata::2 에서 모델 데이터 로드
+                set {_hatdata::*} to split {_hatdata1} at "/"
+                #> 모델 데이터 기반으로 모자 정보 데이터 불러오기
+                set {_hatNameLore::*} to split {hatDataLoad::%{_hatdata::2}%} at "/"
+                #> nbtTag 로드
+                set {_nbtTag} to "%{_hatdata::2}%" parsed as integer
+                #> 페가 로드
+                set {_pega} to "%{_hatNameLore::3}%" parsed as integer
+                if player doesn't have enough space for 1 of barrier:
+                    message "&c&l[ WARNING ] &r&c인벤토리의 공간이 부족합니다!" to player
+                else if {pega::%uuid of player%} < {_pega}:
+                    message "&c&l[ WARNING ] &r&c페가가 부족합니다!" to player
+                else:
+                    giveItemToPlayerWithNbt(player, 1, pink dye, "%{_hatNameLore::1}%", "%{_hatNameLore::2}%", {_nbtTag})
+                    subtract {_pega} from {pega::%uuid of player%}
+                    set {pegaName::%uuid of player%} to "%{nick::%uuid of player%}%//%{pega::%uuid of player%}%"
+                    message "&d&l[ HAT ] &b구매하였습니다!" to player
+
+
+on rightclick:
+    player is op
+    "%player's tool%" contains "sword"
+    set {_hatdata1} to "%{hatBuy::%uuid of player%}%"
+    set {_hatdata::*} to split {_hatdata1} at "/"
+    set {_hatNameLore::*} to split {hatDataLoad::%{_hatdata::2}%} at "/"
+    set line 1 of event-block to "%{_hatNameLore::1}%"
+    set line 2 of event-block to "%{_hatNameLore::2}%"
+    set line 3 of event-block to " "
+    set line 4 of event-block to "&b&l%{_hatNameLore::3}%페가"
+
+
+
+
+command /hatlist1:
+	trigger:
+		if player's game mode is not creative:
+			message "&c■ 크리에이티브 모드에서만 사용할 수 있는 명령어입니다." to player
+			stop
+		if player's game mode is creative:
+			open chest inventory with 6 rows named "가구 목록 3" to player
+			set slot 0 of current inventory of player to pink dye with model data 1
+			set slot 1 of current inventory of player to pink dye with model data 2
+			set slot 2 of current inventory of player to pink dye with model data 3
+			set slot 3 of current inventory of player to pink dye with model data 4
+			set slot 4 of current inventory of player to pink dye with model data 5
+			set slot 5 of current inventory of player to pink dye with model data 6
+			set slot 6 of current inventory of player to pink dye with model data 7
+			set slot 7 of current inventory of player to pink dye with model data 8
+			set slot 8 of current inventory of player to pink dye with model data 9
+			set slot 9 of current inventory of player to pink dye with model data 10
+			set slot 10 of current inventory of player to pink dye with model data 11
+			set slot 11 of current inventory of player to pink dye with model data 12
+			set slot 12 of current inventory of player to pink dye with model data 13
+			set slot 13 of current inventory of player to pink dye with model data 14
+			set slot 14 of current inventory of player to pink dye with model data 15
+			set slot 15 of current inventory of player to pink dye with model data 16
+			set slot 16 of current inventory of player to pink dye with model data 17
+			set slot 17 of current inventory of player to pink dye with model data 18
+			set slot 18 of current inventory of player to pink dye with model data 19
+			set slot 19 of current inventory of player to pink dye with model data 20
+			set slot 20 of current inventory of player to pink dye with model data 21
+			set slot 21 of current inventory of player to pink dye with model data 22
+			set slot 22 of current inventory of player to pink dye with model data 23
+			set slot 23 of current inventory of player to pink dye with model data 24
+			set slot 24 of current inventory of player to pink dye with model data 25
+			set slot 25 of current inventory of player to pink dye with model data 26
+			set slot 26 of current inventory of player to pink dye with model data 27
+			set slot 27 of current inventory of player to pink dye with model data 28
+			set slot 28 of current inventory of player to pink dye with model data 29
+			set slot 29 of current inventory of player to pink dye with model data 30
+			set slot 30 of current inventory of player to pink dye with model data 31
+			set slot 31 of current inventory of player to pink dye with model data 32
+			set slot 32 of current inventory of player to pink dye with model data 33
+			set slot 33 of current inventory of player to pink dye with model data 34
+			set slot 34 of current inventory of player to pink dye with model data 35
+			set slot 35 of current inventory of player to pink dye with model data 36
+			set slot 36 of current inventory of player to pink dye with model data 37
+			set slot 37 of current inventory of player to pink dye with model data 38
+			set slot 38 of current inventory of player to pink dye with model data 39
+			set slot 39 of current inventory of player to pink dye with model data 40
+			set slot 40 of current inventory of player to pink dye with model data 41
+			set slot 41 of current inventory of player to pink dye with model data 42
+			set slot 42 of current inventory of player to pink dye with model data 43
+			set slot 43 of current inventory of player to pink dye with model data 44
+			set slot 44 of current inventory of player to pink dye with model data 45
+			set slot 45 of current inventory of player to pink dye with model data 46
+			set slot 46 of current inventory of player to pink dye with model data 47
+			set slot 47 of current inventory of player to pink dye with model data 48
+			set slot 48 of current inventory of player to pink dye with model data 49
+			set slot 49 of current inventory of player to pink dye with model data 50
+			set slot 50 of current inventory of player to pink dye with model data 51
+			set slot 51 of current inventory of player to pink dye with model data 52
+			set slot 52 of current inventory of player to pink dye with model data 53
+			set slot 53 of current inventory of player to pink dye with model data 54
+
+command /hatlist2:
+    trigger:
+        player is op
+        if player's game mode is not creative:
+            message "&c■ 크리에이티브 모드에서만 사용할 수 있는 명령어입니다." to player
+            stop
+        if player's game mode is creative:
+            open chest inventory with 6 rows named "가구 목록 2" to player
+            set slot 0 of current inventory of player to pink dye with model data 55
+            set slot 1 of current inventory of player to pink dye with model data 56
+            set slot 2 of current inventory of player to pink dye with model data 57
+            set slot 3 of current inventory of player to pink dye with model data 58
+            set slot 4 of current inventory of player to pink dye with model data 59
+            set slot 5 of current inventory of player to pink dye with model data 60
+            set slot 6 of current inventory of player to pink dye with model data 61
+            set slot 7 of current inventory of player to pink dye with model data 62
+            set slot 8 of current inventory of player to pink dye with model data 63
+            set slot 9 of current inventory of player to pink dye with model data 64
+            set slot 10 of current inventory of player to pink dye with model data 65
+            set slot 11 of current inventory of player to pink dye with model data 66
+            set slot 12 of current inventory of player to pink dye with model data 67
+            set slot 13 of current inventory of player to pink dye with model data 68
+            set slot 14 of current inventory of player to pink dye with model data 69
+            set slot 15 of current inventory of player to pink dye with model data 70
+            set slot 16 of current inventory of player to pink dye with model data 71
+            set slot 17 of current inventory of player to pink dye with model data 72
+            set slot 18 of current inventory of player to pink dye with model data 73
+            set slot 19 of current inventory of player to pink dye with model data 74
+            set slot 20 of current inventory of player to pink dye with model data 75
+            set slot 21 of current inventory of player to pink dye with model data 76
+            set slot 22 of current inventory of player to pink dye with model data 77
+            set slot 23 of current inventory of player to pink dye with model data 78
+            set slot 24 of current inventory of player to pink dye with model data 79
+            set slot 25 of current inventory of player to pink dye with model data 80
+            set slot 26 of current inventory of player to pink dye with model data 81
+            set slot 27 of current inventory of player to pink dye with model data 82
+            set slot 28 of current inventory of player to pink dye with model data 83
+            set slot 29 of current inventory of player to pink dye with model data 84
+            set slot 30 of current inventory of player to pink dye with model data 85
+            set slot 31 of current inventory of player to pink dye with model data 86
+            set slot 32 of current inventory of player to pink dye with model data 87
+            set slot 33 of current inventory of player to pink dye with model data 88
+            set slot 34 of current inventory of player to pink dye with model data 89
+            set slot 35 of current inventory of player to pink dye with model data 90
+            set slot 36 of current inventory of player to pink dye with model data 91
+            set slot 37 of current inventory of player to pink dye with model data 92
+            set slot 38 of current inventory of player to pink dye with model data 93
+            set slot 39 of current inventory of player to pink dye with model data 94
+            set slot 40 of current inventory of player to pink dye with model data 95
+            set slot 41 of current inventory of player to pink dye with model data 96
+            set slot 42 of current inventory of player to pink dye with model data 97
+            set slot 43 of current inventory of player to pink dye with model data 98
+            set slot 44 of current inventory of player to pink dye with model data 99
+            set slot 45 of current inventory of player to pink dye with model data 100
+            set slot 46 of current inventory of player to pink dye with model data 101
+            set slot 47 of current inventory of player to pink dye with model data 102
+            set slot 48 of current inventory of player to pink dye with model data 103
+            set slot 49 of current inventory of player to pink dye with model data 104
+            set slot 50 of current inventory of player to pink dye with model data 105
+            set slot 51 of current inventory of player to pink dye with model data 106
+            set slot 52 of current inventory of player to pink dye with model data 107
+            set slot 53 of current inventory of player to pink dye with model data 108
+
+command /hatlist3:
+    trigger:
+        player is op
+        if player's game mode is not creative:
+            message "&c■ 크리에이티브 모드에서만 사용할 수 있는 명령어입니다." to player
+            stop
+        if player's game mode is creative:
+            open chest inventory with 6 rows named "가구 목록 3" to player
+            set slot 0 of current inventory of player to pink dye with model data 109
+            set slot 1 of current inventory of player to pink dye with model data 110
+            set slot 2 of current inventory of player to pink dye with model data 111
+            set slot 3 of current inventory of player to pink dye with model data 112
+            set slot 4 of current inventory of player to pink dye with model data 113
+            set slot 5 of current inventory of player to pink dye with model data 114
+            set slot 6 of current inventory of player to pink dye with model data 115
+            set slot 7 of current inventory of player to pink dye with model data 116
+            set slot 8 of current inventory of player to pink dye with model data 117
+            set slot 9 of current inventory of player to pink dye with model data 118
+            set slot 10 of current inventory of player to pink dye with model data 119
+            set slot 11 of current inventory of player to pink dye with model data 120
+            set slot 12 of current inventory of player to pink dye with model data 121
+            set slot 13 of current inventory of player to pink dye with model data 122
+            set slot 14 of current inventory of player to pink dye with model data 123
+            set slot 15 of current inventory of player to pink dye with model data 124
+            set slot 16 of current inventory of player to pink dye with model data 125
+            set slot 17 of current inventory of player to pink dye with model data 126
+            set slot 18 of current inventory of player to pink dye with model data 127
+            set slot 19 of current inventory of player to pink dye with model data 128
+            set slot 20 of current inventory of player to pink dye with model data 129
+            set slot 21 of current inventory of player to pink dye with model data 130
+            set slot 22 of current inventory of player to pink dye with model data 131
+            set slot 23 of current inventory of player to pink dye with model data 132
+            set slot 24 of current inventory of player to pink dye with model data 133
+            set slot 25 of current inventory of player to pink dye with model data 134
+            set slot 26 of current inventory of player to pink dye with model data 135
+            set slot 27 of current inventory of player to pink dye with model data 136
+            set slot 28 of current inventory of player to pink dye with model data 137
+            set slot 29 of current inventory of player to pink dye with model data 138
+            set slot 30 of current inventory of player to pink dye with model data 139
+            set slot 31 of current inventory of player to pink dye with model data 140
+            set slot 32 of current inventory of player to pink dye with model data 141
+            set slot 33 of current inventory of player to pink dye with model data 142
+            set slot 34 of current inventory of player to pink dye with model data 143
+            set slot 35 of current inventory of player to pink dye with model data 144
+            set slot 36 of current inventory of player to pink dye with model data 145
+            set slot 37 of current inventory of player to pink dye with model data 146
+            set slot 38 of current inventory of player to pink dye with model data 147
+            set slot 39 of current inventory of player to pink dye with model data 148
+            set slot 40 of current inventory of player to pink dye with model data 149
+            set slot 41 of current inventory of player to pink dye with model data 150
+            set slot 42 of current inventory of player to pink dye with model data 151
+            set slot 43 of current inventory of player to pink dye with model data 152
+            set slot 44 of current inventory of player to pink dye with model data 153
+            set slot 45 of current inventory of player to pink dye with model data 154
+            set slot 46 of current inventory of player to pink dye with model data 155
+            set slot 47 of current inventory of player to pink dye with model data 156
+            set slot 48 of current inventory of player to pink dye with model data 157
+            set slot 49 of current inventory of player to pink dye with model data 158
+            set slot 50 of current inventory of player to pink dye with model data 159
+            set slot 51 of current inventory of player to pink dye with model data 160
+            set slot 52 of current inventory of player to pink dye with model data 161
+            set slot 53 of current inventory of player to pink dye with model data 162
+
+command /hatlist4:
+    trigger:
+        player is op
+        if player's game mode is not creative:
+            message "&c■ 크리에이티브 모드에서만 사용할 수 있는 명령어입니다." to player
+            stop
+        if player's game mode is creative:
+            open chest inventory with 6 rows named "가구 목록 4" to player
+            set slot 0 of current inventory of player to pink dye with model data 163
+            set slot 1 of current inventory of player to pink dye with model data 164
+            set slot 2 of current inventory of player to pink dye with model data 165
+            set slot 3 of current inventory of player to pink dye with model data 166
+            set slot 4 of current inventory of player to pink dye with model data 167
+            set slot 5 of current inventory of player to pink dye with model data 168
+            set slot 6 of current inventory of player to pink dye with model data 169
+            set slot 7 of current inventory of player to pink dye with model data 170
+            set slot 8 of current inventory of player to pink dye with model data 171
+            set slot 9 of current inventory of player to pink dye with model data 172
+            set slot 10 of current inventory of player to pink dye with model data 173
+            set slot 11 of current inventory of player to pink dye with model data 174
+            set slot 12 of current inventory of player to pink dye with model data 175
+            set slot 13 of current inventory of player to pink dye with model data 176
+            set slot 14 of current inventory of player to pink dye with model data 177
+            set slot 15 of current inventory of player to pink dye with model data 178
+            set slot 16 of current inventory of player to pink dye with model data 179
+            set slot 17 of current inventory of player to pink dye with model data 180
+            set slot 18 of current inventory of player to pink dye with model data 181
+            set slot 19 of current inventory of player to pink dye with model data 182
+            set slot 20 of current inventory of player to pink dye with model data 183
+            set slot 21 of current inventory of player to pink dye with model data 184
+            set slot 22 of current inventory of player to pink dye with model data 185
+            set slot 23 of current inventory of player to pink dye with model data 186
+            set slot 24 of current inventory of player to pink dye with model data 9044
+            set slot 25 of current inventory of player to pink dye with model data 9045
+            set slot 26 of current inventory of player to pink dye with model data 9046
+            set slot 27 of current inventory of player to pink dye with model data 9047
+            set slot 28 of current inventory of player to pink dye with model data 9048
+            set slot 29 of current inventory of player to pink dye with model data 9049
+            set slot 30 of current inventory of player to pink dye with model data 9051
+            set slot 31 of current inventory of player to pink dye with model data 9052
+            set slot 32 of current inventory of player to pink dye with model data 9053
+            set slot 33 of current inventory of player to pink dye with model data 9054
+            set slot 34 of current inventory of player to pink dye with model data 9055
+            set slot 35 of current inventory of player to pink dye with model data 9056
+            set slot 36 of current inventory of player to pink dye with model data 9057
+            set slot 37 of current inventory of player to pink dye with model data 9058

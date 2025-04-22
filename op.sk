@@ -1,0 +1,62 @@
+options:
+    colorOP: "&5"
+    colorCM: "&2"
+
+command /opDisplayOff <player>:
+    permission: op
+    trigger:
+        if arg 1 is op:
+            delete {opDisplayOff::%uuid of arg 1%}
+            wait 1 tick
+            set {opDisplayOff::%uuid of arg 1%} to ""
+            execute console command "/tab player %arg 1% tabprefix" 
+            execute console command "/tab player %arg 1% customtabname &f%{nick::%uuid of arg 1%}%"
+            execute console command "/tab player %arg 1% customtagname &f%{nick::%uuid of arg 1%}%"
+            message "%{nick::%uuid of arg 1%}% 매니저 안 보임" to player
+
+
+command /opDisplayOn <player>:
+    permission: op
+    trigger:
+        if arg 1 is op:
+            set {opDisplayOff::%uuid of arg 1%} to "%{levelPrefix::10}%"
+            execute console command "/tab player %arg 1% tabprefix %{opDisplayOff::%uuid of arg 1%}% &f" 
+            execute console command "/tab player %arg 1% customtabname &f%{nick::%uuid of arg 1%}%"
+            execute console command "/tab player %arg 1% customtagname &f%{nick::%uuid of arg 1%}%"
+            message "%{nick::%uuid of arg 1%}% 매니저 보임" to player
+
+
+
+command /cmDisplayOff <player>:
+    permission: op
+    trigger:
+        delete {opDisplayOff::%uuid of arg 1%}
+        wait 1 tick
+        set {opDisplayOff::%uuid of arg 1%} to ""
+        execute console command "/tab player %arg 1% tabprefix" 
+        execute console command "/tab player %arg 1% customtabname &f%{nick::%uuid of arg 1%}%"
+        execute console command "/tab player %arg 1% customtagname &f%{nick::%uuid of arg 1%}%"
+        message "%{nick::%uuid of arg 1%}% 도우미 안 보임" to player
+
+command /cmDisplayOn <player>:
+    permission: op
+    trigger:
+        set {opDisplayOff::%uuid of arg 1%} to "%{levelPrefix::11}%"
+        execute console command "/tab player %arg 1% tabprefix %{opDisplayOff::%uuid of arg 1%}% &f" 
+        execute console command "/tab player %arg 1% customtabname &f%{nick::%uuid of arg 1%}%"
+        execute console command "/tab player %arg 1% customtagname &f%{nick::%uuid of arg 1%}%"
+        message "%{nick::%uuid of arg 1%}% 도우미 보임" to player
+
+command /opDisplayOffDelete <player>:
+    permission: op
+    trigger:
+        delete {opDisplayOff::%uuid of arg 1%}
+        message "성공적" to player
+
+
+
+
+command /opDisplayAboveNick <player> <text>:
+    permission: op
+    trigger:
+        execute console command "/tab player %arg 1% abovename &5%arg 2%"

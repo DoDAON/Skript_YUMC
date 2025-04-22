@@ -1,0 +1,4 @@
+on jump:
+    if "%region at player%" contains "eventcampus":
+        cancel event
+        message "&c4층은 공주의 힘으로 막아버렸음" to player
