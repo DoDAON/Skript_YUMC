@@ -1,7 +1,7 @@
 # Self-produced minecraft skripts for YUMC
 
 ## Overview
-This repository contains a collection of Minecraft Skripts developed for YUMC (Yonsei University Minecraft) server. These scripts implement various features including gameplay mechanics, events, and server management tools.
+This repository contains a collection of Minecraft Skripts developed for YUMC (Yeungnam University Minecraft) server. These scripts implement various features including gameplay mechanics, events, and server management tools.
 
 ## Environment
 - Using vscode "Vskript" theme
